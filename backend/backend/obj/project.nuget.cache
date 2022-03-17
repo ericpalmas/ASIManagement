@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "C5B5cJKUc4hLdJBe+99oF7G1oPbxHQ9/WgmOn29aqV5QBLjC+esFcBnDuNWim9Pp+5AcX1vwP0hk0Fvi1M33Yw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\39366\\Desktop\\Master\\individualProjects\\Project2-ISAManegement\\ASIManagement\\backend\\backend\\backend.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\39366\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\3.1.16\\microsoft.aspnetcore.jsonpatch.3.1.16.nupkg.sha512",
+    "C:\\Users\\39366\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\3.1.16\\microsoft.aspnetcore.mvc.newtonsoftjson.3.1.16.nupkg.sha512",
+    "C:\\Users\\39366\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
+    "C:\\Users\\39366\\.nuget\\packages\\newtonsoft.json\\12.0.2\\newtonsoft.json.12.0.2.nupkg.sha512",
+    "C:\\Users\\39366\\.nuget\\packages\\newtonsoft.json.bson\\1.0.2\\newtonsoft.json.bson.1.0.2.nupkg.sha512"
+  ],
+  "logs": []
+}
