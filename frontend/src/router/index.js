@@ -5,6 +5,7 @@ import AdministrativeDataView from '../views/AdministrativeDataView.vue'
 import AsiInfoView from '../views/AsiInfoView.vue'
 import AsiManagementView from '../views/AsiManagementView.vue'
 import AsiProjectsView from '../views/AsiProjectsView.vue'
+import AsiTechnicalSpecializationManagementView from '../views/AsiTechnicalSpecializationManagementView.vue'
 
 const routes = [
   // {
@@ -31,6 +32,11 @@ const routes = [
     path: '/AsiInformation',
     name: 'AsiInfoView',
     component: AsiInfoView
+  },
+  {
+    path: '/AsiTechnicalSpecialization',
+    name: 'AsiTechnicalSpecializationManagementView',
+    component: AsiTechnicalSpecializationManagementView
   },
   {
     path: '/AsiAdminData',

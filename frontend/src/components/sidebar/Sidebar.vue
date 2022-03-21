@@ -30,6 +30,9 @@ export default {
     <SidebarLink to="/AsiManagement" icon="fas fa-home">
       ASI creation
     </SidebarLink>
+    <SidebarLink to="/AsiTechnicalSpecialization" icon="fas fa-home">
+      Technical
+    </SidebarLink>
     <SidebarLink to="/AsiProjects" icon="fas fa-columns">Projects</SidebarLink>
     <SidebarLink to="/AsiAdminData" icon="fas fa-chart-bar">
       Profile
