@@ -3,7 +3,7 @@
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
-          <h1>ASI management</h1>
+          <!-- <h1>ASI management</h1> -->
 
           <ASITable
             :parametri="[

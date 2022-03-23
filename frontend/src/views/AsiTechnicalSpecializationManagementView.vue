@@ -6,6 +6,44 @@
           <h1>Technical specialization with an MRU</h1>
 
           <ASITechnicalTable
+            :masterProps="[
+              {
+                code: 'MP30_0001',
+                module_title: 'Xxx (tutor: Xxx)',
+                credits: '30',
+                semester: '5'
+              }
+            ]"
+            :projectsProps="[
+              {
+                code: 'MP9_0001 ',
+                module_title:
+                  'Telemedicine platform for remote monitoring applications (tutor: Alessandro Puiatti)',
+                credits: '9',
+                semester: '2'
+              },
+              {
+                code: 'MP9_0001',
+                module_title:
+                  'Telemedicine platform for remote monitoring applications (tutor: Alessandro Puiatti)',
+                credits: '3',
+                semester: '3'
+              },
+              {
+                code: 'MP15_0001 ',
+                module_title: 'Gestionale master of science in engineering',
+                credits: '15',
+                semester: '3'
+              }
+            ]"
+            :supplementaryModulesProps="[
+              {
+                code: 'MC_MobSys ',
+                module_title: 'Mobile Systems and Applications',
+                credits: '3',
+                semester: '2'
+              }
+            ]"
             :parametri="[
               {
                 module_group: 'Projects',
