@@ -97,46 +97,6 @@
           </b-button>
         </div>
       </div>
-
-      <div id="cardsContainers" class="container pt-3 pb-4">
-        <div class="card">
-          <div class="card-body">
-            <h1>Corsi per ogni semestre</h1>
-
-            <table class="table table-light">
-              <thead>
-                <tr>
-                  <td>Semester</td>
-                  <td>N. Courses</td>
-                  <td>Credits</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>1</td>
-                  <td>2</td>
-                  <td>9</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td>1</td>
-                  <td>6</td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td>3</td>
-                  <td>9</td>
-                </tr>
-                <tr>
-                  <td>4</td>
-                  <td>1</td>
-                  <td>3</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>

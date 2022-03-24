@@ -21,7 +21,7 @@
           <button
             type="button"
             class="btn btn-outline-primary"
-            @click="addNewRow(i, course)"
+            @click="addNewRow(i)"
           >
             <i class="fas fa-plus-circle"></i>
           </button>
@@ -66,11 +66,12 @@
             <i class="fas fa-edit"></i>
           </button>
         </td> -->
+
         <td>
           <button
             type="button"
             class="btn btn-outline-danger"
-            @click="deleteRow(i, k, course)"
+            @click="deleteRow(i, k)"
           >
             <i class="fas fa-trash"></i>
           </button>
@@ -78,6 +79,64 @@
       </tr>
     </tbody>
   </table>
+  <div id="cardsContainers" class="container pt-3 pb-4">
+    <div class="card">
+      <div class="card-body">
+        <h1>Module group credits</h1>
+
+        <table class="table table-light">
+          <thead>
+            <tr>
+              <td>Module group</td>
+              <td>Credits</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(course, i) in courses" :key="i">
+              <td>{{ course.module_group }}</td>
+
+              <td>
+                <label for="exampleInputEmail1" class="form-label">
+                  {{ moduleCredits(course.module_group) }}
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td>Total</td>
+              <td>
+                <p>{{ totalCredits }}</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="cardsContainers" class="container pt-3 pb-4">
+    <div class="card">
+      <div class="card-body">
+        <h1>Course semester balancing</h1>
+
+        <table class="table table-light">
+          <thead>
+            <tr>
+              <td>Semester</td>
+              <td>N. Courses</td>
+              <td>Credits</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(semester, i) in semesterNumberCourses" :key="i">
+              <td v-if="semester.n_courses !== 0">{{ i }}</td>
+              <td v-if="semester.n_courses !== 0">{{ semester.n_courses }}</td>
+              <td v-if="semester.n_courses !== 0">{{ semester.credits }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </template>
 
 
@@ -90,63 +149,95 @@ export default {
   },
   data() {
     return {
-      invoice_subtotal: 0,
-      invoice_total: 0,
-      invoice_tax: 5,
+      total_credits: 0,
+      module_credits: 0,
       courses: this.parametri
     }
   },
-  methods: {
-    saveInvoice() {
-      console.log(JSON.stringify(this.courses))
-    },
-    calculateTotal() {
-      var subtotal, total
-      subtotal = this.courses.reduce(function (sum, product) {
-        var lineTotal = parseFloat(product.semester)
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal
+
+  computed: {
+    totalCredits: function () {
+      var tot = 0
+      for (const course of this.courses) {
+        for (const module of course.modules) {
+          const number = parseInt(module.credits)
+          if (!isNaN(number)) {
+            tot += number
+          }
         }
-      }, 0)
-
-      this.invoice_subtotal = subtotal.toFixed(2)
-
-      total = subtotal * (this.invoice_tax / 100) + subtotal
-      total = parseFloat(total)
-      if (!isNaN(total)) {
-        this.invoice_total = total.toFixed(2)
-      } else {
-        this.invoice_total = '0.00'
       }
+      return tot
     },
-    calculateLineTotal(course) {
-      var total = parseFloat(course.site) * parseFloat(course.ects)
-      if (!isNaN(total)) {
-        course.semester = total.toFixed(2)
-      }
-      this.calculateTotal()
-    },
+    semesterNumberCourses: function () {
+      //var semesterCourses = [0, 0, 0, 0, 0, 0, 0, 0]
 
-    // mettere controllo prima di cancellare una riga
+      var semesterCourses = [
+        { n_courses: 0, credits: 0 },
+        { n_courses: 0, credits: 0 },
+        { n_courses: 0, credits: 0 },
+        { n_courses: 0, credits: 0 },
+        { n_courses: 0, credits: 0 },
+        { n_courses: 0, credits: 0 }
+      ]
+
+      for (const course of this.courses) {
+        for (const module of course.modules) {
+          //const number = parseInt(module.credits)
+          const semester = parseInt(module.semester)
+          if (!isNaN(semester)) {
+            const courseCredits = parseInt(module.credits)
+
+            //semesterCourses[semester] = semesterCourses[semester] + 1
+            semesterCourses[semester].n_courses =
+              semesterCourses[semester].n_courses + 1
+            semesterCourses[semester].credits =
+              semesterCourses[semester].credits + courseCredits
+          }
+        }
+      }
+      return semesterCourses
+    }
+  },
+
+  watch: {},
+
+  methods: {
+    // saveInvoice() {
+    //   console.log(JSON.stringify(this.courses))
+    // },
+
+    moduleCredits: function (moduleGroup) {
+      var tot = 0
+      for (const course of this.courses) {
+        if (course.module_group === moduleGroup) {
+          for (const module of course.modules) {
+            const number = parseInt(module.credits)
+
+            if (!isNaN(number)) {
+              tot += number
+            }
+          }
+        }
+      }
+      return tot
+    },
 
     deleteRow(i, k) {
-      console.log(this.courses[i].module_group)
-      console.log('elemento da cancellare: ' + k)
-      console.log(this.courses[i].modules[k])
+      // console.log(this.courses[i].module_group)
+      // console.log('elemento da cancellare: ' + k)
+      // console.log(this.courses[i].modules[k])
       this.courses[i].modules.splice(k, 1)
     },
-    addNewRow(i, course) {
-      console.log(course)
-      console.log(i)
-
+    addNewRow(i) {
       this.courses[i].modules.push({
-        code: '',
-        module_title: '',
-        site: '',
-        ects: '',
-        semester: ''
+        code: 'code',
+        module_title: 'course',
+        site: 'LU',
+        credits: 3,
+        semester: '3'
       })
-      // console.log(this.courses[i].modules)
+
+      //console.log(this.courses[i].modules)
     }
   }
 }
