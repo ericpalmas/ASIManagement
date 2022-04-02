@@ -5,6 +5,16 @@
         <div class="card-body">
           <h1>CourseListView</h1>
           <div class="table-responsive">
+            <!-- <div v-for="module in allModules" :key="module.module_id">
+              {{ module.id_module }}, {{ module.code }},
+              {{ module.module_name }}
+            </div> -->
+
+            <!-- <div class="card card-body m-4">
+              <h3>Options API + Vuex</h3>
+              <h5 class="text-center">{{ counter }} x 2 = {{ times2 }}</h5>
+              <button class="btn btn-primary" @click="inc">Increment</button>
+            </div> -->
             <table class="table align-middle">
               <thead>
                 <tr>
@@ -25,112 +35,16 @@
                 </tr>
               </thead>
               <tbody>
-                <tr>
+                <tr v-for="module in allModules" :key="module.module_id">
                   <th scope="row">1</th>
-                  <td>FTP_AdvAlgDS</td>
-                  <td>3</td>
+                  <td>{{ module.code }}</td>
+                  <td>{{ module.ects }}</td>
                   <td></td>
-                  <td>Advanced Algorithms and Data Structures</td>
-                  <td>Grandoni, Fabrizio</td>
-                  <td>X</td>
-                  <td></td>
-                  <td>X</td>
-                  <td></td>
-                  <td>X</td>
-                  <td></td>
-                  <td>X</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <th scope="row">2</th>
-                  <td>FTP_AppStat</td>
-                  <td>3</td>
-                  <td></td>
-                  <td>Applied Statistics and Data Analysis</td>
-                  <td>Faraci, Francesca (SUPSI)</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <th scope="row">3</th>
-                  <td>FTP_ApprAlg</td>
-                  <td>3</td>
-                  <td></td>
-                  <td>Approximation Algorithms</td>
-                  <td>Grandoni, Fabrizio</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <!-- tsm courses -->
-                <tr>
-                  <th></th>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <th scope="row">4</th>
-                  <td>TSM_AdvCompG</td>
-                  <td>3</td>
-                  <td>CS</td>
-                  <td>Advanced computer graphics</td>
-                  <td>Peternier, Achille</td>
-                  <td></td>
-                  <td>X</td>
-                  <td></td>
-                  <td>X</td>
-                  <td></td>
-                  <td>X</td>
-                  <td></td>
-                  <td>X</td>
-                </tr>
-                <tr>
-                  <th scope="row">5</th>
-                  <td>TSM_AdvDataMgmt</td>
-                  <td>3</td>
-                  <td>CS</td>
+                  <td>{{ module.module_name }}</td>
                   <td>
-                    Advanced Data Management – non standard database systems
+                    {{ module.responsible_surname }}
+                    {{ module.responsible_name }}
                   </td>
-                  <td>Mastropietro, Roberto</td>
-                  <td>X</td>
-                  <td></td>
-                  <td>X</td>
-                  <td></td>
-                  <td>X</td>
-                  <td></td>
-                  <td>X</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <th scope="row">6</th>
-                  <td>TSM_DataAnaCla</td>
-                  <td>3</td>
-                  <td>DS</td>
-                  <td>Data Analysis and Classification</td>
-                  <td>Mastropietro, Roberto</td>
                   <td>X</td>
                   <td></td>
                   <td>X</td>
@@ -153,9 +67,17 @@
 // @ is an alias to /src
 //import HelloWorld from "@/components/HelloWorld.vue";
 
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
   name: 'CourseListView',
-  components: {}
+  methods: {
+    ...mapActions(['fetchModules'])
+  },
+  computed: mapGetters(['allModules']),
+  created() {
+    this.fetchModules()
+  }
 }
 </script>
 
