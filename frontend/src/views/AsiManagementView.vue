@@ -5,7 +5,16 @@
         <div class="card-body">
           <!-- <h1>ASI management</h1> -->
 
+          <!-- <div v-for="module in allAsiModules" :key="module.id_module">
+            <h5>{{ module.code }}</h5>
+            <h5>{{ module.module_name }}</h5>
+            <h5>{{ module.ects }}</h5>
+          </div> -->
+          <!-- :availableModules="allModules" -->
+
           <ASITable
+            :asiModules="allAsiModules"
+            :availableModules="allModules"
             :parametri="[
               {
                 module_group: 'FTP',
@@ -34,7 +43,6 @@
                   }
                 ]
               },
-
               {
                 module_group: 'TSM',
                 modules: [
@@ -61,7 +69,6 @@
                   }
                 ]
               },
-
               {
                 module_group: 'CM',
                 modules: [
@@ -106,11 +113,34 @@
 
 <script>
 import ASITable from '../components/ASITable.vue'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'AsiManagementView',
   components: {
     ASITable
+  },
+
+  methods: {
+    ...mapActions(['fetchAsi']),
+    ...mapActions(['fetchModules']),
+    ...mapActions(['fetchFtpModules']),
+    ...mapActions(['fetchTsmModules']),
+    ...mapActions(['fetchCmModules'])
+  },
+  computed: {
+    ...mapGetters(['allAsiModules']),
+    ...mapGetters(['allModules']),
+    ...mapGetters(['allFtpModules']),
+    ...mapGetters(['allTsmModules']),
+    ...mapGetters(['allCmModules'])
+  },
+  created() {
+    this.fetchAsi()
+    this.fetchModules()
+    this.fetchFtpModules()
+    this.fetchTsmModules()
+    this.fetchCmModules()
   }
 }
 </script>

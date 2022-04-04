@@ -1,84 +1,100 @@
 <template>
-  <table class="table table-light">
-    <!-- <thead>
-      <tr>
-        <td>Code</td>
-        <td>Module title</td>
-        <td>Site</td>
-        <td>ECTS</td>
-        <td>Semester</td>
-        <td colspan="2"></td>
-      </tr>
-    </thead> -->
-    <tbody v-for="(course, i) in courses" :key="i">
-      <tr>
-        <td colspan="6" class="table-active">
-          <label for="exampleColorInput" class="form-label">
-            {{ course.module_group }}
-          </label>
-        </td>
-        <td class="table-active">
-          <button
-            type="button"
-            class="btn btn-outline-primary"
-            @click="addNewRow(i)"
-          >
-            <i class="fas fa-plus-circle"></i>
-          </button>
-        </td>
-      </tr>
-      <tr v-for="(item, k) in course.modules" :key="k">
-        <td colspan="6">
-          <select
-            class="form-select form-select-sm"
-            aria-label=".form-select-sm example"
-          >
-            <!-- qua devo ciclare le option e selezionare quella scelta, in base ad item.code -->
-            <option
-              value="FTP_AdvAlgDS"
-              selected="item.code === FTP_AdvAlgDS ? true : false"
-            >
-              FTP_AdvAlgDS
-            </option>
-            <option
-              value="FTP_AppStat"
-              selected="item.code === FTP_AppStat ? true : false"
-            >
-              FTP_AppStat
-            </option>
-            <option
-              value="FTP_ApprAlg"
-              selected="item.code === FTP_ApprAlg ? true : false"
-            >
-              FTP_ApprAlg
-            </option>
-            <option value="FTP_BioEng" selected="true">
-              <b>Code:</b>
-              &nbsp;&nbsp; FTP_BioEng, Name:&nbsp;&nbsp; Biology, physiology and
-              anatomy for engineers, Site:&nbsp;&nbsp; LU, Credits:&nbsp;&nbsp;
-              3, Semester:&nbsp;&nbsp; 3
-            </option>
-          </select>
-        </td>
+  <div id="cardsContainers" class="container pt-3 pb-4">
+    <div class="card">
+      <div class="card-body">
+        <!-- <div v-for="module in ftp_modules" :key="module.id_module">
+          <h5>{{ module.code }}</h5>
+          <h5>{{ module.module_name }}</h5>
+          <h5>{{ module.ects }}</h5>
+        </div> -->
 
-        <!-- <td>
-          <button type="button" class="btn btn-outline-secondary">
-            <i class="fas fa-edit"></i>
-          </button>
-        </td> -->
+        <!-- <div v-for="module in allAsiModules" :key="module.id_module">
+            <h5>{{ module.code }}</h5>
+            <h5>{{ module.module_name }}</h5>
+            <h5>{{ module.ects }}</h5>
+          </div> -->
 
-        <td>
-          <button
-            type="button"
-            class="btn btn-outline-danger"
-            @click="deleteRow(i, k)"
-          >
-            <i class="fas fa-trash"></i>
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+        <!-- <div v-for="module in allAsiModules" :key="module.id_module">
+            <h5>{{ module.code }}</h5>
+            <h5>{{ module.module_name }}</h5>
+            <h5>{{ module.ects }}</h5>
+          </div> -->
+
+        <table class="table table-light">
+          <tbody v-for="(module, i) in asi_modules" :key="module.id_module">
+            <tr v-if="i === 0">
+              <td colspan="6" class="table-active">
+                <label for="exampleColorInput" class="form-label">
+                  {{ module.initials }}
+                </label>
+              </td>
+              <td class="table-active">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary"
+                  @click="addNewRow(i)"
+                >
+                  <i class="fas fa-plus-circle"></i>
+                </button>
+              </td>
+            </tr>
+            <tr
+              v-if="
+                i !== 0 &&
+                asi_modules[i - 1].initials !== asi_modules[i].initials
+              "
+            >
+              <td colspan="6" class="table-active">
+                <label for="exampleColorInput" class="form-label">
+                  {{ module.initials }}
+                </label>
+              </td>
+              <td class="table-active">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary"
+                  @click="addNewRow(i)"
+                >
+                  <i class="fas fa-plus-circle"></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="6">
+                <select
+                  class="form-select form-select-sm"
+                  aria-label=".form-select-sm example"
+                >
+                  <option
+                    v-for="course in available_modules"
+                    :key="course.id_module"
+                    :selected="course.code === module.code ? true : false"
+                  >
+                    <b>Code:</b>
+                    &nbsp;&nbsp; {{ course.code }}, Name:&nbsp;&nbsp;
+                    {{ course.module_name }}, Site:&nbsp;&nbsp;
+                    {{ course.site }}, Credits:&nbsp;&nbsp; {{ course.ects }},
+                    Semester:&nbsp;&nbsp;
+                    {{ course.semester }}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger"
+                  @click="deleteRow(i, k)"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <div id="cardsContainers" class="container pt-3 pb-4">
     <div class="card">
       <div class="card-body">
@@ -145,13 +161,24 @@
 export default {
   name: 'ASITable',
   props: {
-    parametri: Array
+    parametri: Array,
+    asiModules: Array,
+    availableModules: Array,
+    ftpModules: Array,
+    tsmModules: Array,
+    cmModules: Array
   },
   data() {
     return {
       total_credits: 0,
       module_credits: 0,
-      courses: this.parametri
+      courses: this.parametri,
+      asi_modules: this.asiModules,
+      available_modules: this.availableModules,
+      ftp_modules: this.ftpModules,
+      tsm_modules: this.tsmModules,
+      cm_modules: this.cmModules
+      //modules: this.modules
     }
   },
 
@@ -198,8 +225,6 @@ export default {
       return semesterCourses
     }
   },
-
-  watch: {},
 
   methods: {
     // saveInvoice() {
