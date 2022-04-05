@@ -5,98 +5,19 @@
         <div class="card-body">
           <!-- <h1>ASI management</h1> -->
 
-          <!-- <div v-for="module in allAsiModules" :key="module.id_module">
+          <!-- <div v-for="module in allFtpAsiModules" :key="module.id_module">
             <h5>{{ module.code }}</h5>
             <h5>{{ module.module_name }}</h5>
             <h5>{{ module.ects }}</h5>
           </div> -->
-          <!-- :availableModules="allModules" -->
 
           <ASITable
-            :asiModules="allAsiModules"
-            :availableModules="allModules"
-            :parametri="[
-              {
-                module_group: 'FTP',
-                modules: [
-                  {
-                    code: 'FTP_BioEng ',
-                    module_title:
-                      'Biology, physiology and anatomy for engineers',
-                    site: 'LU',
-                    credits: '3',
-                    semester: '3'
-                  },
-                  {
-                    code: 'FTP_AppSta',
-                    module_title: 'Applied Statistics and Data Analysis',
-                    site: 'LU',
-                    credits: '3',
-                    semester: '2'
-                  },
-                  {
-                    code: 'FTP_MultiASys ',
-                    module_title: 'Multi-agent systems',
-                    site: 'LU',
-                    credits: '3',
-                    semester: '4'
-                  }
-                ]
-              },
-              {
-                module_group: 'TSM',
-                modules: [
-                  {
-                    code: 'USI_UserExp ',
-                    module_title: 'User Experience Design',
-                    site: 'LU',
-                    credits: '6',
-                    semester: '2'
-                  },
-                  {
-                    code: 'USI_ProStyles ',
-                    module_title: 'Programming Styles',
-                    site: 'LU',
-                    credits: '3',
-                    semester: '1'
-                  },
-                  {
-                    code: 'TSM_AdvDataMgmt ',
-                    module_title: 'Advanced Data Management',
-                    site: 'LU',
-                    credits: '3',
-                    semester: '1'
-                  }
-                ]
-              },
-              {
-                module_group: 'CM',
-                modules: [
-                  {
-                    code: 'CM_QRM ',
-                    module_title: 'Quality and risk management',
-                    site: 'LU',
-                    credits: '6',
-                    semester: '2'
-                  },
-                  {
-                    code: 'CM_AdvPM ',
-                    module_title: 'Advanced project management',
-                    site: 'LU',
-                    credits: '3',
-                    semester: '1'
-                  },
-                  {
-                    code: 'CM_IntSust ',
-                    module_title:
-                      'Integrated Sustainable Management of production systems',
-                    site: 'LU',
-                    credits: '3',
-                    semester: '1'
-                  }
-                ]
-              }
-            ]"
+            :ftpModules="allFtpModules"
+            :tsmModules="allTsmModules"
+            :cmModules="allCmModules"
+            :ftpAsiModules="allFtpAsiModules"
+            :tsmAsiModules="allTsmAsiModules"
+            :cmAsiModules="allCmAsiModules"
           />
 
           <b-button title="Save file">
@@ -120,27 +41,29 @@ export default {
   components: {
     ASITable
   },
-
   methods: {
-    ...mapActions(['fetchAsi']),
-    ...mapActions(['fetchModules']),
     ...mapActions(['fetchFtpModules']),
     ...mapActions(['fetchTsmModules']),
-    ...mapActions(['fetchCmModules'])
+    ...mapActions(['fetchCmModules']),
+    ...mapActions(['fetchFtpAsiModules']),
+    ...mapActions(['fetchTsmAsiModules']),
+    ...mapActions(['fetchCmAsiModules'])
   },
   computed: {
-    ...mapGetters(['allAsiModules']),
-    ...mapGetters(['allModules']),
     ...mapGetters(['allFtpModules']),
     ...mapGetters(['allTsmModules']),
-    ...mapGetters(['allCmModules'])
+    ...mapGetters(['allCmModules']),
+    ...mapGetters(['allFtpAsiModules']),
+    ...mapGetters(['allTsmAsiModules']),
+    ...mapGetters(['allCmAsiModules'])
   },
   created() {
-    this.fetchAsi()
-    this.fetchModules()
     this.fetchFtpModules()
     this.fetchTsmModules()
     this.fetchCmModules()
+    this.fetchFtpAsiModules()
+    this.fetchTsmAsiModules()
+    this.fetchCmAsiModules()
   }
 }
 </script>

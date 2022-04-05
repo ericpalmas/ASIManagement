@@ -2,88 +2,171 @@
   <div id="cardsContainers" class="container pt-3 pb-4">
     <div class="card">
       <div class="card-body">
-        <!-- <div v-for="module in ftp_modules" :key="module.id_module">
-          <h5>{{ module.code }}</h5>
-          <h5>{{ module.module_name }}</h5>
-          <h5>{{ module.ects }}</h5>
-        </div> -->
-
-        <!-- <div v-for="module in allAsiModules" :key="module.id_module">
-            <h5>{{ module.code }}</h5>
-            <h5>{{ module.module_name }}</h5>
-            <h5>{{ module.ects }}</h5>
-          </div> -->
-
-        <!-- <div v-for="module in allAsiModules" :key="module.id_module">
-            <h5>{{ module.code }}</h5>
-            <h5>{{ module.module_name }}</h5>
-            <h5>{{ module.ects }}</h5>
-          </div> -->
-
         <table class="table table-light">
-          <tbody v-for="(module, i) in asi_modules" :key="module.id_module">
-            <tr v-if="i === 0">
-              <td colspan="6" class="table-active">
-                <label for="exampleColorInput" class="form-label">
-                  {{ module.initials }}
-                </label>
-              </td>
-              <td class="table-active">
-                <button
-                  type="button"
-                  class="btn btn-outline-primary"
-                  @click="addNewRow(i)"
-                >
-                  <i class="fas fa-plus-circle"></i>
-                </button>
-              </td>
-            </tr>
-            <tr
-              v-if="
-                i !== 0 &&
-                asi_modules[i - 1].initials !== asi_modules[i].initials
-              "
-            >
-              <td colspan="6" class="table-active">
-                <label for="exampleColorInput" class="form-label">
-                  {{ module.initials }}
-                </label>
-              </td>
-              <td class="table-active">
-                <button
-                  type="button"
-                  class="btn btn-outline-primary"
-                  @click="addNewRow(i)"
-                >
-                  <i class="fas fa-plus-circle"></i>
-                </button>
-              </td>
-            </tr>
+          <tbody>
             <tr>
-              <td colspan="6">
+              <td colspan="6" class="table-active">
+                <label for="exampleColorInput" class="form-label">FTP</label>
+              </td>
+              <td class="table-active">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary"
+                  @click="addNewRow(0)"
+                >
+                  <i class="fas fa-plus-circle"></i>
+                </button>
+              </td>
+            </tr>
+            <tr v-for="(module, i) in ftp_asi_modules" :key="module.id_module">
+              <td colspan="4">
                 <select
                   class="form-select form-select-sm"
                   aria-label=".form-select-sm example"
                 >
                   <option
-                    v-for="course in available_modules"
+                    v-for="course in ftp_modules"
                     :key="course.id_module"
                     :selected="course.code === module.code ? true : false"
                   >
                     <b>Code:</b>
                     &nbsp;&nbsp; {{ course.code }}, Name:&nbsp;&nbsp;
                     {{ course.module_name }}, Site:&nbsp;&nbsp;
-                    {{ course.site }}, Credits:&nbsp;&nbsp; {{ course.ects }},
-                    Semester:&nbsp;&nbsp;
-                    {{ course.semester }}
+                    {{ course.site }}, Credits:&nbsp;&nbsp; {{ course.ects }}
                   </option>
                 </select>
+              </td>
+              <td>
+                <label for="exampleColorInput" class="form-label">
+                  Semester
+                </label>
+              </td>
+              <td>
+                <input
+                  class="form-control"
+                  type="text"
+                  placeholder="Default input"
+                  aria-label="default input example"
+                  :value="module.semester"
+                />
               </td>
               <td>
                 <button
                   type="button"
                   class="btn btn-outline-danger"
-                  @click="deleteRow(i, k)"
+                  @click="deleteRow(0, i)"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="6" class="table-active">
+                <label for="exampleColorInput" class="form-label">TSM</label>
+              </td>
+              <td class="table-active">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary"
+                  @click="addNewRow(1)"
+                >
+                  <i class="fas fa-plus-circle"></i>
+                </button>
+              </td>
+            </tr>
+            <tr v-for="(module, i) in tsm_asi_modules" :key="module.id_module">
+              <td colspan="4">
+                <select
+                  class="form-select form-select-sm"
+                  aria-label=".form-select-sm example"
+                >
+                  <option
+                    v-for="course in ftp_modules"
+                    :key="course.id_module"
+                    :selected="course.code === module.code ? true : false"
+                  >
+                    <b>Code:</b>
+                    &nbsp;&nbsp; {{ course.code }}, Name:&nbsp;&nbsp;
+                    {{ course.module_name }}, Site:&nbsp;&nbsp;
+                    {{ course.site }}, Credits:&nbsp;&nbsp; {{ course.ects }}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <label for="exampleColorInput" class="form-label">
+                  Semester
+                </label>
+              </td>
+              <td>
+                <input
+                  class="form-control"
+                  type="text"
+                  placeholder="Default input"
+                  aria-label="default input example"
+                  :value="module.semester"
+                />
+              </td>
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger"
+                  @click="deleteRow(1, i)"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="6" class="table-active">
+                <label for="exampleColorInput" class="form-label">CM</label>
+              </td>
+              <td class="table-active">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary"
+                  @click="addNewRow(2)"
+                >
+                  <i class="fas fa-plus-circle"></i>
+                </button>
+              </td>
+            </tr>
+            <tr v-for="(module, i) in cm_asi_modules" :key="module.id_module">
+              <td colspan="4">
+                <select
+                  class="form-select form-select-sm"
+                  aria-label=".form-select-sm example"
+                >
+                  <option
+                    v-for="course in ftp_modules"
+                    :key="course.id_module"
+                    :selected="course.code === module.code ? true : false"
+                  >
+                    <b>Code:</b>
+                    &nbsp;&nbsp; {{ course.code }}, Name:&nbsp;&nbsp;
+                    {{ course.module_name }}, Site:&nbsp;&nbsp;
+                    {{ course.site }}, Credits:&nbsp;&nbsp; {{ course.ects }}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <label for="exampleColorInput" class="form-label">
+                  Semester
+                </label>
+              </td>
+              <td>
+                <input
+                  class="form-control"
+                  type="text"
+                  placeholder="Default input"
+                  aria-label="default input example"
+                  :value="module.semester"
+                />
+              </td>
+              <td>
+                <button
+                  type="button"
+                  class="btn btn-outline-danger"
+                  @click="deleteRow(2, i)"
                 >
                   <i class="fas fa-trash"></i>
                 </button>
@@ -108,19 +191,37 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(course, i) in courses" :key="i">
-              <td>{{ course.module_group }}</td>
-
+            <tr>
+              <td>FTP</td>
               <td>
                 <label for="exampleInputEmail1" class="form-label">
-                  {{ moduleCredits(course.module_group) }}
+                  {{ moduleCredits(0) }}
                 </label>
               </td>
             </tr>
             <tr>
+              <td>TSM</td>
+              <td>
+                <label for="exampleInputEmail1" class="form-label">
+                  {{ moduleCredits(1) }}
+                </label>
+              </td>
+            </tr>
+            <tr>
+              <td>CM</td>
+              <td>
+                <label for="exampleInputEmail1" class="form-label">
+                  {{ moduleCredits(2) }}
+                </label>
+              </td>
+            </tr>
+
+            <tr>
               <td>Total</td>
               <td>
-                <p>{{ totalCredits }}</p>
+                <p>
+                  {{ totalCredits }}
+                </p>
               </td>
             </tr>
           </tbody>
@@ -161,43 +262,50 @@
 export default {
   name: 'ASITable',
   props: {
-    parametri: Array,
-    asiModules: Array,
-    availableModules: Array,
     ftpModules: Array,
     tsmModules: Array,
-    cmModules: Array
+    cmModules: Array,
+    ftpAsiModules: Array,
+    tsmAsiModules: Array,
+    cmAsiModules: Array
   },
   data() {
     return {
-      total_credits: 0,
-      module_credits: 0,
-      courses: this.parametri,
-      asi_modules: this.asiModules,
-      available_modules: this.availableModules,
       ftp_modules: this.ftpModules,
       tsm_modules: this.tsmModules,
-      cm_modules: this.cmModules
-      //modules: this.modules
+      cm_modules: this.cmModules,
+      ftp_asi_modules: this.ftpAsiModules,
+      tsm_asi_modules: this.tsmAsiModules,
+      cm_asi_modules: this.cmAsiModules
     }
   },
 
   computed: {
     totalCredits: function () {
       var tot = 0
-      for (const course of this.courses) {
-        for (const module of course.modules) {
-          const number = parseInt(module.credits)
-          if (!isNaN(number)) {
-            tot += number
-          }
+
+      for (const module of this.ftp_asi_modules) {
+        const number = parseInt(module.ects)
+        if (!isNaN(number)) {
+          tot += number
+        }
+      }
+      for (const module of this.tsm_asi_modules) {
+        const number = parseInt(module.ects)
+        if (!isNaN(number)) {
+          tot += number
+        }
+      }
+      for (const module of this.cm_asi_modules) {
+        const number = parseInt(module.ects)
+        if (!isNaN(number)) {
+          tot += number
         }
       }
       return tot
     },
-    semesterNumberCourses: function () {
-      //var semesterCourses = [0, 0, 0, 0, 0, 0, 0, 0]
 
+    semesterNumberCourses: function () {
       var semesterCourses = [
         { n_courses: 0, credits: 0 },
         { n_courses: 0, credits: 0 },
@@ -207,62 +315,101 @@ export default {
         { n_courses: 0, credits: 0 }
       ]
 
-      for (const course of this.courses) {
-        for (const module of course.modules) {
-          //const number = parseInt(module.credits)
-          const semester = parseInt(module.semester)
-          if (!isNaN(semester)) {
-            const courseCredits = parseInt(module.credits)
+      for (const module of this.ftp_asi_modules) {
+        const semester = parseInt(module.semester)
+        if (!isNaN(semester)) {
+          const courseCredits = parseInt(module.ects)
 
-            //semesterCourses[semester] = semesterCourses[semester] + 1
-            semesterCourses[semester].n_courses =
-              semesterCourses[semester].n_courses + 1
-            semesterCourses[semester].credits =
-              semesterCourses[semester].credits + courseCredits
-          }
+          semesterCourses[semester].n_courses =
+            semesterCourses[semester].n_courses + 1
+          semesterCourses[semester].credits =
+            semesterCourses[semester].credits + courseCredits
         }
       }
+
+      for (const module of this.tsm_asi_modules) {
+        const semester = parseInt(module.semester)
+        if (!isNaN(semester)) {
+          const courseCredits = parseInt(module.ects)
+
+          semesterCourses[semester].n_courses =
+            semesterCourses[semester].n_courses + 1
+          semesterCourses[semester].credits =
+            semesterCourses[semester].credits + courseCredits
+        }
+      }
+
+      for (const module of this.cm_asi_modules) {
+        const semester = parseInt(module.semester)
+        if (!isNaN(semester)) {
+          const courseCredits = parseInt(module.ects)
+
+          semesterCourses[semester].n_courses =
+            semesterCourses[semester].n_courses + 1
+          semesterCourses[semester].credits =
+            semesterCourses[semester].credits + courseCredits
+        }
+      }
+
       return semesterCourses
     }
   },
-
   methods: {
-    // saveInvoice() {
-    //   console.log(JSON.stringify(this.courses))
-    // },
-
-    moduleCredits: function (moduleGroup) {
+    moduleCredits: function (i) {
       var tot = 0
-      for (const course of this.courses) {
-        if (course.module_group === moduleGroup) {
-          for (const module of course.modules) {
-            const number = parseInt(module.credits)
-
-            if (!isNaN(number)) {
-              tot += number
-            }
+      if (i === 0) {
+        for (const module of this.ftp_asi_modules) {
+          const number = parseInt(module.ects)
+          if (!isNaN(number)) {
+            tot += number
+          }
+        }
+      } else if (i === 1) {
+        for (const module of this.tsm_asi_modules) {
+          const number = parseInt(module.ects)
+          if (!isNaN(number)) {
+            tot += number
+          }
+        }
+      } else if (i === 2) {
+        for (const module of this.cm_asi_modules) {
+          const number = parseInt(module.ects)
+          if (!isNaN(number)) {
+            tot += number
           }
         }
       }
       return tot
     },
 
-    deleteRow(i, k) {
-      // console.log(this.courses[i].module_group)
-      // console.log('elemento da cancellare: ' + k)
-      // console.log(this.courses[i].modules[k])
-      this.courses[i].modules.splice(k, 1)
-    },
-    addNewRow(i) {
-      this.courses[i].modules.push({
-        code: 'code',
-        module_title: 'course',
-        site: 'LU',
-        credits: 3,
-        semester: '3'
-      })
+    // deleteRow(i, k) {
+    //   this.courses[i].modules.splice(k, 1)
+    // },
 
-      //console.log(this.courses[i].modules)
+    deleteRow(i, k) {
+      if (i === 0) this.ftp_asi_modules.splice(k, 1)
+      else if (i === 1) this.tsm_asi_modules.splice(k, 1)
+      else if (i === 2) this.cm_asi_modules.splice(k, 1)
+    },
+
+    // addNewRow(i) {
+    //   this.courses[i].modules.push({
+    //     code: 'code',
+    //     module_title: 'course',
+    //     site: 'LU',
+    //     credits: 3,
+    //     semester: '3'
+    //   })
+    // }
+
+    addNewRow(i) {
+      if (i === 0) {
+        this.ftp_asi_modules.push(this.ftp_modules[0])
+      } else if (i === 1) {
+        this.tsm_asi_modules.push(this.tsm_modules[0])
+      } else if (i === 2) {
+        this.cm_asi_modules.push(this.cm_modules[0])
+      }
     }
   }
 }
