@@ -23,16 +23,19 @@
                 <select
                   class="form-select form-select-sm"
                   aria-label=".form-select-sm example"
+                  @change="onChangeModule($event, 0, i)"
                 >
                   <option
                     v-for="course in ftp_modules"
                     :key="course.id_module"
                     :selected="course.code === module.code ? true : false"
+                    :value="course"
                   >
                     <b>Code:</b>
                     &nbsp;&nbsp; {{ course.code }}, Name:&nbsp;&nbsp;
                     {{ course.module_name }}, Site:&nbsp;&nbsp;
-                    {{ course.site }}, Credits:&nbsp;&nbsp; {{ course.ects }}
+                    {{ course.site_initials }}, Credits:&nbsp;&nbsp;
+                    {{ course.ects }}
                   </option>
                 </select>
               </td>
@@ -42,13 +45,48 @@
                 </label>
               </td>
               <td>
-                <input
-                  class="form-control"
-                  type="text"
-                  placeholder="Default input"
-                  aria-label="default input example"
-                  :value="module.semester"
-                />
+                <select
+                  class="form-select form-select-sm"
+                  aria-label=".form-select-sm example"
+                  @change="onChangeSemester($event, 0, i)"
+                >
+                  <option
+                    value="1"
+                    :selected="1 === module.semester ? true : false"
+                  >
+                    1
+                  </option>
+                  <option
+                    value="2"
+                    :selected="2 === module.semester ? true : false"
+                  >
+                    2
+                  </option>
+                  <option
+                    value="3"
+                    :selected="3 === module.semester ? true : false"
+                  >
+                    3
+                  </option>
+                  <option
+                    value="4"
+                    :selected="4 === module.semester ? true : false"
+                  >
+                    4
+                  </option>
+                  <option
+                    value="5"
+                    :selected="5 === module.semester ? true : false"
+                  >
+                    5
+                  </option>
+                  <option
+                    value="6"
+                    :selected="6 === module.semester ? true : false"
+                  >
+                    6
+                  </option>
+                </select>
               </td>
               <td>
                 <button
@@ -79,16 +117,18 @@
                 <select
                   class="form-select form-select-sm"
                   aria-label=".form-select-sm example"
+                  @change="onChangeModule($event, 1, i)"
                 >
                   <option
-                    v-for="course in ftp_modules"
+                    v-for="course in tsm_modules"
                     :key="course.id_module"
                     :selected="course.code === module.code ? true : false"
                   >
                     <b>Code:</b>
                     &nbsp;&nbsp; {{ course.code }}, Name:&nbsp;&nbsp;
                     {{ course.module_name }}, Site:&nbsp;&nbsp;
-                    {{ course.site }}, Credits:&nbsp;&nbsp; {{ course.ects }}
+                    {{ course.site_initials }}, Credits:&nbsp;&nbsp;
+                    {{ course.ects }}
                   </option>
                 </select>
               </td>
@@ -98,13 +138,48 @@
                 </label>
               </td>
               <td>
-                <input
-                  class="form-control"
-                  type="text"
-                  placeholder="Default input"
-                  aria-label="default input example"
-                  :value="module.semester"
-                />
+                <select
+                  class="form-select form-select-sm"
+                  aria-label=".form-select-sm example"
+                  @change="onChangeSemester($event, 1, i)"
+                >
+                  <option
+                    value="1"
+                    :selected="1 === module.semester ? true : false"
+                  >
+                    1
+                  </option>
+                  <option
+                    value="2"
+                    :selected="2 === module.semester ? true : false"
+                  >
+                    2
+                  </option>
+                  <option
+                    value="3"
+                    :selected="3 === module.semester ? true : false"
+                  >
+                    3
+                  </option>
+                  <option
+                    value="4"
+                    :selected="4 === module.semester ? true : false"
+                  >
+                    4
+                  </option>
+                  <option
+                    value="5"
+                    :selected="5 === module.semester ? true : false"
+                  >
+                    5
+                  </option>
+                  <option
+                    value="6"
+                    :selected="6 === module.semester ? true : false"
+                  >
+                    6
+                  </option>
+                </select>
               </td>
               <td>
                 <button
@@ -135,16 +210,18 @@
                 <select
                   class="form-select form-select-sm"
                   aria-label=".form-select-sm example"
+                  @change="onChangeModule($event, 2, i)"
                 >
                   <option
-                    v-for="course in ftp_modules"
+                    v-for="course in cm_modules"
                     :key="course.id_module"
                     :selected="course.code === module.code ? true : false"
                   >
                     <b>Code:</b>
                     &nbsp;&nbsp; {{ course.code }}, Name:&nbsp;&nbsp;
                     {{ course.module_name }}, Site:&nbsp;&nbsp;
-                    {{ course.site }}, Credits:&nbsp;&nbsp; {{ course.ects }}
+                    {{ course.site_initials }}, Credits:&nbsp;&nbsp;
+                    {{ course.ects }}
                   </option>
                 </select>
               </td>
@@ -154,13 +231,48 @@
                 </label>
               </td>
               <td>
-                <input
-                  class="form-control"
-                  type="text"
-                  placeholder="Default input"
-                  aria-label="default input example"
-                  :value="module.semester"
-                />
+                <select
+                  class="form-select form-select-sm"
+                  aria-label=".form-select-sm example"
+                  @change="onChangeSemester($event, 2, i)"
+                >
+                  <option
+                    value="1"
+                    :selected="1 === module.semester ? true : false"
+                  >
+                    1
+                  </option>
+                  <option
+                    value="2"
+                    :selected="2 === module.semester ? true : false"
+                  >
+                    2
+                  </option>
+                  <option
+                    value="3"
+                    :selected="3 === module.semester ? true : false"
+                  >
+                    3
+                  </option>
+                  <option
+                    value="4"
+                    :selected="4 === module.semester ? true : false"
+                  >
+                    4
+                  </option>
+                  <option
+                    value="5"
+                    :selected="5 === module.semester ? true : false"
+                  >
+                    5
+                  </option>
+                  <option
+                    value="6"
+                    :selected="6 === module.semester ? true : false"
+                  >
+                    6
+                  </option>
+                </select>
               </td>
               <td>
                 <button
@@ -245,9 +357,9 @@
           </thead>
           <tbody>
             <tr v-for="(semester, i) in semesterNumberCourses" :key="i">
-              <td v-if="semester.n_courses !== 0">{{ i }}</td>
-              <td v-if="semester.n_courses !== 0">{{ semester.n_courses }}</td>
-              <td v-if="semester.n_courses !== 0">{{ semester.credits }}</td>
+              <td>{{ semester.semester }}</td>
+              <td>{{ semester.n_courses }}</td>
+              <td>{{ semester.credits }}</td>
             </tr>
           </tbody>
         </table>
@@ -307,16 +419,17 @@ export default {
 
     semesterNumberCourses: function () {
       var semesterCourses = [
-        { n_courses: 0, credits: 0 },
-        { n_courses: 0, credits: 0 },
-        { n_courses: 0, credits: 0 },
-        { n_courses: 0, credits: 0 },
-        { n_courses: 0, credits: 0 },
-        { n_courses: 0, credits: 0 }
+        { semester: 1, n_courses: 0, credits: 0 },
+        { semester: 2, n_courses: 0, credits: 0 },
+        { semester: 3, n_courses: 0, credits: 0 },
+        { semester: 4, n_courses: 0, credits: 0 },
+        { semester: 5, n_courses: 0, credits: 0 },
+        { semester: 6, n_courses: 0, credits: 0 }
       ]
 
       for (const module of this.ftp_asi_modules) {
-        const semester = parseInt(module.semester)
+        const semester = parseInt(module.semester) - 1
+
         if (!isNaN(semester)) {
           const courseCredits = parseInt(module.ects)
 
@@ -328,7 +441,7 @@ export default {
       }
 
       for (const module of this.tsm_asi_modules) {
-        const semester = parseInt(module.semester)
+        const semester = parseInt(module.semester) - 1
         if (!isNaN(semester)) {
           const courseCredits = parseInt(module.ects)
 
@@ -340,7 +453,7 @@ export default {
       }
 
       for (const module of this.cm_asi_modules) {
-        const semester = parseInt(module.semester)
+        const semester = parseInt(module.semester) - 1
         if (!isNaN(semester)) {
           const courseCredits = parseInt(module.ects)
 
@@ -382,9 +495,85 @@ export default {
       return tot
     },
 
-    // deleteRow(i, k) {
-    //   this.courses[i].modules.splice(k, 1)
-    // },
+    onChangeSemester(event, i, k) {
+      const newSemester = parseInt(event.target.value)
+      console.log(event.target.value, i, k)
+      if (i === 0) {
+        this.ftp_asi_modules[k].semester = newSemester
+      } else if (i === 1) {
+        this.tsm_asi_modules[k].semester = newSemester
+      } else if (i === 2) {
+        this.cm_asi_modules[k].semester = newSemester
+      }
+    },
+
+    onChangeModule(event, i, k) {
+      console.log(i, k, event.target.value)
+      console.log(event.target.selectedIndex)
+
+      if (i === 0) {
+        ;(this.ftp_asi_modules[k].id_module =
+          this.ftp_modules[event.target.selectedIndex].id_module),
+          (this.ftp_asi_modules[k].code =
+            this.ftp_modules[event.target.selectedIndex].code),
+          (this.ftp_asi_modules[k].module_name =
+            this.ftp_modules[event.target.selectedIndex].module_name),
+          (this.ftp_asi_modules[k].ects =
+            this.ftp_modules[event.target.selectedIndex].ects),
+          (this.ftp_asi_modules[k].module_group_initials =
+            this.ftp_modules[event.target.selectedIndex].module_group_initials),
+          (this.ftp_asi_modules[k].responsible_name =
+            this.ftp_modules[event.target.selectedIndex].responsible_name),
+          (this.ftp_asi_modules[k].responsible_surname =
+            this.ftp_modules[event.target.selectedIndex].responsible_surname),
+          (this.ftp_asi_modules[k].site =
+            this.ftp_modules[event.target.selectedIndex].site),
+          (this.ftp_asi_modules[k].site_initials =
+            this.ftp_modules[event.target.selectedIndex].site_initials)
+      } else if (i === 1) {
+        ;(this.tsm_asi_modules[k].id_module =
+          this.tsm_modules[event.target.selectedIndex].id_module),
+          (this.tsm_asi_modules[k].code =
+            this.tsm_modules[event.target.selectedIndex].code),
+          (this.tsm_asi_modules[k].module_name =
+            this.tsm_modules[event.target.selectedIndex].module_name),
+          (this.tsm_asi_modules[k].ects =
+            this.tsm_modules[event.target.selectedIndex].ects),
+          (this.tsm_asi_modules[k].module_group_initials =
+            this.tsm_modules[event.target.selectedIndex].module_group_initials),
+          (this.tsm_asi_modules[k].responsible_name =
+            this.tsm_modules[event.target.selectedIndex].responsible_name),
+          (this.tsm_asi_modules[k].responsible_surname =
+            this.tsm_modules[event.target.selectedIndex].responsible_surname),
+          (this.tsm_asi_modules[k].site =
+            this.tsm_modules[event.target.selectedIndex].site),
+          (this.tsm_asi_modules[k].site_initials =
+            this.tsm_modules[event.target.selectedIndex].site_initials)
+      } else if (i === 2) {
+        ;(this.cm_asi_modules[k].id_module =
+          this.cm_modules[event.target.selectedIndex].id_module),
+          (this.cm_asi_modules[k].code =
+            this.cm_modules[event.target.selectedIndex].code),
+          (this.cm_asi_modules[k].module_name =
+            this.cm_modules[event.target.selectedIndex].module_name),
+          (this.cm_asi_modules[k].ects =
+            this.cm_modules[event.target.selectedIndex].ects),
+          (this.cm_asi_modules[k].module_group_initials =
+            this.cm_modules[event.target.selectedIndex].module_group_initials),
+          (this.cm_asi_modules[k].responsible_name =
+            this.cm_modules[event.target.selectedIndex].responsible_name),
+          (this.cm_asi_modules[k].responsible_surname =
+            this.cm_modules[event.target.selectedIndex].responsible_surname),
+          (this.cm_asi_modules[k].site =
+            this.cm_modules[event.target.selectedIndex].site),
+          (this.cm_asi_modules[k].site_initials =
+            this.cm_modules[event.target.selectedIndex].site_initials)
+      }
+
+      console.log(this.ftp_asi_modules)
+      console.log(this.tsm_asi_modules)
+      console.log(this.cm_asi_modules)
+    },
 
     deleteRow(i, k) {
       if (i === 0) this.ftp_asi_modules.splice(k, 1)
@@ -392,24 +581,48 @@ export default {
       else if (i === 2) this.cm_asi_modules.splice(k, 1)
     },
 
-    // addNewRow(i) {
-    //   this.courses[i].modules.push({
-    //     code: 'code',
-    //     module_title: 'course',
-    //     site: 'LU',
-    //     credits: 3,
-    //     semester: '3'
-    //   })
-    // }
-
     addNewRow(i) {
       if (i === 0) {
-        this.ftp_asi_modules.push(this.ftp_modules[0])
+        this.ftp_asi_modules.push({
+          id_module: this.ftp_modules[0].id_module,
+          code: this.ftp_modules[0].code,
+          module_name: this.ftp_modules[0].module_name,
+          ects: this.ftp_modules[0].ects,
+          semester: 1,
+          module_group_initials: this.ftp_modules[0].module_group_initials,
+          responsible_name: this.ftp_modules[0].responsible_name,
+          responsible_surname: this.ftp_modules[0].responsible_surname,
+          site: this.ftp_modules[0].site,
+          site_initials: this.ftp_modules[0].site_initials
+        })
       } else if (i === 1) {
-        this.tsm_asi_modules.push(this.tsm_modules[0])
+        this.tsm_asi_modules.push({
+          id_module: this.tsm_modules[0].id_module,
+          code: this.tsm_modules[0].code,
+          module_name: this.tsm_modules[0].module_name,
+          ects: this.tsm_modules[0].ects,
+          semester: 1,
+          module_group_initials: this.tsm_modules[0].module_group_initials,
+          responsible_name: this.tsm_modules[0].responsible_name,
+          responsible_surname: this.tsm_modules[0].responsible_surname,
+          site: this.tsm_modules[0].site,
+          site_initials: this.tsm_modules[0].site_initials
+        })
       } else if (i === 2) {
-        this.cm_asi_modules.push(this.cm_modules[0])
+        this.cm_asi_modules.push({
+          id_module: this.cm_modules[0].id_module,
+          code: this.cm_modules[0].code,
+          module_name: this.cm_modules[0].module_name,
+          ects: this.cm_modules[0].ects,
+          semester: 1,
+          module_group_initials: this.cm_modules[0].module_group_initials,
+          responsible_name: this.cm_modules[0].responsible_name,
+          responsible_surname: this.cm_modules[0].responsible_surname,
+          site: this.cm_modules[0].site,
+          site_initials: this.cm_modules[0].site_initials
+        })
       }
+      console.log(this.ftp_asi_modules)
     }
   }
 }
