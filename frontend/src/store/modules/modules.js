@@ -4,14 +4,16 @@ const state = {
   modules: [],
   ftpModules: [],
   tsmModules: [],
-  cmModules: []
+  cmModules: [],
+  supplementaryModules: []
 }
 
 const getters = {
   allModules: (state) => state.modules,
   allFtpModules: (state) => state.ftpModules,
   allTsmModules: (state) => state.tsmModules,
-  allCmModules: (state) => state.cmModules
+  allCmModules: (state) => state.cmModules,
+  allSupplementaryModules: (state) => state.supplementaryModules
 }
 
 const actions = {
@@ -34,6 +36,13 @@ const actions = {
     const response = await axios.get('http://localhost:8732/api/cm')
 
     commit('setCmModules', response.data)
+  },
+  async fetchSupplementaryModules({ commit }) {
+    const response = await axios.get(
+      'http://localhost:8732/api/supplementaryModules'
+    )
+
+    commit('setSupplementaryModules', response.data)
   }
 
   //   async addTodo({ commit }, title) {
@@ -75,7 +84,9 @@ const mutations = {
   setModules: (state, modules) => (state.modules = modules),
   setFtpModules: (state, ftpModules) => (state.ftpModules = ftpModules),
   setTsmModules: (state, tsmModules) => (state.tsmModules = tsmModules),
-  setCmModules: (state, cmModules) => (state.cmModules = cmModules)
+  setCmModules: (state, cmModules) => (state.cmModules = cmModules),
+  setSupplementaryModules: (state, supplementaryModules) =>
+    (state.supplementaryModules = supplementaryModules)
 
   //   newTodo: (state, todo) => state.todos.unshift(todo),
   //   removeTodo: (state, id) =>
