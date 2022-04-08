@@ -4,14 +4,16 @@ const state = {
   asi: [],
   ftpAsiModules: [],
   tsmAsiModules: [],
-  cmAsiModules: []
+  cmAsiModules: [],
+  asiSupplementaryModules: []
 }
 
 const getters = {
   allAsiModules: (state) => state.asi,
   allFtpAsiModules: (state) => state.ftpAsiModules,
   allTsmAsiModules: (state) => state.tsmAsiModules,
-  allCmAsiModules: (state) => state.cmAsiModules
+  allCmAsiModules: (state) => state.cmAsiModules,
+  allSupplementaryModulesAsiModules: (state) => state.asiSupplementaryModules
 }
 
 const actions = {
@@ -34,6 +36,13 @@ const actions = {
     const response = await axios.get('http://localhost:8732/api/asi/cm/2')
 
     commit('setCmAsiModules', response.data)
+  },
+  async fetchAsiSupplementaryModules({ commit }) {
+    const response = await axios.get(
+      'http://localhost:8732/api/asi/supplementaryModules/2'
+    )
+
+    commit('setAsiSupplementaryModules', response.data)
   }
 }
 
@@ -43,7 +52,9 @@ const mutations = {
     (state.ftpAsiModules = ftpAsiModules),
   setTsmAsiModules: (state, tsmAsiModules) =>
     (state.tsmAsiModules = tsmAsiModules),
-  setCmAsiModules: (state, cmAsiModules) => (state.cmAsiModules = cmAsiModules)
+  setCmAsiModules: (state, cmAsiModules) => (state.cmAsiModules = cmAsiModules),
+  setAsiSupplementaryModules: (state, asiSupplementaryModules) =>
+    (state.asiSupplementaryModules = asiSupplementaryModules)
 }
 
 export default {

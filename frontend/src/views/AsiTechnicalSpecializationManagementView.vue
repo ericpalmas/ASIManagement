@@ -5,94 +5,28 @@
         <div class="card-body">
           <h1>Technical specialization with an MRU</h1>
 
+          <!-- <div
+            v-for="module in allSupplementaryModules"
+            :key="module.id_module"
+          >
+            <h5>{{ module.code }}</h5>
+            <h5>{{ module.module_name }}</h5>
+            <h5>{{ module.ects }}</h5>
+          </div> -->
+
+          <!-- <div
+            v-for="module in allSupplementaryModulesAsiModules"
+            :key="module.id_module"
+          >
+            <h5>{{ module.code }}</h5>
+            <h5>{{ module.module_name }}</h5>
+            <h5>{{ module.ects }}</h5>
+          </div> -->
+
           <ASITechnicalTable
-            :masterProps="[
-              {
-                code: 'MP30_0001',
-                module_title: 'Xxx (tutor: Xxx)',
-                credits: '30',
-                semester: '5'
-              }
-            ]"
-            :projectsProps="[
-              {
-                code: 'MP9_0001 ',
-                module_title:
-                  'Telemedicine platform for remote monitoring applications (tutor: Alessandro Puiatti)',
-                credits: '9',
-                semester: '2'
-              },
-              {
-                code: 'MP9_0001',
-                module_title:
-                  'Telemedicine platform for remote monitoring applications (tutor: Alessandro Puiatti)',
-                credits: '3',
-                semester: '3'
-              },
-              {
-                code: 'MP15_0001 ',
-                module_title: 'Gestionale master of science in engineering',
-                credits: '15',
-                semester: '3'
-              }
-            ]"
-            :supplementaryModulesProps="[
-              {
-                code: 'MC_MobSys ',
-                module_title: 'Mobile Systems and Applications',
-                credits: '3',
-                semester: '2'
-              }
-            ]"
-            :parametri="[
-              {
-                module_group: 'Projects',
-                modules: [
-                  {
-                    code: 'MP9_0001 ',
-                    module_title:
-                      'Telemedicine platform for remote monitoring applications (tutor: Alessandro Puiatti)',
-                    credits: '9',
-                    semester: '2'
-                  },
-                  {
-                    code: 'MP9_0001',
-                    module_title:
-                      'Telemedicine platform for remote monitoring applications (tutor: Alessandro Puiatti)',
-                    credits: '3',
-                    semester: '3'
-                  },
-                  {
-                    code: 'MP15_0001 ',
-                    module_title: 'Gestionale master of science in engineering',
-                    credits: '15',
-                    semester: '3'
-                  }
-                ]
-              },
-              {
-                module_group: 'Supplementary modules',
-                modules: [
-                  {
-                    code: 'MC_MobSys ',
-                    module_title: 'Mobile Systems and Applications',
-                    credits: '3',
-                    semester: '2'
-                  }
-                ]
-              },
-              {
-                module_group: 'Master thesis',
-                modules: [
-                  {
-                    code: 'MP30_0001',
-                    module_title: 'Xxx (tutor: Xxx)',
-                    credits: '30',
-                    semester: '5'
-                  }
-                ]
-              }
-            ]"
+            :projectsProps="asiProjects"
+            :supplementaryModulesProps="allSupplementaryModules"
+            :supplementaryAsiModulesProps="allSupplementaryModulesAsiModules"
           />
 
           <b-button title="Save file">
@@ -110,11 +44,27 @@
 <script>
 //import ASITable from '../components/ASITable.vue'
 import ASITechnicalTable from '../components/ASITechnicalTable.vue'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'AsiTechnicalSpecializationManagementView',
   components: {
     ASITechnicalTable
+  },
+  methods: {
+    ...mapActions(['fetchProjects']),
+    ...mapActions(['fetchSupplementaryModules']),
+    ...mapActions(['fetchAsiSupplementaryModules'])
+  },
+  computed: {
+    ...mapGetters(['asiProjects']),
+    ...mapGetters(['allSupplementaryModules']),
+    ...mapGetters(['allSupplementaryModulesAsiModules'])
+  },
+  created() {
+    this.fetchProjects()
+    this.fetchSupplementaryModules()
+    this.fetchAsiSupplementaryModules()
   }
 }
 </script>

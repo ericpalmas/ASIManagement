@@ -13,36 +13,30 @@
     <tbody>
       <tr>
         <td colspan="5" class="table-active">
-          <label for="exampleColorInput" class="form-label">
-            {{ courses[0].module_group }}
-          </label>
+          <label for="exampleColorInput" class="form-label">Projects</label>
         </td>
         <td class="table-active">
           <button
             type="button"
             class="btn btn-outline-primary"
-            @click="addNewRow(0, course)"
+            @click="addNewRow(0)"
           >
             <i class="fas fa-plus-circle"></i>
           </button>
         </td>
       </tr>
-      <tr
-        v-for="(course, i) in courses[0].modules"
-        :key="i"
-        style="width: 100%"
-      >
+      <tr v-for="(project, i) in projects" :key="i" style="width: 100%">
         <td scope="row flex" class="block">
-          {{ course.code }}
+          {{ project.code }}
         </td>
         <td class="block">
-          {{ course.module_title }}
+          {{ project.module_name }}
         </td>
         <td class="block">
-          {{ course.credits }}
+          {{ project.ects }}
         </td>
         <td class="block">
-          {{ course.semester }}
+          {{ project.semester }}
         </td>
         <td>
           <button type="button" class="btn btn-outline-secondary">
@@ -65,22 +59,22 @@
       <tr>
         <td colspan="5" class="table-active">
           <label for="exampleColorInput" class="form-label">
-            {{ courses[1].module_group }}
+            Supplementary modules
           </label>
         </td>
         <td class="table-active">
           <button
             type="button"
             class="btn btn-outline-primary"
-            @click="addNewRow(1, course)"
+            @click="addNewRow(1)"
           >
             <i class="fas fa-plus-circle"></i>
           </button>
         </td>
       </tr>
       <tr
-        v-for="(course, i) in courses[1].modules"
-        :key="i"
+        v-for="(module, i) in supplementaryAsiModules"
+        :key="module.id_module"
         style="width: 100%"
       >
         <td colspan="5">
@@ -88,33 +82,20 @@
             class="form-select form-select-sm"
             aria-label=".form-select-sm example"
           >
-            <!-- qua devo ciclare le option e selezionare quella scelta, in base ad item.code -->
             <option
-              value="FTP_AdvAlgDS"
-              selected="item.code === FTP_AdvAlgDS ? true : false"
+              v-for="course in supplementaryModules"
+              :key="course.id_module"
+              :selected="course.id_module === module.id_module ? true : false"
             >
-              FTP_AdvAlgDS
-            </option>
-            <option
-              value="FTP_AppStat"
-              selected="item.code === FTP_AppStat ? true : false"
-            >
-              FTP_AppStat
-            </option>
-            <option
-              value="FTP_ApprAlg"
-              selected="item.code === FTP_ApprAlg ? true : false"
-            >
-              FTP_ApprAlg
-            </option>
-            <option value="FTP_BioEng" selected="true">
               <b>Code:</b>
-              &nbsp;&nbsp; MC_MobSys, Name:&nbsp;&nbsp; Mobile Systems and
-              Applications, Site:&nbsp;&nbsp; LU, Credits:&nbsp;&nbsp; 3,
-              Semester:&nbsp;&nbsp; 3
+              &nbsp;&nbsp; {{ course.code }}, Name:&nbsp;&nbsp;
+              {{ course.module_name }}, Site:&nbsp;&nbsp;
+              {{ course.site_initials }}, Credits:&nbsp;&nbsp;
+              {{ course.ects }}
             </option>
           </select>
         </td>
+
         <td>
           <button
             type="button"
@@ -130,21 +111,19 @@
     <tbody>
       <tr>
         <td colspan="5" class="table-active">
-          <label for="exampleColorInput" class="form-label">
-            {{ courses[2].module_group }}
-          </label>
+          <label for="exampleColorInput" class="form-label">Master</label>
         </td>
         <td class="table-active">
           <button
             type="button"
             class="btn btn-outline-primary"
-            @click="addNewRow(2, course)"
+            @click="addNewRow(2)"
           >
             <i class="fas fa-plus-circle"></i>
           </button>
         </td>
       </tr>
-      <tr
+      <!-- <tr
         v-for="(course, i) in courses[2].modules"
         :key="i"
         style="width: 100%"
@@ -175,7 +154,7 @@
             <i class="fas fa-trash"></i>
           </button>
         </td>
-      </tr>
+      </tr> -->
     </tbody>
   </table>
 </template>
@@ -186,26 +165,29 @@
 export default {
   name: 'ASITechnicalTable',
   props: {
-    parametri: Array,
+    //parametri: Array,
+    //masterProps: Array,
     projectsProps: Array,
-    masterProps: Array,
-    supplementaryModulesProps: Array
+    supplementaryModulesProps: Array,
+    supplementaryAsiModulesProps: Array
   },
   data() {
     return {
-      invoice_subtotal: 0,
-      invoice_total: 0,
-      invoice_tax: 5,
-      courses: this.parametri,
+      // invoice_subtotal: 0,
+      // invoice_total: 0,
+      // invoice_tax: 5,
+      //courses: this.parametri,
       projects: this.projectsProps,
       master: this.masterProps,
-      supplementaryModules: this.supplementaryModulesProps
+      supplementaryModules: this.supplementaryModulesProps,
+      supplementaryAsiModules: this.supplementaryAsiModulesProps
     }
   },
   methods: {
     saveInvoice() {
       console.log(JSON.stringify(this.courses))
     },
+
     calculateTotal() {
       var subtotal, total
       subtotal = this.courses.reduce(function (sum, product) {

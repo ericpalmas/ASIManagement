@@ -5,12 +5,12 @@ const state = {
 }
 
 const getters = {
-  allProjects: (state) => state.projects
+  asiProjects: (state) => state.projects
 }
 
 const actions = {
   async fetchProjects({ commit }) {
-    const response = await axios.get('http://localhost:8732/api/project')
+    const response = await axios.get('http://localhost:8732/api/asi/projects/2')
 
     commit('setProjects', response.data)
   }
