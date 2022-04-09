@@ -123,6 +123,35 @@
           </button>
         </td>
       </tr>
+      <tr v-for="(project, i) in asiMasterProject" :key="i" style="width: 100%">
+        <td scope="row flex" class="block">
+          {{ project.code }}
+        </td>
+        <td class="block">
+          {{ project.module_name }}
+        </td>
+        <td class="block">
+          {{ project.ects }}
+        </td>
+        <td class="block">
+          {{ project.semester }}
+        </td>
+        <td>
+          <button type="button" class="btn btn-outline-secondary">
+            <i class="fas fa-edit"></i>
+          </button>
+        </td>
+        <td>
+          <button
+            type="button"
+            class="btn btn-outline-danger"
+            @click="deleteRow(2, i)"
+          >
+            <i class="fas fa-trash"></i>
+          </button>
+        </td>
+      </tr>
+
       <!-- <tr
         v-for="(course, i) in courses[2].modules"
         :key="i"
@@ -165,75 +194,64 @@
 export default {
   name: 'ASITechnicalTable',
   props: {
-    //parametri: Array,
-    //masterProps: Array,
     projectsProps: Array,
     supplementaryModulesProps: Array,
-    supplementaryAsiModulesProps: Array
+    supplementaryAsiModulesProps: Array,
+    asiMasterProjectProps: Array
   },
   data() {
     return {
-      // invoice_subtotal: 0,
-      // invoice_total: 0,
-      // invoice_tax: 5,
-      //courses: this.parametri,
       projects: this.projectsProps,
       master: this.masterProps,
       supplementaryModules: this.supplementaryModulesProps,
-      supplementaryAsiModules: this.supplementaryAsiModulesProps
+      supplementaryAsiModules: this.supplementaryAsiModulesProps,
+      asiMasterProject: this.asiMasterProjectProps
     }
   },
   methods: {
-    saveInvoice() {
-      console.log(JSON.stringify(this.courses))
-    },
-
-    calculateTotal() {
-      var subtotal, total
-      subtotal = this.courses.reduce(function (sum, product) {
-        var lineTotal = parseFloat(product.semester)
-        if (!isNaN(lineTotal)) {
-          return sum + lineTotal
-        }
-      }, 0)
-
-      this.invoice_subtotal = subtotal.toFixed(2)
-
-      total = subtotal * (this.invoice_tax / 100) + subtotal
-      total = parseFloat(total)
-      if (!isNaN(total)) {
-        this.invoice_total = total.toFixed(2)
-      } else {
-        this.invoice_total = '0.00'
-      }
-    },
-    calculateLineTotal(course) {
-      var total = parseFloat(course.site) * parseFloat(course.ects)
-      if (!isNaN(total)) {
-        course.semester = total.toFixed(2)
-      }
-      this.calculateTotal()
-    },
-
     // mettere controllo prima di cancellare una riga
     deleteRow(i, k) {
-      console.log(this.courses[i].module_group)
-      console.log('elemento da cancellare: ' + k)
-      console.log(this.courses[i].modules[k])
-      this.courses[i].modules.splice(k, 1)
+      if (i === 0) {
+        this.projects.splice(k, 1)
+      } else if (i === 1) {
+        this.supplementaryAsiModules.splice(k, 1)
+      } else if (i === 2) {
+        this.asiMasterProject.splice(k, 1)
+      }
     },
 
-    addNewRow(i, course) {
-      console.log(course)
-      console.log(i)
-
-      this.courses[i].modules.push({
-        code: ' ',
-        module_title: '',
-        credits: '',
-        semester: ''
-      })
-      console.log(this.courses)
+    addNewRow(i) {
+      if (i === 0) {
+        this.projects.push({
+          id_module: '',
+          code: ' ',
+          module_name: '',
+          ects: '',
+          semester: 1
+        })
+      } else if (i === 1) {
+        this.supplementaryAsiModules.push({
+          id_module: this.supplementaryModules[0].id_module,
+          code: this.supplementaryModules[0].code,
+          module_name: this.supplementaryModules[0].module_name,
+          ects: this.supplementaryModules[0].ects,
+          semester: 1,
+          module_group_initials:
+            this.supplementaryModules[0].module_group_initials,
+          responsible_name: this.supplementaryModules[0].responsible_name,
+          responsible_surname: this.supplementaryModules[0].responsible_surname,
+          site: this.supplementaryModules[0].site,
+          site_initials: this.supplementaryModules[0].site_initials
+        })
+      } else if (i === 2) {
+        this.asiMasterProject.push({
+          id_module: '',
+          code: ' ',
+          module_name: '',
+          ects: '',
+          semester: 1
+        })
+      }
     }
   }
 }

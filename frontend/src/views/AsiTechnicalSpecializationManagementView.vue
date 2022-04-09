@@ -27,6 +27,7 @@
             :projectsProps="asiProjects"
             :supplementaryModulesProps="allSupplementaryModules"
             :supplementaryAsiModulesProps="allSupplementaryModulesAsiModules"
+            :asiMasterProjectProps="asiMasterProject"
           />
 
           <b-button title="Save file">
@@ -54,17 +55,20 @@ export default {
   methods: {
     ...mapActions(['fetchProjects']),
     ...mapActions(['fetchSupplementaryModules']),
-    ...mapActions(['fetchAsiSupplementaryModules'])
+    ...mapActions(['fetchAsiSupplementaryModules']),
+    ...mapActions(['fetchAsiMasterProject'])
   },
   computed: {
     ...mapGetters(['asiProjects']),
     ...mapGetters(['allSupplementaryModules']),
-    ...mapGetters(['allSupplementaryModulesAsiModules'])
+    ...mapGetters(['allSupplementaryModulesAsiModules']),
+    ...mapGetters(['asiMasterProject'])
   },
   created() {
     this.fetchProjects()
     this.fetchSupplementaryModules()
     this.fetchAsiSupplementaryModules()
+    this.fetchAsiMasterProject()
   }
 }
 </script>

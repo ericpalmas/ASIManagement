@@ -5,7 +5,8 @@ const state = {
   ftpAsiModules: [],
   tsmAsiModules: [],
   cmAsiModules: [],
-  asiSupplementaryModules: []
+  asiSupplementaryModules: [],
+  asiMasterProject: []
 }
 
 const getters = {
@@ -13,7 +14,8 @@ const getters = {
   allFtpAsiModules: (state) => state.ftpAsiModules,
   allTsmAsiModules: (state) => state.tsmAsiModules,
   allCmAsiModules: (state) => state.cmAsiModules,
-  allSupplementaryModulesAsiModules: (state) => state.asiSupplementaryModules
+  allSupplementaryModulesAsiModules: (state) => state.asiSupplementaryModules,
+  asiMasterProject: (state) => state.asiMasterProject
 }
 
 const actions = {
@@ -41,8 +43,13 @@ const actions = {
     const response = await axios.get(
       'http://localhost:8732/api/asi/supplementaryModules/2'
     )
-
     commit('setAsiSupplementaryModules', response.data)
+  },
+  async fetchAsiMasterProject({ commit }) {
+    const response = await axios.get(
+      'http://localhost:8732/api/asi/masterProject/2'
+    )
+    commit('setAsiMasterProject', response.data)
   }
 }
 
@@ -54,7 +61,9 @@ const mutations = {
     (state.tsmAsiModules = tsmAsiModules),
   setCmAsiModules: (state, cmAsiModules) => (state.cmAsiModules = cmAsiModules),
   setAsiSupplementaryModules: (state, asiSupplementaryModules) =>
-    (state.asiSupplementaryModules = asiSupplementaryModules)
+    (state.asiSupplementaryModules = asiSupplementaryModules),
+  setAsiMasterProject: (state, asiMasterProject) =>
+    (state.asiMasterProject = asiMasterProject)
 }
 
 export default {
