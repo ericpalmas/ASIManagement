@@ -2,7 +2,7 @@
   <div class="AdministrativeDataView">
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
-        <h1>AdministrativeDataView</h1>
+        <h1 class="title">AdministrativeDataView</h1>
 
         <div class="card-body" v-for="user in userData" :key="user.student_id">
           <div class="row justify-content-start">
@@ -92,5 +92,9 @@ export default {
 
 .AdministrativeDataView {
   text-align: center;
+}
+
+.title {
+  padding: 2%;
 }
 </style>

@@ -3,7 +3,7 @@
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
-          <h1>CourseListView</h1>
+          <h1 class="title">CourseListView</h1>
           <div class="table-responsive">
             <table class="table align-middle">
               <thead>
@@ -126,5 +126,8 @@ export default {
 
 .course-list {
   text-align: center;
+}
+.title {
+  padding: 2%;
 }
 </style>

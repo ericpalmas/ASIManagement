@@ -151,41 +151,9 @@
           </button>
         </td>
       </tr>
-
-      <!-- <tr
-        v-for="(course, i) in courses[2].modules"
-        :key="i"
-        style="width: 100%"
-      >
-        <td scope="row flex" class="block">
-          {{ course.code }}
-        </td>
-        <td class="block">
-          {{ course.module_title }}
-        </td>
-        <td class="block">
-          {{ course.credits }}
-        </td>
-        <td class="block">
-          {{ course.semester }}
-        </td>
-        <td>
-          <button type="button" class="btn btn-outline-secondary">
-            <i class="fas fa-edit"></i>
-          </button>
-        </td>
-        <td>
-          <button
-            type="button"
-            class="btn btn-outline-danger"
-            @click="deleteRow(2, i)"
-          >
-            <i class="fas fa-trash"></i>
-          </button>
-        </td>
-      </tr> -->
     </tbody>
   </table>
+  <button type="button" class="btn btn-primary">Salva</button>
 </template>
 
 

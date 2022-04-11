@@ -82,4 +82,7 @@ export default {
 .asiManagement {
   text-align: center;
 }
+.title {
+  padding: 2%;
+}
 </style>

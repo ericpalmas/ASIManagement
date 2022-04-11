@@ -50,6 +50,18 @@ const actions = {
       'http://localhost:8732/api/asi/masterProject/2'
     )
     commit('setAsiMasterProject', response.data)
+  },
+
+  async updateAsi({ commit }, ftpModules, cmModules, tsmModules) {
+    console.log(ftpModules)
+    console.log(cmModules)
+    console.log(tsmModules)
+    //delete old modules
+    // const response = await axios.delete(
+    //   'http://localhost:8732/api/asi'
+    // )
+
+    //commit('newAsi', response.data)
   }
 }
 
@@ -64,6 +76,7 @@ const mutations = {
     (state.asiSupplementaryModules = asiSupplementaryModules),
   setAsiMasterProject: (state, asiMasterProject) =>
     (state.asiMasterProject = asiMasterProject)
+  //newTodo: (state, asi) => state.asi.unshift(asi),
 }
 
 export default {

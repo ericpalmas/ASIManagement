@@ -13,6 +13,18 @@ const actions = {
     const response = await axios.get('http://localhost:8732/api/asiuser/5')
 
     commit('setUserData', response.data)
+  },
+  async login({ commit }, user) {
+    var AsiUser = {
+      AsiUserEmail: 'marco.',
+      AsiUserPassword: '123456'
+    }
+    const response = await axios.post(
+      'http://localhost:8732/api/asiuser/login',
+      { AsiUser, completed: false }
+    )
+
+    commit('login', response.data)
   }
 }
 

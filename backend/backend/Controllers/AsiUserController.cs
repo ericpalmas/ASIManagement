@@ -8,7 +8,7 @@ using System;
 
 namespace backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Produces("application/json")]
     [ApiController]
     public class AsiUserController : ControllerBase
     {
@@ -19,7 +19,7 @@ namespace backend.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet]
+        [HttpGet("api/asiuser")]
         public JsonResult Get()
         {
             string query = @" 
@@ -47,7 +47,7 @@ namespace backend.Controllers
         }
 
         //mettere un controllo nel caso lo studente non abbia un advisor nella query
-        [HttpGet("{id}")]
+        [HttpGet("api/asiuser/{id}")]
         public JsonResult GetAdministrativeData(int id)
         {
             string query = @" 
@@ -78,5 +78,73 @@ left outer join dbo.asi_user on student.id_advisor = asi_user.id_asi_user
 
             return new JsonResult(table);
         }
+
+        
+        [HttpPost("api/asiuser/login")]
+        public JsonResult Post(AsiUser user)
+        {
+              Console.WriteLine(user);
+
+            string query = @" 
+                              select * from dbo.asi_user 
+                              inner join asi on asi.asi_user = asi_user.id_asi_user
+                              where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AND asi.created_at = ( select max(created_at) from asi where asi.asi_user = asi_user.id_asi_user)               
+                              ";
+               DataTable table = new DataTable();
+               string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+               SqlDataReader myReader;
+               using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+               {           
+                   myCon.Open();
+                   using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                   {
+                       myCommand.Parameters.AddWithValue("@AsiUserEmail", user.AsiUserEmail);
+                       myCommand.Parameters.AddWithValue("@AsiUserPassword", user.AsiUserPassword);
+
+                       myReader = myCommand.ExecuteReader();
+                       table.Load(myReader);
+                       myReader.Close();
+                       myCon.Close();
+                   }
+               }
+
+               return new JsonResult(table);
+           }
+
+
+
+        [HttpGet("api/asiuser/type/{id}")]
+        public JsonResult GetUserType(int id)
+        {
+            string query = @" 
+                            select * from dbo.user_user_type 
+                            inner join asi_user on asi_user.id_asi_user = user_user_type.asi_user
+                            inner join user_type on user_type.id_user_type = user_user_type.user_type
+                            where user_user_type.asi_user = @UserId
+                           ";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@UserId", id);
+
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+
+
     }
 }

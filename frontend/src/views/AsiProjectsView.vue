@@ -3,12 +3,12 @@
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
-          <h1>AsiProjectView</h1>
+          <h1 class="title">AsiProjectView</h1>
 
           <div class="row row-cols-1 row-cols-md-2 g-4">
-            <div class="col">
+            <div class="col" v-for="(project, i) in asiProjects" :key="i">
               <div class="card">
-                <h5 class="card-title pt-2">Project 1</h5>
+                <h5 class="card-title pt-2">Project {{ i + 1 }}</h5>
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                   <!-- general informations -->
                   <li class="nav-item" role="presentation">
@@ -119,8 +119,7 @@
                             >
                               <h6>General informations:</h6>
                               <li class="list-group-item border">
-                                Project title: Telemedicine platform for remote
-                                monitoring applications
+                                Project title: {{ project.module_name }}
                               </li>
                               <div class="row gy-5 pt-2">
                                 <div class="col-6">
@@ -146,7 +145,7 @@
                                     "
                                   >
                                     <li class="list-group-item border">
-                                      ECTS credits awarded: 9
+                                      ECTS credits awarded: {{ project.ects }}
                                     </li>
                                   </ul>
                                   <!-- </div> -->
@@ -358,10 +357,11 @@
                 </div>
               </div>
             </div>
-            <div class="col">
+
+            <div class="col" v-if="asiMasterProject.length === 0">
               <div class="card">
                 <div class="card-body">
-                  <h5 class="card-title">Project 2</h5>
+                  <h5 class="card-title">Master thesis</h5>
                   <p class="card-text">
                     This is a longer card with supporting text below as a
                     natural lead-in to additional content. This content is a
@@ -370,18 +370,13 @@
                 </div>
               </div>
             </div>
-            <div class="col">
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Project 3</h5>
-                  <p class="card-text">
-                    This is a longer card with supporting text below as a
-                    natural lead-in to additional content.
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col">
+
+            <div
+              v-else
+              class="col"
+              v-for="(project, i) in asiMasterProject"
+              :key="i"
+            >
               <div class="card">
                 <div class="card-body">
                   <h5 class="card-title">Master thesis</h5>
@@ -401,8 +396,22 @@
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
-  name: 'AsiProjectScreen'
+  name: 'AsiProjectScreen',
+  methods: {
+    ...mapActions(['fetchProjects']),
+    ...mapActions(['fetchAsiMasterProject'])
+  },
+  computed: {
+    ...mapGetters(['asiProjects']),
+    ...mapGetters(['asiMasterProject'])
+  },
+  created() {
+    this.fetchProjects()
+    this.fetchAsiMasterProject()
+  }
 }
 </script>
 
@@ -415,6 +424,10 @@ export default {
   padding-top: 2%;
   background-color: #eeeded;
   text-align: center;
+}
+
+.title {
+  padding: 2%;
 }
 
 .project {

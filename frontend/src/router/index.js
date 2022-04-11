@@ -6,6 +6,8 @@ import AsiInfoView from '../views/AsiInfoView.vue'
 import AsiManagementView from '../views/AsiManagementView.vue'
 import AsiProjectsView from '../views/AsiProjectsView.vue'
 import AsiTechnicalSpecializationManagementView from '../views/AsiTechnicalSpecializationManagementView.vue'
+import LoginView from '../views/LoginView'
+import SelectUserTypeView from '../views/SelectUserTypeView'
 
 const routes = [
   // {
@@ -53,6 +55,17 @@ const routes = [
     path: '/AsiProjects',
     name: 'adminData',
     component: AsiProjectsView
+  },
+
+  {
+    path: '/',
+    name: 'LoginView',
+    component: LoginView
+  },
+  {
+    path: '/selectType',
+    name: 'SelectUserType',
+    component: SelectUserTypeView
   }
 ]
 

@@ -3,7 +3,7 @@
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
-          <h1>Technical specialization with an MRU</h1>
+          <h1 class="title">Technical specialization with an MRU</h1>
 
           <!-- <div
             v-for="module in allSupplementaryModules"
@@ -86,5 +86,8 @@ export default {
 
 .asiManagement {
   text-align: center;
+}
+.title {
+  padding: 2%;
 }
 </style>

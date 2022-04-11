@@ -194,4 +194,7 @@ export default {
   background-color: #eeeded;
   text-align: center;
 }
+.title {
+  padding: 2%;
+}
 </style>

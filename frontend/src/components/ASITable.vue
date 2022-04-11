@@ -286,6 +286,7 @@
             </tr>
           </tbody>
         </table>
+        <button type="button" class="btn btn-primary">Salva</button>
       </div>
     </div>
   </div>
