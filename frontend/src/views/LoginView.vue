@@ -3,43 +3,119 @@
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
-          <h1 class="title">Login view</h1>
-          <div class="mb-3 row">
-            <label
-              for="exampleFormControlInput1"
-              class="col-sm-2 col-form-label"
-            >
-              NetId
-            </label>
-            <div class="col-sm-10">
+          <form ref="form">
+            <form-group id="usernameGroup1" label-for="usernameLabel1">
               <input
-                type="email"
-                class="form-control"
-                id="exampleFormControlInput1"
-                placeholder="name@example.com"
+                id="usernameInput"
+                type="text"
+                name="username"
+                v-model="username"
+                required
+                placeholder="Enter username..."
               />
-            </div>
-          </div>
-          <div class="mb-3 row">
-            <label for="inputPassword" class="col-sm-2 col-form-label">
-              Password
-            </label>
-            <div class="col-sm-10">
-              <input type="password" class="form-control" id="inputPassword" />
-            </div>
+            </form-group>
+            <form-group id="exampleInputGroup2" label-for="exampleInput2">
+              <input
+                id="exampleInput2"
+                type="password"
+                name="password"
+                v-model="password"
+                required
+                placeholder="Enter password..."
+              />
+            </form-group>
+          </form>
+          <div class="divider" />
+          <h2>{{ sessionData.length }}</h2>
+
+          <div class="modal-footer clearfix">
+            <router-link to="/AsiCourseList" @click="doLogin">
+              {{ sessionData.length }}
+            </router-link>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-
 <script>
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
-  name: 'LoginView'
+  name: 'LoginView',
+
+  data: () => ({
+    username: '',
+    password: ''
+    // userType: false,
+    // moduleGroup: false
+  }),
+  computed: {
+    ...mapGetters(['sessionData'])
+  },
+  // watch: {
+  //   sessionData(newValue) {
+  //     console.log(newValue)
+  //     this.router.push(`/AsiManagement`)
+  //   }
+  // },
+  watch: {
+    sessionData: function () {
+      if (this.sessionData.length !== 0) {
+        console.log(this.sessionData.length)
+      }
+    }
+  },
+  methods: {
+    ...mapActions(['login']),
+    // ...mapActions(['fetchUserType']),
+    // ...mapActions(['fetchAsiModuleGroups']),
+
+    reset() {
+      this.$refs.form.reset()
+    },
+    doLogin() {
+      const { username, password } = this
+      if (this.username != '' && this.password != '') {
+        this.login({ username, password })
+      } else {
+        alert('Please fill the text!')
+      }
+    }
+    // redirect() {
+    //   if (this.sessionData.length !== 0) {
+    //     this.router.push(`/AsiManagement`)
+    //   }
+    // }
+    // getUserType() {
+    //   const route = useRoute()
+
+    //   if (this.sessionData.length !== 0) {
+    //     this.fetchUserType(this.sessionData[0].id_asi_user)
+    //     this.userType = true
+    //   }
+    // },
+    // getModuleGroups() {
+    //   if (this.sessionData.length !== 0) {
+    //     const { username, password } = this
+    //     if (this.username != '' && this.password != '') {
+    //       this.fetchAsiModuleGroups({ username, password })
+    //       this.moduleGroup = true
+    //     } else {
+    //       alert('Please fill the text!')
+    //     }
+    //   }
+    // },
+    // eeee() {
+    //   const route = useRoute()
+
+    //   if (this.moduleGroup & this.userType) {
+    //     route.push({ path: '/AsiManagement' })
+    //   }
+    // }
+  }
 }
 </script>
-
 
 <style scoped>
 .cardsContainers {

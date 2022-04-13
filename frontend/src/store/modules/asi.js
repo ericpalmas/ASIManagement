@@ -6,7 +6,8 @@ const state = {
   tsmAsiModules: [],
   cmAsiModules: [],
   asiSupplementaryModules: [],
-  asiMasterProject: []
+  asiMasterProject: [],
+  asiModuleGroups: []
 }
 
 const getters = {
@@ -15,7 +16,8 @@ const getters = {
   allTsmAsiModules: (state) => state.tsmAsiModules,
   allCmAsiModules: (state) => state.cmAsiModules,
   allSupplementaryModulesAsiModules: (state) => state.asiSupplementaryModules,
-  asiMasterProject: (state) => state.asiMasterProject
+  asiMasterProject: (state) => state.asiMasterProject,
+  asiModuleGroups: (state) => state.asiModuleGroups
 }
 
 const actions = {
@@ -51,18 +53,65 @@ const actions = {
     )
     commit('setAsiMasterProject', response.data)
   },
-
-  async updateAsi({ commit }, ftpModules, cmModules, tsmModules) {
-    console.log(ftpModules)
-    console.log(cmModules)
-    console.log(tsmModules)
-    //delete old modules
-    // const response = await axios.delete(
-    //   'http://localhost:8732/api/asi'
-    // )
-
-    //commit('newAsi', response.data)
+  async fetchAsiModuleGroups({ commit }, email, password) {
+    var asiUser = {
+      AsiUserEmail: email,
+      AsiUserPassword: password
+    }
+    const response = await axios.post(
+      'http://localhost:8732/api/asi/moduleGroups',
+      asiUser
+    )
+    commit('setAsiModuleGroups', response.data)
   }
+  // async updateAsi({ commit }, ftpModules, cmModules, tsmModules) {
+  //   console.log(ftpModules)
+  //   console.log(cmModules)
+  //   console.log(tsmModules)
+
+  //   var asiUpdate = {
+  //     idAsi: 10,
+  //     ftpModules: [
+  //       {
+  //         id_module: 36,
+  //         code: 'FTP_AppStat',
+  //         module_name: 'Applied Statistics and Data Analysis',
+  //         module_group_initials: 'FTP',
+  //         ects: 3,
+  //         semester: 2,
+  //         responsible_name: 'Francesca',
+  //         responsible_surname: 'Faraci',
+  //         site: 'Lugano',
+  //         site_initials: 'LU'
+  //       },
+  //       {
+  //         id_module: 38,
+  //         code: 'FTP_BioEng',
+  //         module_name: 'Biology, physiology and anatomy for engineers',
+  //         module_group_initials: 'FTP',
+  //         ects: 3,
+  //         semester: 3,
+  //         responsible_name: 'Igor',
+  //         responsible_surname: 'Stefanini',
+  //         site: 'Lugano',
+  //         site_initials: 'LU'
+  //       },
+  //       {
+  //         id_module: 40,
+  //         code: 'FTP_MultiASys',
+  //         module_name: 'Multi-agent systems',
+  //         module_group_initials: 'FTP',
+  //         ects: 3,
+  //         semester: 4,
+  //         responsible_name: 'Alessandro',
+  //         responsible_surname: 'Facchini',
+  //         site: 'Lugano',
+  //         site_initials: 'LU'
+  //       }
+  //     ]
+  //   }
+
+  // }
 }
 
 const mutations = {
@@ -75,7 +124,10 @@ const mutations = {
   setAsiSupplementaryModules: (state, asiSupplementaryModules) =>
     (state.asiSupplementaryModules = asiSupplementaryModules),
   setAsiMasterProject: (state, asiMasterProject) =>
-    (state.asiMasterProject = asiMasterProject)
+    (state.asiMasterProject = asiMasterProject),
+  setAsiModuleGroups: (state, asiModuleGroups) =>
+    (state.asiModuleGroups = asiModuleGroups)
+
   //newTodo: (state, asi) => state.asi.unshift(asi),
 }
 

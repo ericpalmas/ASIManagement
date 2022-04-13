@@ -113,6 +113,8 @@ left outer join dbo.asi_user on student.id_advisor = asi_user.id_asi_user
 
 
 
+
+
         [HttpGet("api/asiuser/type/{id}")]
         public JsonResult GetUserType(int id)
         {

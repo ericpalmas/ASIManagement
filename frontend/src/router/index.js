@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-// import Home from '../views/Home.vue'
 import CourseListView from '../views/CourseListView.vue'
 import AdministrativeDataView from '../views/AdministrativeDataView.vue'
 import AsiInfoView from '../views/AsiInfoView.vue'
@@ -10,21 +9,6 @@ import LoginView from '../views/LoginView'
 import SelectUserTypeView from '../views/SelectUserTypeView'
 
 const routes = [
-  // {
-  //   path: '/',
-  //   name: 'Home',
-  //   component: Home
-  // },
-  // {
-  //   path: '/dashboard',
-  //   name: 'Dashboard',
-  //   component: () => import('../views/Dashboard.vue')
-  // },
-  // {
-  //   path: '/about',
-  //   name: 'About',
-  //   component: () => import('../views/About.vue')
-  // },
   {
     path: '/AsiCourseList',
     name: 'courseList',
