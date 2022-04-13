@@ -5,10 +5,14 @@
         <div class="card-body">
           <!-- <h1>ASI management</h1> -->
 
-          <!-- <div v-for="module in allFtpAsiModules" :key="module.id_module">
-            <h5>{{ module.code }}</h5>
-            <h5>{{ module.module_name }}</h5>
-            <h5>{{ module.ects }}</h5>
+          <!-- <div
+            v-for="module in asiModuleGroups"
+            :key="module.id_asi_module_group"
+          >
+            <h5>
+              {{ module.id_asi_module_group }},{{ module.asi }} ,
+              {{ module.module_group }}
+            </h5>
           </div> -->
 
           <ASITable
@@ -38,6 +42,12 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'AsiManagementView',
+  data: () => ({
+    userData: {
+      username: 'marco.rossi@student.supsi.ch',
+      password: '123456'
+    }
+  }),
   components: {
     ASITable
   },
@@ -47,7 +57,8 @@ export default {
     ...mapActions(['fetchCmModules']),
     ...mapActions(['fetchFtpAsiModules']),
     ...mapActions(['fetchTsmAsiModules']),
-    ...mapActions(['fetchCmAsiModules'])
+    ...mapActions(['fetchCmAsiModules']),
+    ...mapActions(['fetchAsiModuleGroups'])
   },
   computed: {
     ...mapGetters(['allFtpModules']),
@@ -55,7 +66,8 @@ export default {
     ...mapGetters(['allCmModules']),
     ...mapGetters(['allFtpAsiModules']),
     ...mapGetters(['allTsmAsiModules']),
-    ...mapGetters(['allCmAsiModules'])
+    ...mapGetters(['allCmAsiModules']),
+    ...mapGetters(['asiModuleGroups'])
   },
   created() {
     this.fetchFtpModules()
@@ -64,6 +76,7 @@ export default {
     this.fetchFtpAsiModules()
     this.fetchTsmAsiModules()
     this.fetchCmAsiModules()
+    this.fetchAsiModuleGroups(this.userData)
   }
 }
 </script>

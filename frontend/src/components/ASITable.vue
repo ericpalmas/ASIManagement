@@ -509,9 +509,6 @@ export default {
     },
 
     onChangeModule(event, i, k) {
-      console.log(i, k, event.target.value)
-      console.log(event.target.selectedIndex)
-
       if (i === 0) {
         ;(this.ftp_asi_modules[k].id_module =
           this.ftp_modules[event.target.selectedIndex].id_module),

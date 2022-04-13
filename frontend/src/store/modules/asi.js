@@ -53,15 +53,19 @@ const actions = {
     )
     commit('setAsiMasterProject', response.data)
   },
-  async fetchAsiModuleGroups({ commit }, email, password) {
-    var asiUser = {
-      AsiUserEmail: email,
-      AsiUserPassword: password
-    }
+  async fetchAsiModuleGroups({ commit }, { username, password }) {
+    console.log('ora va')
+    console.log(username)
+    console.log(password)
+
     const response = await axios.post(
       'http://localhost:8732/api/asi/moduleGroups',
-      asiUser
+      {
+        AsiUserEmail: username,
+        AsiUserPassword: password
+      }
     )
+
     commit('setAsiModuleGroups', response.data)
   }
   // async updateAsi({ commit }, ftpModules, cmModules, tsmModules) {

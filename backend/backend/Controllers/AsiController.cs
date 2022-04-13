@@ -56,6 +56,41 @@ where asi.asi_user = @UserId
 
 
 
+        /*  [HttpPost("api/asi/moduleGroups")]
+          public JsonResult GetModuleGroups(AsiUser user)
+          {
+              Console.WriteLine(user);
+
+              string query = @" 
+
+  select *from dbo.asi_module 
+  right outer join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
+  inner join asi on asi_module_group.asi = asi.id_asi
+  inner join asi_user on asi_user.id_asi_user = asi.asi_user
+  where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AND asi.created_at = ( select max(created_at) from asi where asi.asi_user = asi_user.id_asi_user)  
+                                ";
+              DataTable table = new DataTable();
+              string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+              SqlDataReader myReader;
+              using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+              {
+                  myCon.Open();
+                  using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                  {
+                      myCommand.Parameters.AddWithValue("@AsiUserEmail", user.AsiUserEmail);
+                      myCommand.Parameters.AddWithValue("@AsiUserPassword", user.AsiUserPassword);
+
+                      myReader = myCommand.ExecuteReader();
+                      table.Load(myReader);
+                      myReader.Close();
+                      myCon.Close();
+                  }
+              }
+
+              return new JsonResult(table);
+          }*/
+
+
         [HttpPost("api/asi/moduleGroups")]
         public JsonResult GetModuleGroups(AsiUser user)
         {
@@ -63,8 +98,7 @@ where asi.asi_user = @UserId
 
             string query = @" 
 
-select *from dbo.asi_module 
-right outer join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
+select asi_module_group.id_asi_module_group, asi_module_group.asi, asi_module_group.module_group, asi_user.name, asi_user.surname, asi_user.id_asi_user from dbo.asi_module_group
 inner join asi on asi_module_group.asi = asi.id_asi
 inner join asi_user on asi_user.id_asi_user = asi.asi_user
 where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AND asi.created_at = ( select max(created_at) from asi where asi.asi_user = asi_user.id_asi_user)  
@@ -80,6 +114,94 @@ where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AN
                     myCommand.Parameters.AddWithValue("@AsiUserEmail", user.AsiUserEmail);
                     myCommand.Parameters.AddWithValue("@AsiUserPassword", user.AsiUserPassword);
 
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+        [HttpPost("api/asi")]
+        public JsonResult addModules(Asi asi)
+        {
+            string asiModuleGroupPool = "";
+            string cmAsiModuleGroupId = "";
+            string ftpAsiModuleGroupId = "";
+            string tsmAsiModuleGroupId = "";
+
+            
+            // save asi module group id and create module group id pool
+
+            for(int i=0; i< asi.moduleGroups.Length; i++)
+            {
+                switch (asi.moduleGroups[i].module_group)
+                {
+                    case 1:
+                        ftpAsiModuleGroupId += asi.moduleGroups[i].id_asi_module_group;
+                        break;
+                    case 2:
+                        tsmAsiModuleGroupId += asi.moduleGroups[i].id_asi_module_group;
+                        break;
+                    case 3:
+                        cmAsiModuleGroupId += asi.moduleGroups[i].id_asi_module_group;
+                        break;
+                }
+
+                asiModuleGroupPool += + asi.moduleGroups[i].id_asi_module_group;
+                if(i!= asi.moduleGroups.Length -1)
+                {
+                    asiModuleGroupPool += ",";
+                }
+            }
+
+            // create pool of cm modules
+            string listOfCmModules = "";
+            for (int i = 0; i < asi.cmAsiModules.Length; i++)
+            {
+                listOfCmModules += "(" + cmAsiModuleGroupId + "," + asi.cmAsiModules[i].id_module + "," + asi.cmAsiModules[i].semester + "," + "1)"; 
+                if (i != asi.cmAsiModules.Length - 1)
+                {
+                    listOfCmModules += ",";
+                }
+            }
+
+            // create pool of tsm modules
+            string listOfTsmModules = "";
+            for (int i = 0; i < asi.tsmAsiModules.Length; i++)
+            {
+                listOfTsmModules += "(" + tsmAsiModuleGroupId + "," + asi.tsmAsiModules[i].id_module + "," + asi.tsmAsiModules[i].semester + "," + "1)";
+                if (i != asi.tsmAsiModules.Length - 1)
+                {
+                    listOfTsmModules += ",";
+                }
+            }
+
+            // create pool of ftp modules
+            string listOfftpModules = "";
+            for (int i = 0; i < asi.ftpAsiModules.Length; i++)
+            {
+                listOfftpModules += "(" + ftpAsiModuleGroupId + "," + asi.ftpAsiModules[i].id_module + "," + asi.ftpAsiModules[i].semester + "," + "1)";
+                if (i != asi.ftpAsiModules.Length - 1)
+                {
+                    listOfftpModules += ",";
+                }
+            }
+
+            string query = @"delete from dbo.asi_module where asi_module.asi_module_group in (" + asiModuleGroupPool + ");";
+            query += "insert into dbo.asi_module (asi_module_group, module, semester, asi_module_state ) values " + listOfftpModules +"," + listOfTsmModules + "," + listOfCmModules;
+
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
