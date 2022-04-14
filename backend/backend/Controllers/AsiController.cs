@@ -127,11 +127,10 @@ where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AN
         [HttpPost("api/asi")]
         public JsonResult addModules(Asi asi)
         {
-            string asiModuleGroupPool = "";
+
             string cmAsiModuleGroupId = "";
             string ftpAsiModuleGroupId = "";
             string tsmAsiModuleGroupId = "";
-
             
             // save asi module group id and create module group id pool
 
@@ -148,12 +147,6 @@ where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AN
                     case 3:
                         cmAsiModuleGroupId += asi.moduleGroups[i].id_asi_module_group;
                         break;
-                }
-
-                asiModuleGroupPool += + asi.moduleGroups[i].id_asi_module_group;
-                if(i!= asi.moduleGroups.Length -1)
-                {
-                    asiModuleGroupPool += ",";
                 }
             }
 
@@ -190,7 +183,7 @@ where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AN
                 }
             }
 
-            string query = @"delete from dbo.asi_module where asi_module.asi_module_group in (" + asiModuleGroupPool + ");";
+            string query = @"delete from dbo.asi_module where asi_module.asi_module_group in (" + cmAsiModuleGroupId + "," + ftpAsiModuleGroupId +"," + tsmAsiModuleGroupId + ");";
             query += "insert into dbo.asi_module (asi_module_group, module, semester, asi_module_state ) values " + listOfftpModules +"," + listOfTsmModules + "," + listOfCmModules;
 
 

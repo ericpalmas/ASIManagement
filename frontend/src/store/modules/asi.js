@@ -67,55 +67,17 @@ const actions = {
     )
 
     commit('setAsiModuleGroups', response.data)
+  },
+
+  async updateAsi({ commit }, { newModules }) {
+    await axios.post('http://localhost:8732/api/asi', {
+      moduleGroups: newModules.asiModuleGroups,
+      ftpAsiModules: newModules.allFtpAsiModules,
+      cmAsiModules: newModules.allCmAsiModules,
+      tsmAsiModules: newModules.allTsmAsiModules
+    })
+    commit('updateAsi', newModules)
   }
-  // async updateAsi({ commit }, ftpModules, cmModules, tsmModules) {
-  //   console.log(ftpModules)
-  //   console.log(cmModules)
-  //   console.log(tsmModules)
-
-  //   var asiUpdate = {
-  //     idAsi: 10,
-  //     ftpModules: [
-  //       {
-  //         id_module: 36,
-  //         code: 'FTP_AppStat',
-  //         module_name: 'Applied Statistics and Data Analysis',
-  //         module_group_initials: 'FTP',
-  //         ects: 3,
-  //         semester: 2,
-  //         responsible_name: 'Francesca',
-  //         responsible_surname: 'Faraci',
-  //         site: 'Lugano',
-  //         site_initials: 'LU'
-  //       },
-  //       {
-  //         id_module: 38,
-  //         code: 'FTP_BioEng',
-  //         module_name: 'Biology, physiology and anatomy for engineers',
-  //         module_group_initials: 'FTP',
-  //         ects: 3,
-  //         semester: 3,
-  //         responsible_name: 'Igor',
-  //         responsible_surname: 'Stefanini',
-  //         site: 'Lugano',
-  //         site_initials: 'LU'
-  //       },
-  //       {
-  //         id_module: 40,
-  //         code: 'FTP_MultiASys',
-  //         module_name: 'Multi-agent systems',
-  //         module_group_initials: 'FTP',
-  //         ects: 3,
-  //         semester: 4,
-  //         responsible_name: 'Alessandro',
-  //         responsible_surname: 'Facchini',
-  //         site: 'Lugano',
-  //         site_initials: 'LU'
-  //       }
-  //     ]
-  //   }
-
-  // }
 }
 
 const mutations = {
@@ -130,9 +92,13 @@ const mutations = {
   setAsiMasterProject: (state, asiMasterProject) =>
     (state.asiMasterProject = asiMasterProject),
   setAsiModuleGroups: (state, asiModuleGroups) =>
-    (state.asiModuleGroups = asiModuleGroups)
+    (state.asiModuleGroups = asiModuleGroups),
 
-  //newTodo: (state, asi) => state.asi.unshift(asi),
+  updateAsi: (state, newModules) => {
+    ;(state.ftpAsiModules = newModules.allFtpAsiModules),
+      (state.cmAsiModules = newModules.allCmAsiModules),
+      (state.tsmAsiModules = newModules.allTsmAsiModules)
+  }
 }
 
 export default {

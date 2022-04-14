@@ -48,17 +48,11 @@ export default {
     username: '',
     password: ''
     // userType: false,
-    // moduleGroup: false
   }),
   computed: {
     ...mapGetters(['sessionData'])
   },
-  // watch: {
-  //   sessionData(newValue) {
-  //     console.log(newValue)
-  //     this.router.push(`/AsiManagement`)
-  //   }
-  // },
+
   watch: {
     sessionData: function () {
       if (this.sessionData.length !== 0) {
@@ -69,7 +63,6 @@ export default {
   methods: {
     ...mapActions(['login']),
     // ...mapActions(['fetchUserType']),
-    // ...mapActions(['fetchAsiModuleGroups']),
 
     reset() {
       this.$refs.form.reset()
