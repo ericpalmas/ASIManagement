@@ -10,6 +10,9 @@
         public AsiModule[] cmAsiModules { get; set; }
         public AsiModule[] ftpAsiModules { get; set; }
         public AsiModule[] tsmAsiModules { get; set; }
+        public AsiModule[] projectAsiModules { get; set; }
+        public AsiModule[] supplementaryAsiModules { get; set; }
+        public AsiModule[] masterAsiModules { get; set; }
 
     }
 }

@@ -131,10 +131,10 @@ where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AN
             string cmAsiModuleGroupId = "";
             string ftpAsiModuleGroupId = "";
             string tsmAsiModuleGroupId = "";
-            
+
             // save asi module group id and create module group id pool
 
-            for(int i=0; i< asi.moduleGroups.Length; i++)
+            for (int i=0; i< asi.moduleGroups.Length; i++)
             {
                 switch (asi.moduleGroups[i].module_group)
                 {
@@ -154,7 +154,7 @@ where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AN
             string listOfCmModules = "";
             for (int i = 0; i < asi.cmAsiModules.Length; i++)
             {
-                listOfCmModules += "(" + cmAsiModuleGroupId + "," + asi.cmAsiModules[i].id_module + "," + asi.cmAsiModules[i].semester + "," + "1)"; 
+                listOfCmModules += "(" + cmAsiModuleGroupId + "," + asi.cmAsiModules[i].id_module + "," + asi.cmAsiModules[i].semester + "," + "1)";
                 if (i != asi.cmAsiModules.Length - 1)
                 {
                     listOfCmModules += ",";
@@ -172,6 +172,11 @@ where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AN
                 }
             }
 
+            if (asi.tsmAsiModules.Length != 0)
+            {
+                listOfTsmModules += ",";
+            }
+
             // create pool of ftp modules
             string listOfftpModules = "";
             for (int i = 0; i < asi.ftpAsiModules.Length; i++)
@@ -183,8 +188,14 @@ where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AN
                 }
             }
 
-            string query = @"delete from dbo.asi_module where asi_module.asi_module_group in (" + cmAsiModuleGroupId + "," + ftpAsiModuleGroupId +"," + tsmAsiModuleGroupId + ");";
-            query += "insert into dbo.asi_module (asi_module_group, module, semester, asi_module_state ) values " + listOfftpModules +"," + listOfTsmModules + "," + listOfCmModules;
+            if (asi.ftpAsiModules.Length != 0)
+            {
+                listOfftpModules += ",";
+            }
+
+            string query = @"delete from dbo.asi_module where asi_module.asi_module_group in (" + cmAsiModuleGroupId + "," + ftpAsiModuleGroupId + "," + tsmAsiModuleGroupId + ");";
+            if (asi.ftpAsiModules.Length != 0 | asi.tsmAsiModules.Length != 0 | asi.cmAsiModules.Length != 0)
+                query += "insert into dbo.asi_module (asi_module_group, module, semester, asi_module_state ) values " + listOfftpModules + listOfTsmModules + listOfCmModules;
 
 
             DataTable table = new DataTable();
@@ -204,6 +215,98 @@ where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AN
 
             return new JsonResult(table);
         }
+
+
+        [HttpPost("api/asiTechicalModules")]
+        public JsonResult addTechnicalModules(Asi asi)
+        {
+
+            // il problema è che i progetti e il master project essendo progetti non hanno un id_module e va inserito il modulo
+
+            string projectModuleGroupId = "";
+            string supplementaryModuleGroupId = "";
+            string masterModuleGroupId = "";
+
+            // save asi module group id and create module group id pool
+
+            for (int i = 0; i < asi.moduleGroups.Length; i++)
+            {
+                switch (asi.moduleGroups[i].module_group)
+                {
+
+                    case 4:
+                        projectModuleGroupId += asi.moduleGroups[i].id_asi_module_group;
+                        break;
+                    case 5:
+                        supplementaryModuleGroupId += asi.moduleGroups[i].id_asi_module_group;
+                        break;
+                    case 6:
+                        masterModuleGroupId += asi.moduleGroups[i].id_asi_module_group;
+                        break;
+                   
+                }
+            }
+
+            string query = @"";
+            query += "delete from dbo.asi_module where asi_module.asi_module_group in (" + projectModuleGroupId + "," + supplementaryModuleGroupId + "," + masterModuleGroupId + ");";
+
+
+            // progetti nuovi
+            for (int i = 0; i < asi.projectAsiModules.Length; i++)
+            {
+                if (asi.projectAsiModules[i].id_module == -1)
+                {
+                    query += "INSERT INTO dbo.module(code, name, ects, site, module_group  ) VALUES ('"+ asi.projectAsiModules[i].code + "','"+ asi.projectAsiModules[i].module_name + "',"+ asi.projectAsiModules[i].ects + ", 1, 4);";
+                    query += "INSERT INTO dbo.asi_module (asi_module_group, module, semester, asi_module_state ) values ("+ projectModuleGroupId + ", (SELECT @@IDENTITY AS ID), "+ asi.projectAsiModules[i].semester + ",1);";
+                } else
+                {
+                    query += "INSERT INTO dbo.asi_module (asi_module_group, module, semester, asi_module_state ) values (" + projectModuleGroupId + ", " + asi.projectAsiModules[i].id_module + "," + asi.projectAsiModules[i].semester + "," + "1);";
+                }
+            }
+
+            // create pool of supplementary modules
+            for (int i = 0; i < asi.supplementaryAsiModules.Length; i++)
+            {
+                query += "INSERT INTO dbo.asi_module (asi_module_group, module, semester, asi_module_state ) values (" + supplementaryModuleGroupId + "," + asi.supplementaryAsiModules[i].id_module + "," + asi.supplementaryAsiModules[i].semester + "," + "1);";
+            }
+
+
+            // create pool of master modules
+            for (int i = 0; i < asi.masterAsiModules.Length; i++)
+            {
+                if (asi.masterAsiModules[i].id_module == -1)
+                {
+                    query += "INSERT INTO dbo.module(code, name, ects, site, module_group  ) VALUES ('" + asi.masterAsiModules[i].code + "','" + asi.masterAsiModules[i].module_name + "'," + asi.masterAsiModules[i].ects + ", 1, 6);";
+                    query += "INSERT INTO dbo.asi_module (asi_module_group, module, semester, asi_module_state ) values (" + masterModuleGroupId + ", (SELECT @@IDENTITY AS ID), " + asi.masterAsiModules[i].semester + ",1);";
+                } else
+                {
+                    query += "INSERT INTO dbo.asi_module (asi_module_group, module, semester, asi_module_state ) values (" + masterModuleGroupId + "," + asi.masterAsiModules[i].id_module + "," + asi.masterAsiModules[i].semester + "," + "1);";
+
+                }
+            }
+
+
+
+            //string query2 = @"select * from dbo.asi_module";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(query);
+        }
+
 
 
         [HttpGet("api/asi/ftp/{id}")]
@@ -353,11 +456,11 @@ where asi.asi_user = @UserId AND module.module_group = 5
                              select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
 from dbo.module
 inner join asi_module on module.id_module = asi_module.module
-inner join asi_user on module.responsible = asi_user.id_asi_user
+left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join module_group on module.module_group = module_group.id_module_group
-inner join site on module.site = site.id_site
+left outer join site on module.site = site.id_site
 where asi.asi_user = @UserId AND module.module_group = 6
                            ";
             DataTable table = new DataTable();

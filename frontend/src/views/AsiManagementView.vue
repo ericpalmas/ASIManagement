@@ -571,10 +571,6 @@ export default {
           (this.allCmAsiModules[k].site_initials =
             this.allCmModules[event.target.selectedIndex].site_initials)
       }
-
-      // console.log(this.allFtpAsiModules)
-      // console.log(this.allTsmAsiModules)
-      // console.log(this.allCmAsiModules)
     },
 
     deleteRow(i, k) {

@@ -6,6 +6,7 @@ const state = {
   tsmAsiModules: [],
   cmAsiModules: [],
   asiSupplementaryModules: [],
+  projects: [],
   asiMasterProject: [],
   asiModuleGroups: []
 }
@@ -16,6 +17,7 @@ const getters = {
   allTsmAsiModules: (state) => state.tsmAsiModules,
   allCmAsiModules: (state) => state.cmAsiModules,
   allSupplementaryModulesAsiModules: (state) => state.asiSupplementaryModules,
+  asiProjects: (state) => state.projects,
   asiMasterProject: (state) => state.asiMasterProject,
   asiModuleGroups: (state) => state.asiModuleGroups
 }
@@ -47,6 +49,11 @@ const actions = {
     )
     commit('setAsiSupplementaryModules', response.data)
   },
+  async fetchProjects({ commit }) {
+    const response = await axios.get('http://localhost:8732/api/asi/projects/2')
+
+    commit('setProjects', response.data)
+  },
   async fetchAsiMasterProject({ commit }) {
     const response = await axios.get(
       'http://localhost:8732/api/asi/masterProject/2'
@@ -77,7 +84,28 @@ const actions = {
       tsmAsiModules: newModules.allTsmAsiModules
     })
     commit('updateAsi', newModules)
+  },
+
+  async updateTechnicalAsi({ commit }, { newModules }) {
+    console.log(newModules)
+    await axios.post('http://localhost:8732/api/asiTechicalModules', {
+      moduleGroups: newModules.asiModuleGroups,
+      projectAsiModules: newModules.asiProjects,
+      supplementaryAsiModules: newModules.allSupplementaryModulesAsiModules,
+      masterAsiModules: newModules.asiMasterProject
+    })
+    commit('updateTechnicalAsi', newModules)
   }
+
+  // async updateTechnicalModules({ commit }, { newModules }) {
+  //   await axios.post('http://localhost:8732/api/asi', {
+  //     moduleGroups: newModules.asiModuleGroups,
+  //     ftpAsiModules: newModules.allFtpAsiModules,
+  //     cmAsiModules: newModules.allCmAsiModules,
+  //     tsmAsiModules: newModules.allTsmAsiModules
+  //   })
+  //   commit('updateAsi', newModules)
+  // }
 }
 
 const mutations = {
@@ -89,6 +117,7 @@ const mutations = {
   setCmAsiModules: (state, cmAsiModules) => (state.cmAsiModules = cmAsiModules),
   setAsiSupplementaryModules: (state, asiSupplementaryModules) =>
     (state.asiSupplementaryModules = asiSupplementaryModules),
+  setProjects: (state, projects) => (state.projects = projects),
   setAsiMasterProject: (state, asiMasterProject) =>
     (state.asiMasterProject = asiMasterProject),
   setAsiModuleGroups: (state, asiModuleGroups) =>
@@ -98,6 +127,12 @@ const mutations = {
     ;(state.ftpAsiModules = newModules.allFtpAsiModules),
       (state.cmAsiModules = newModules.allCmAsiModules),
       (state.tsmAsiModules = newModules.allTsmAsiModules)
+  },
+  updateTechnicalAsi: (state, newModules) => {
+    ;(state.projects = newModules.asiProjects),
+      (state.asiSupplementaryModules =
+        newModules.allSupplementaryModulesAsiModules),
+      (state.asiMasterProject = newModules.asiMasterProject)
   }
 }
 
