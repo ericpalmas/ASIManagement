@@ -531,6 +531,23 @@ export default {
     ...mapGetters(['asiMasterProject']),
     ...mapGetters(['asiModuleGroups'])
   },
+  watch: {
+    asiProjects: function () {
+      if (this.asiProjects.length !== 0) {
+        console.log(this.asiProjects.length)
+      }
+    },
+    allSupplementaryModulesAsiModules: function () {
+      if (this.allSupplementaryModulesAsiModules.length !== 0) {
+        console.log(this.allSupplementaryModulesAsiModules.length)
+      }
+    },
+    asiMasterProject: function () {
+      if (this.asiMasterProject.length !== 0) {
+        console.log(this.asiMasterProject.length)
+      }
+    }
+  },
   created() {
     this.fetchProjects()
     this.fetchSupplementaryModules()

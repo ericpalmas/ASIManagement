@@ -58,13 +58,11 @@ const actions = {
     const response = await axios.get(
       'http://localhost:8732/api/asi/masterProject/2'
     )
+
     commit('setAsiMasterProject', response.data)
   },
-  async fetchAsiModuleGroups({ commit }, { username, password }) {
-    console.log('ora va')
-    console.log(username)
-    console.log(password)
 
+  async fetchAsiModuleGroups({ commit }, { username, password }) {
     const response = await axios.post(
       'http://localhost:8732/api/asi/moduleGroups',
       {
@@ -96,16 +94,6 @@ const actions = {
     })
     commit('updateTechnicalAsi', newModules)
   }
-
-  // async updateTechnicalModules({ commit }, { newModules }) {
-  //   await axios.post('http://localhost:8732/api/asi', {
-  //     moduleGroups: newModules.asiModuleGroups,
-  //     ftpAsiModules: newModules.allFtpAsiModules,
-  //     cmAsiModules: newModules.allCmAsiModules,
-  //     tsmAsiModules: newModules.allTsmAsiModules
-  //   })
-  //   commit('updateAsi', newModules)
-  // }
 }
 
 const mutations = {
