@@ -6,6 +6,13 @@ using backend.Models;
 using Microsoft.Extensions.Configuration;
 using System;
 
+using JwtApp.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+
 namespace backend.Controllers
 {
     [Produces("application/json")]
@@ -30,7 +37,7 @@ namespace backend.Controllers
                           //  where not module.module_group = 4 & 5
 
 
-       [Route("api/[controller]")]
+        [Route("api/[controller]")]
         [HttpGet]
         public JsonResult GetCourses()
         {

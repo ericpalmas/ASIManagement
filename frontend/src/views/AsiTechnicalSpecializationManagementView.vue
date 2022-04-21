@@ -20,7 +20,15 @@
                 <td colspan="2">Module title</td>
                 <td colspan="1">ECTS</td>
                 <td colspan="1">Semester</td>
-                <td colspan="1"></td>
+                <td colspan="1">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary"
+                    @click="saveAsi"
+                  >
+                    <i class="fas fa-save"></i>
+                  </button>
+                </td>
               </tr>
             </thead>
             <!-- asiProjects -->
@@ -338,14 +346,6 @@
               </tr>
             </tbody>
           </table>
-
-          <button
-            type="button"
-            class="btn btn-outline-secondary"
-            @click="saveAsi"
-          >
-            <i class="fas fa-save"></i>
-          </button>
         </div>
       </div>
     </div>

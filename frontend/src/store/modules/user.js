@@ -13,7 +13,8 @@ const state = {
 const getters = {
   userData: (state) => state.userData,
   sessionData: (state) => state.sessionData,
-  userType: (state) => state.userType
+  userType: (state) => state.userType,
+  token: (state) => state.token
 }
 
 const actions = {
@@ -44,7 +45,21 @@ const actions = {
           AsiUserPassword: password
         }
       )
-      commit('setSessionData', response.data)
+      commit('loginSuccess', { username })
+      //commit('loginFailure', { username })
+
+      console.log(response.data)
+
+      // loginSuccess(state) {
+      //   state.isLogin = true
+      //   state.token = null
+      //   state.user = null
+      // },
+      // loginFailure(state) {
+      //   state.isLogin = false
+      // }
+
+      //commit('setToken', response.data)
     }
   },
   async logout({ commit }) {
@@ -60,6 +75,7 @@ const mutations = {
   setUserData: (state, userData) => (state.userData = userData),
   setSessionData: (state, sessionData) => (state.sessionData = sessionData),
   setUserType: (state, userType) => (state.userType = userType),
+  //setToken: (state, token) => (state.token = token),
 
   resetState(state) {
     state.isLogin = false
