@@ -10,15 +10,10 @@
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public string Token { get; set; }
-       //   public string Message { get; set; }
         public int Modality { get; set; }
         public int Profile { get; set; }
         public int Advisor { get; set; }
-
         public int[] Roles { get; set; }
-
         public string Role { get; set; }
-
-
     }
 }

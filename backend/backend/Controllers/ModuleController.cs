@@ -6,7 +6,7 @@ using backend.Models;
 using Microsoft.Extensions.Configuration;
 using System;
 
-using JwtApp.Models;
+//using JwtApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +39,7 @@ namespace backend.Controllers
 
         [Route("api/[controller]")]
         [HttpGet]
+        [Authorize(Roles = "Student")]
         public JsonResult GetCourses()
         {
             string query = @" 
@@ -70,6 +71,7 @@ select id_module, code, module.name as module_name, module_group.initials as mod
 
         [Route("api/ftp")]
         [HttpGet]
+        [Authorize(Roles = "Student")]
         public JsonResult GetFtp()
         {
             string query = @" 
@@ -101,6 +103,7 @@ select id_module, code, module.name as module_name, module_group.initials as mod
 
         [Route("api/tsm")]
         [HttpGet]
+        [Authorize(Roles = "Student")]
         public JsonResult GetTsm()
         {
             string query = @" 
@@ -132,6 +135,7 @@ select id_module, code, module.name as module_name, module_group.initials as mod
 
         [Route("api/cm")]
         [HttpGet]
+        [Authorize(Roles = "Student")]
         public JsonResult GetCm()
         {
             string query = @" 
@@ -163,6 +167,7 @@ select id_module, code, module.name as module_name, module_group.initials as mod
 
         [Route("api/supplementaryModules")]
         [HttpGet]
+        [Authorize(Roles = "Student")]
         public JsonResult GetSupplementaryModules()
         {
             string query = @" 

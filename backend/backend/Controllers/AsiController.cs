@@ -5,6 +5,15 @@ using System.Data.SqlClient;
 using backend.Models;
 using Microsoft.Extensions.Configuration;
 using System;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace backend.Controllers
 {
@@ -92,6 +101,7 @@ where asi.asi_user = @UserId
 
 
         [HttpPost("api/asi/moduleGroups")]
+        [Authorize(Roles = "Student")]
         public JsonResult GetModuleGroups(AsiUser user)
         {
             Console.WriteLine(user);
@@ -125,6 +135,7 @@ where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AN
         }
 
         [HttpPost("api/asi")]
+        [Authorize(Roles = "Student")]
         public JsonResult addModules(Asi asi)
         {
 
@@ -218,6 +229,7 @@ where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AN
 
 
         [HttpPost("api/asiTechicalModules")]
+        [Authorize(Roles = "Student")]
         public JsonResult addTechnicalModules(Asi asi)
         {
 
@@ -310,6 +322,7 @@ where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AN
 
 
         [HttpGet("api/asi/ftp/{id}")]
+        [Authorize(Roles = "Student")]
         public JsonResult GetAsiFtp(int id)
         {
             string query = @" 
@@ -345,6 +358,7 @@ where asi.asi_user = @UserId AND module.module_group = 1
         }
 
         [HttpGet("api/asi/tsm/{id}")]
+        [Authorize(Roles = "Student")]
         public JsonResult GetAsiTsm(int id)
         {
             string query = @" 
@@ -380,6 +394,7 @@ where asi.asi_user = @UserId AND module.module_group = 2
         }
 
         [HttpGet("api/asi/cm/{id}")]
+        [Authorize(Roles = "Student")]
         public JsonResult GetCm(int id)
         {
             string query = @" 
@@ -415,6 +430,7 @@ where asi.asi_user = @UserId AND module.module_group = 3
         }
 
         [HttpGet("api/asi/supplementaryModules/{id}")]
+        [Authorize(Roles = "Student")]
         public JsonResult GetSupplementaryModules(int id)
         {
             string query = @" 
@@ -450,6 +466,7 @@ where asi.asi_user = @UserId AND module.module_group = 5
         }
 
         [HttpGet("api/asi/masterProject/{id}")]
+        [Authorize(Roles = "Student")]
         public JsonResult GetMasterProject(int id)
         {
             string query = @" 

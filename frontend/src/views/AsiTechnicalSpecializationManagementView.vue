@@ -1,5 +1,6 @@
 <template>
   <div class="asiManagement">
+    <Navbar />
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
@@ -359,18 +360,20 @@
 //import ASITable from '../components/ASITable.vue'
 //import ASITechnicalTable from '../components/ASITechnicalTable.vue'
 import { mapGetters, mapActions } from 'vuex'
+import Navbar from '../components/Navbar.vue'
 
 export default {
   name: 'AsiTechnicalSpecializationManagementView',
+  components: {
+    Navbar
+  },
   data: () => ({
     userData: {
       username: 'marco.rossi@student.supsi.ch',
       password: '123456'
     }
   }),
-  components: {
-    //ASITechnicalTable
-  },
+
   methods: {
     ...mapActions(['fetchProjects']),
     ...mapActions(['fetchSupplementaryModules']),

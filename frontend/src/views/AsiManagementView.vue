@@ -1,5 +1,6 @@
 <template>
   <div class="asiManagement">
+    <Navbar />
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
@@ -427,6 +428,7 @@
 <script>
 //import ASITable from '../components/ASITable.vue'
 import { mapGetters, mapActions } from 'vuex'
+import Navbar from '../components/Navbar.vue'
 
 export default {
   name: 'AsiManagementView',
@@ -437,7 +439,7 @@ export default {
     }
   }),
   components: {
-    //ASITable
+    Navbar
   },
   methods: {
     ...mapActions(['fetchFtpModules']),

@@ -3,29 +3,35 @@ import { loginService } from '../services/login.service'
 
 const state = {
   userData: [],
-  sessionData: [],
   userType: [],
   isLogin: false,
   token: null,
-  user: null
+  user: null,
+  message: null
 }
 
 const getters = {
   userData: (state) => state.userData,
-  sessionData: (state) => state.sessionData,
   userType: (state) => state.userType,
-  token: (state) => state.token
+  token: (state) => state.token,
+  loggedUser: (state) => state.user,
+  isLogin: (state) => state.isLogin
 }
 
 const actions = {
   async fetchUserData({ commit }) {
-    const response = await axios.get('http://localhost:8732/api/asiuser/5')
+    const response = await axios.get('http://localhost:8732/api/asiuser/5', {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
 
     commit('setUserData', response.data)
   },
   async fetchUserType({ commit }, id) {
     const response = await axios.get(
-      'http://localhost:8732/api/asiuser/type/' + id
+      'http://localhost:8732/api/asiuser/type/' + id,
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
     )
 
     commit('setUserType', response.data)
@@ -36,46 +42,55 @@ const actions = {
 
     let result = loginService.login(username, password)
     if (result) {
-      console.log('login success')
-
       const response = await axios.post(
         'http://localhost:8732/api/asiuser/login',
         {
           AsiUserEmail: username,
           AsiUserPassword: password
+        },
+        {
+          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
         }
       )
-      commit('loginSuccess', { username })
-      //commit('loginFailure', { username })
 
-      console.log(response.data)
-
-      // loginSuccess(state) {
-      //   state.isLogin = true
-      //   state.token = null
-      //   state.user = null
-      // },
-      // loginFailure(state) {
-      //   state.isLogin = false
-      // }
-
-      //commit('setToken', response.data)
+      if (response.status == 200) {
+        commit('loginSuccess', response.data)
+        localStorage.setItem('token', response.data.Token)
+        localStorage.setItem('name', response.data.AsiUserName)
+        localStorage.setItem('surname', response.data.AsiUserSurname)
+        localStorage.setItem('email', response.data.AsiUserEmail)
+        localStorage.setItem('id', response.data.AsiUserId)
+        localStorage.setItem('role', response.data.Role)
+      } else if (response.status == 404) {
+        commit('loginFailure', response.data)
+      }
     }
   },
   async logout({ commit }) {
     commit('resetState')
-    //router.push('/')
   },
   async clearState({ commit }) {
+    localStorage.removeItem('token')
+    localStorage.removeItem('name')
+    localStorage.removeItem('surname')
+    localStorage.removeItem('email')
+    localStorage.removeItem('id')
+    localStorage.removeItem('role')
     commit('resetState')
+  },
+  async changeLogInState({ commit }) {
+    commit('notLoggedIn')
   }
 }
 
 const mutations = {
   setUserData: (state, userData) => (state.userData = userData),
-  setSessionData: (state, sessionData) => (state.sessionData = sessionData),
+  //setSessionData: (state, sessionData) => (state.sessionData = sessionData),
   setUserType: (state, userType) => (state.userType = userType),
-  //setToken: (state, token) => (state.token = token),
+  /*setToken: (state, token) => {
+    console.log(token)
+    state.token = token
+  },*/
 
   resetState(state) {
     state.isLogin = false
@@ -83,16 +98,27 @@ const mutations = {
     state.user = null
   },
   loginRequest(state, user) {
-    state.isLogin = true
+    state.isLogin = false
     state.token = null
     state.user = user
   },
-  loginSuccess(state) {
+  loginSuccess(state, response) {
     state.isLogin = true
-    state.token = null
-    state.user = null
+    state.token = response.Token
+    state.message = response.Message
+    state.user = {
+      AsiUserId: response.AsiUserId,
+      AsiUserName: response.AsiUserName,
+      AsiUserSurname: response.AsiUserSurname,
+      AsiUserEmail: response.AsiUserEmail,
+      Role: response.Role
+    }
   },
-  loginFailure(state) {
+  loginFailure(state, response) {
+    state.isLogin = false
+    state.message = response.Message
+  },
+  notLoggedIn(state) {
     state.isLogin = false
   }
 }

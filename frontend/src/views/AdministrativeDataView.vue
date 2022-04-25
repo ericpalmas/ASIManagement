@@ -1,5 +1,6 @@
 <template>
   <div class="AdministrativeDataView">
+    <Navbar />
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <h1 class="title">AdministrativeDataView</h1>
@@ -66,8 +67,13 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import Navbar from '../components/Navbar.vue'
+
 export default {
   name: 'AdministrativeDataView',
+  components: {
+    Navbar
+  },
   methods: {
     ...mapActions(['fetchUserData'])
   },

@@ -1,5 +1,6 @@
 <template>
   <div class="AsiInfoView">
+    <Navbar />
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
@@ -179,8 +180,13 @@
 </template>
 
 <script>
+import Navbar from '../components/Navbar.vue'
+
 export default {
-  name: 'AsiInfoView'
+  name: 'AsiInfoView',
+  components: {
+    Navbar
+  }
 }
 </script>
 

@@ -4,35 +4,40 @@
       <div class="card">
         <div class="card-body">
           <form ref="form">
-            <form-group id="usernameGroup1" label-for="usernameLabel1">
-              <input
-                id="usernameInput"
-                type="text"
-                name="username"
-                v-model="username"
-                required
-                placeholder="Enter username..."
-              />
-            </form-group>
-            <form-group id="exampleInputGroup2" label-for="exampleInput2">
-              <input
-                id="exampleInput2"
-                type="password"
-                name="password"
-                v-model="password"
-                required
-                placeholder="Enter password..."
-              />
-            </form-group>
-          </form>
-          <div class="divider" />
-          <h2>{{ sessionData.length }}</h2>
+            <h2>Sign in</h2>
+            <div id="inputContainer">
+              <form-group label-for="usernameLabel1">
+                <input
+                  id="input"
+                  type="text"
+                  class="form-control"
+                  name="username"
+                  v-model="username"
+                  required
+                  placeholder="Enter username..."
+                />
+              </form-group>
+              <form-group label-for="exampleInput2">
+                <input
+                  id="input"
+                  type="password"
+                  class="form-control"
+                  name="password"
+                  v-model="password"
+                  required
+                  placeholder="Enter password..."
+                />
+              </form-group>
+            </div>
 
+            <button type="button" class="btn btn-primary" @click="doLogin">
+              Log in
+            </button>
+          </form>
+          <!-- 
           <div class="modal-footer clearfix">
-            <router-link to="/AsiCourseList" @click="doLogin">
-              {{ sessionData.length }}
-            </router-link>
-          </div>
+            <button @click="doLogin">Log in</button>
+          </div> -->
         </div>
       </div>
     </div>
@@ -47,23 +52,28 @@ export default {
   data: () => ({
     username: '',
     password: ''
-    // userType: false,
   }),
   computed: {
-    ...mapGetters(['sessionData'])
+    ...mapGetters(['isLogin']),
+    ...mapGetters(['token']),
+    ...mapGetters(['loggedUser'])
   },
 
   watch: {
-    sessionData: function () {
-      if (this.sessionData.length !== 0) {
-        console.log(this.sessionData.length)
+    isLogin: function () {
+      if (this.isLogin) {
+        window.location.href = '/AsiManagement'
       }
     }
   },
+
+  created() {
+    this.changeLogInState()
+  },
+
   methods: {
     ...mapActions(['login']),
-    // ...mapActions(['fetchUserType']),
-
+    ...mapActions(['changeLogInState']),
     reset() {
       this.$refs.form.reset()
     },
@@ -75,37 +85,6 @@ export default {
         alert('Please fill the text!')
       }
     }
-    // redirect() {
-    //   if (this.sessionData.length !== 0) {
-    //     this.router.push(`/AsiManagement`)
-    //   }
-    // }
-    // getUserType() {
-    //   const route = useRoute()
-
-    //   if (this.sessionData.length !== 0) {
-    //     this.fetchUserType(this.sessionData[0].id_asi_user)
-    //     this.userType = true
-    //   }
-    // },
-    // getModuleGroups() {
-    //   if (this.sessionData.length !== 0) {
-    //     const { username, password } = this
-    //     if (this.username != '' && this.password != '') {
-    //       this.fetchAsiModuleGroups({ username, password })
-    //       this.moduleGroup = true
-    //     } else {
-    //       alert('Please fill the text!')
-    //     }
-    //   }
-    // },
-    // eeee() {
-    //   const route = useRoute()
-
-    //   if (this.moduleGroup & this.userType) {
-    //     route.push({ path: '/AsiManagement' })
-    //   }
-    // }
   }
 }
 </script>
@@ -125,5 +104,16 @@ export default {
 }
 .title {
   padding: 2%;
+}
+
+#input {
+  align-self: center;
+  margin: 2%;
+}
+
+form {
+  width: 60%;
+  text-align: center;
+  display: inline-block;
 }
 </style>

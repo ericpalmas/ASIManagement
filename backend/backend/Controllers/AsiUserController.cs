@@ -5,7 +5,6 @@ using System.Data.SqlClient;
 using backend.Models;
 using Microsoft.Extensions.Configuration;
 using System;
-using JwtApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
@@ -13,6 +12,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
+
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 
@@ -34,6 +35,7 @@ namespace backend.Controllers
         }
  
         [HttpGet("api/asiuser")]
+        [Authorize(Roles = "Student")]
         public JsonResult Get()
         {
             string query = @" 
@@ -62,6 +64,7 @@ namespace backend.Controllers
 
         //mettere un controllo nel caso lo studente non abbia un advisor nella query
         [HttpGet("api/asiuser/{id}")]
+        [Authorize(Roles = "Student")]
         public JsonResult GetAdministrativeData(int id)
         {
             string query = @" 
@@ -94,6 +97,7 @@ namespace backend.Controllers
         }
 
         [HttpGet("api/asiuser/type/{id}")]
+        [Authorize(Roles = "Student")]
         public JsonResult GetUserType(int id)
         {
             string query = @" 
@@ -126,21 +130,29 @@ namespace backend.Controllers
 
 
         [HttpPost("api/asiuser/login")]
-        public IActionResult Login(AsiUser userLogin)
+        public JsonResult Login(AsiUser userLogin)
         {
             var user = Authenticate(userLogin);
 
-            
+
 
             if (user != null)
             {
                 var token = Generate(user);
                 //user.Token = token;
-                
-                return Ok(token);
+
+                //return new JsonResult("Token");
+
+                JsonResult userFound = new JsonResult( new { Token = token, Message = "User found", AsiUserId = user.AsiUserId, AsiUserName = user.AsiUserName, AsiUserSurname = user.AsiUserSurname, AsiUserEmail = user.AsiUserEmail, Role = user.Role });
+                userFound.StatusCode = 200;
+                return userFound;
+
             }
 
-            return NotFound("User not found");
+            //return NotFound("User not found");
+            JsonResult userNotFound = new JsonResult(new { Message = "User not found" });
+            userNotFound.StatusCode = 404;
+            return userNotFound;
         }
 
         private string Generate(AsiUser user)

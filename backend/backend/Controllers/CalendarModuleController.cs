@@ -5,6 +5,8 @@ using System.Data.SqlClient;
 using backend.Models;
 using Microsoft.Extensions.Configuration;
 using System;
+using Microsoft.AspNetCore.Authorization;
+
 namespace backend.Controllers
 {
     [Produces("application/json")]
@@ -21,6 +23,7 @@ namespace backend.Controllers
 
         [Route("api/calendarModule/years")]
         [HttpGet]
+        [Authorize(Roles = "Student")]
         public JsonResult GetModuleYears()
         {
             string query = @"select distinct(start_year), end_year from calendar_module;";
@@ -46,6 +49,7 @@ namespace backend.Controllers
 
         [Route("api/calendarModule")]
         [HttpGet]
+        [Authorize(Roles = "Student")]
         public JsonResult GetCalendarModule()
         {
             string query = @"select id_module, module.name as module_name, calendar_module.start_year, calendar_module.end_year, calendar_module.fall_semester, calendar_module.spring_semester, calendar_module.fall_enough_sub, calendar_module.spring_enough_sub, calendar_module.more_semester from dbo.calendar_module

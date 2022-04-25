@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using backend.Models;
 using Microsoft.Extensions.Configuration;
 using System;
+using Microsoft.AspNetCore.Authorization;
 namespace backend.Controllers
 {
     [Produces("application/json")]
@@ -20,6 +21,7 @@ namespace backend.Controllers
 
         [Route("api/asi/projects/{id}")]
         [HttpGet]
+        [Authorize(Roles = "Student")]
         public JsonResult GetProjects(int id)
         {
             string query = @" 

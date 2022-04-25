@@ -10,7 +10,12 @@ const getters = {
 
 const actions = {
   async fetchProjects({ commit }) {
-    const response = await axios.get('http://localhost:8732/api/asi/projects/2')
+    const response = await axios.get(
+      'http://localhost:8732/api/asi/projects/2',
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
 
     commit('setProjects', response.data)
   }

@@ -18,28 +18,39 @@ const getters = {
 
 const actions = {
   async fetchModules({ commit }) {
-    const response = await axios.get('http://localhost:8732/api/module')
+    const response = await axios.get('http://localhost:8732/api/module', {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
 
     commit('setModules', response.data)
   },
   async fetchFtpModules({ commit }) {
-    const response = await axios.get('http://localhost:8732/api/ftp')
+    const response = await axios.get('http://localhost:8732/api/ftp', {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
 
     commit('setFtpModules', response.data)
   },
   async fetchTsmModules({ commit }) {
-    const response = await axios.get('http://localhost:8732/api/tsm')
+    const response = await axios.get('http://localhost:8732/api/tsm', {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
 
     commit('setTsmModules', response.data)
   },
   async fetchCmModules({ commit }) {
-    const response = await axios.get('http://localhost:8732/api/cm')
+    const response = await axios.get('http://localhost:8732/api/cm', {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
 
     commit('setCmModules', response.data)
   },
   async fetchSupplementaryModules({ commit }) {
     const response = await axios.get(
-      'http://localhost:8732/api/supplementaryModules'
+      'http://localhost:8732/api/supplementaryModules',
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
     )
 
     commit('setSupplementaryModules', response.data)

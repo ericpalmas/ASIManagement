@@ -1,5 +1,6 @@
 <template>
   <div class="project">
+    <Navbar />
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
@@ -397,9 +398,13 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import Navbar from '../components/Navbar.vue'
 
 export default {
   name: 'AsiProjectScreen',
+  components: {
+    Navbar
+  },
   methods: {
     ...mapActions(['fetchProjects']),
     ...mapActions(['fetchAsiMasterProject'])

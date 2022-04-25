@@ -13,13 +13,21 @@ const getters = {
 const actions = {
   async fetchModuleCalendarYears({ commit }) {
     const response = await axios.get(
-      'http://localhost:8732/api/calendarModule/years'
+      'http://localhost:8732/api/calendarModule/years',
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
     )
 
     commit('setModuleCalendarYears', response.data)
   },
   async fetchModuleCalendar({ commit }) {
-    const response = await axios.get('http://localhost:8732/api/calendarModule')
+    const response = await axios.get(
+      'http://localhost:8732/api/calendarModule',
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
 
     commit('setModuleCalendar', response.data)
   }
