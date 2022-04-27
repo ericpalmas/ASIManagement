@@ -1,5 +1,6 @@
 <template>
-  <div class="AsiInfoView">
+  <Sidebar />
+  <div class="AsiInfoView" :style="{ 'margin-left': sidebarWidth }">
     <Navbar />
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
@@ -181,11 +182,17 @@
 
 <script>
 import Navbar from '../components/Navbar.vue'
+import Sidebar from '@/components/sidebar/Sidebar'
+import { sidebarWidth } from '@/components/sidebar/state'
 
 export default {
   name: 'AsiInfoView',
+  setup() {
+    return { sidebarWidth }
+  },
   components: {
-    Navbar
+    Navbar,
+    Sidebar
   }
 }
 </script>

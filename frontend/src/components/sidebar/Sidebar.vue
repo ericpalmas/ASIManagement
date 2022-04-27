@@ -15,18 +15,11 @@ export default {
   <div class="sidebar" :style="{ width: sidebarWidth }">
     <h1>
       <span v-if="collapsed">
-        <div>S</div>
-        <div>I</div>
+        <div style="padding-left: 25%">S</div>
+        <div style="padding-left: 25%">I</div>
       </span>
-      <span v-else>SUPSI</span>
+      <span style="padding-left: 4%" v-else>SUPSI</span>
     </h1>
-    <!-- 
-    <SidebarLink to="/" icon="fas fa-home">ASI creation</SidebarLink>
-    <SidebarLink to="/dashboard" icon="fas fa-columns">Projects</SidebarLink>
-    <SidebarLink to="/analytics" icon="fas fa-chart-bar">Profile</SidebarLink>
-    <SidebarLink to="/friends" icon="fas fa-users">Courses</SidebarLink>
-    <SidebarLink to="/image" icon="fas fa-image">Informations</SidebarLink> -->
-
     <SidebarLink to="/AsiManagement" icon="fas fa-home">
       ASI creation
     </SidebarLink>

@@ -3,13 +3,16 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
       <div class="collapse navbar-collapse" id="wrapper">
-        <a class="navbar-brand" href="#" style="padding-left: 4%">
-          <img src="@/assets/logo.svg" alt="" width="130" height="28" />
-          <!-- <SupsiLogo /> -->
+        <a class="navbar-brand" href="#" style="padding-left: 3%">
+          <img
+            id="supsiLogo"
+            src="@/assets/logo.svg"
+            alt=""
+            width="130"
+            height="28"
+          />
         </a>
         <div id="elemento">
-          <!-- <ul class="nav justify-content-end"> -->
-
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
               <a v-if="name !== null" class="nav-link" href="#">{{ name }}</a>
@@ -28,7 +31,14 @@
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li>
-                  <a class="dropdown-item" href="#" @click="reset">Exit</a>
+                  <a
+                    class="dropdown-item"
+                    id="exitButton"
+                    href="#"
+                    @click="reset"
+                  >
+                    Exit
+                  </a>
                 </li>
               </ul>
             </li>

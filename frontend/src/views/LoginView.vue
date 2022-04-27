@@ -1,33 +1,33 @@
 <template>
   <div class="course-list">
-    <div id="cardsContainers" class="container pt-3">
+    <div id="cardsContainers" class="container pt-3" style="width: 40%">
       <div class="card">
         <div class="card-body">
           <form ref="form">
-            <h2>Sign in</h2>
-            <div id="inputContainer">
-              <form-group label-for="usernameLabel1">
-                <input
-                  id="input"
-                  type="text"
-                  class="form-control"
-                  name="username"
-                  v-model="username"
-                  required
-                  placeholder="Enter username..."
-                />
-              </form-group>
-              <form-group label-for="exampleInput2">
-                <input
-                  id="input"
-                  type="password"
-                  class="form-control"
-                  name="password"
-                  v-model="password"
-                  required
-                  placeholder="Enter password..."
-                />
-              </form-group>
+            <h2 class="pb-4">Sign in</h2>
+            <div id="inputContainer" class="pb-4">
+              <!-- <form-group label-for="usernameLabel1"> -->
+              <input
+                id="input"
+                type="text"
+                class="form-control"
+                name="username"
+                v-model="username"
+                required
+                placeholder="Enter username..."
+              />
+              <!-- </form-group> -->
+              <!-- <form-group label-for="exampleInput2"> -->
+              <input
+                id="input"
+                type="password"
+                class="form-control"
+                name="password"
+                v-model="password"
+                required
+                placeholder="Enter password..."
+              />
+              <!-- </form-group> -->
             </div>
 
             <button type="button" class="btn btn-primary" @click="doLogin">
@@ -92,7 +92,7 @@ export default {
 <style scoped>
 .cardsContainers {
   min-height: 100vh;
-  width: 50%;
+  width: 80%;
   border: 5px solid #616161;
   padding-top: 2%;
   background-color: #eeeded;

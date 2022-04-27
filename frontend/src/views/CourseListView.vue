@@ -1,5 +1,6 @@
 <template>
-  <div class="course-list">
+  <Sidebar />
+  <div class="course-list" :style="{ 'margin-left': sidebarWidth }">
     <Navbar />
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
@@ -34,15 +35,19 @@
               <tbody>
                 <tr v-for="module in allModules" :key="module.id_module">
                   <th scope="row">1</th>
-                  <td>{{ module.code }}</td>
-                  <td>{{ module.ects }}</td>
+                  <td id="moduleCode">{{ module.code }}</td>
+                  <td id="moduleEcts">{{ module.ects }}</td>
                   <td></td>
-                  <td>{{ module.module_name }}</td>
-                  <td>
+                  <td id="moduleName">{{ module.module_name }}</td>
+                  <td id="moduleResponsible">
                     {{ module.responsible_surname }}
                     {{ module.responsible_name }}
                   </td>
-                  <td v-for="(year, i) in moduleCalendarYears" :key="i">
+                  <td
+                    v-for="(year, i) in moduleCalendarYears"
+                    :key="i"
+                    id="moduleCalendarDate"
+                  >
                     <span
                       v-if="calculateCalendar(year, module.id_module) === 1"
                     >
@@ -70,11 +75,17 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import Navbar from '../components/Navbar.vue'
+import Sidebar from '../components/sidebar/Sidebar'
+import { sidebarWidth } from '../components/sidebar/state'
 
 export default {
   name: 'CourseListView',
+  setup() {
+    return { sidebarWidth }
+  },
   components: {
-    Navbar
+    Navbar,
+    Sidebar
   },
   methods: {
     ...mapActions(['fetchModules']),

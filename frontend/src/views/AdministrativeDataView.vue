@@ -1,5 +1,6 @@
 <template>
-  <div class="AdministrativeDataView">
+  <Sidebar />
+  <div class="AdministrativeDataView" :style="{ 'margin-left': sidebarWidth }">
     <Navbar />
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
@@ -8,23 +9,25 @@
         <div class="card-body" v-for="user in userData" :key="user.student_id">
           <div class="row justify-content-center">
             <div class="col-3">Student’s family name(s):</div>
-            <div class="col-3">{{ user.student_surname }}</div>
+            <div class="col-3" id="familyName">{{ user.student_surname }}</div>
           </div>
           <div class="row justify-content-center">
             <div class="col-3">Student’s given name(s):</div>
-            <div class="col-3">{{ user.student_name }}</div>
+            <div class="col-3" id="studentName">{{ user.student_name }}</div>
           </div>
           <div class="row justify-content-center">
             <div class="col-3">Enrollment Nr.:</div>
-            <div class="col-3">{{ user.student_enrollment_number }}</div>
+            <div class="col-3" id="enrollmentNumber">
+              {{ user.student_enrollment_number }}
+            </div>
           </div>
           <div class="row justify-content-center">
             <div class="col-3">Modality:</div>
-            <div class="col-3">{{ user.modality }}</div>
+            <div class="col-3" id="studentModality">{{ user.modality }}</div>
           </div>
           <div class="row justify-content-center">
             <div class="col-3">Profile:</div>
-            <div class="col-3">{{ user.profile }}</div>
+            <div class="col-3" id="studentProfile">{{ user.profile }}</div>
           </div>
           <div class="row justify-content-center">
             <div class="col-3">Profile responsible:</div>
@@ -55,7 +58,7 @@
           </div>
           <div class="row justify-content-center">
             <div class="col-3">Student’s advisor:</div>
-            <div class="col-3">
+            <div class="col-3" id="studentAdvisor">
               Prof. {{ user.advisor_name }} {{ user.advisor_surname }}
             </div>
           </div>
@@ -68,11 +71,17 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import Navbar from '../components/Navbar.vue'
+import Sidebar from '../components/sidebar/Sidebar'
+import { sidebarWidth } from '../components/sidebar/state'
 
 export default {
   name: 'AdministrativeDataView',
+  setup() {
+    return { sidebarWidth }
+  },
   components: {
-    Navbar
+    Navbar,
+    Sidebar
   },
   methods: {
     ...mapActions(['fetchUserData'])

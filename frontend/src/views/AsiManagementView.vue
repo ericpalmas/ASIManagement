@@ -1,5 +1,6 @@
 <template>
-  <div class="asiManagement">
+  <Sidebar />
+  <div class="asiManagement" :style="{ 'margin-left': sidebarWidth }">
     <Navbar />
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
@@ -38,6 +39,7 @@
                       </td>
                       <td class="table-active">
                         <button
+                          id="addFtpButton"
                           type="button"
                           class="btn btn-outline-primary"
                           @click="addNewRow(0)"
@@ -139,6 +141,7 @@
                       </td>
                       <td class="table-active">
                         <button
+                          id="addTsmButton"
                           type="button"
                           class="btn btn-outline-primary"
                           @click="addNewRow(1)"
@@ -239,6 +242,7 @@
                       </td>
                       <td class="table-active">
                         <button
+                          id="addCmButton"
                           type="button"
                           class="btn btn-outline-primary"
                           @click="addNewRow(2)"
@@ -430,6 +434,16 @@
 import { mapGetters, mapActions } from 'vuex'
 import Navbar from '../components/Navbar.vue'
 
+import Sidebar from '../components/sidebar/Sidebar'
+import { sidebarWidth } from '../components/sidebar/state'
+
+// export default {
+//   components: { Sidebar },
+//   setup() {
+//     return { sidebarWidth }
+//   }
+// }
+
 export default {
   name: 'AsiManagementView',
   data: () => ({
@@ -438,8 +452,12 @@ export default {
       password: '123456'
     }
   }),
+  setup() {
+    return { sidebarWidth }
+  },
   components: {
-    Navbar
+    Navbar,
+    Sidebar
   },
   methods: {
     ...mapActions(['fetchFtpModules']),
@@ -453,9 +471,9 @@ export default {
 
     saveAsi: function () {
       // controllo che non ci siano corsi uguali
-      console.log(this.allCmAsiModules)
-      console.log(this.allTsmAsiModules)
-      console.log(this.allFtpAsiModules)
+      // console.log(this.allCmAsiModules)
+      // console.log(this.allTsmAsiModules)
+      // console.log(this.allFtpAsiModules)
 
       var newModules = {
         asiModuleGroups: this.asiModuleGroups,
@@ -498,7 +516,6 @@ export default {
 
     onChangeSemester(event, i, k) {
       const newSemester = parseInt(event.target.value)
-      console.log(event.target.value, i, k)
       if (i === 0) {
         this.allFtpAsiModules[k].semester = newSemester
       } else if (i === 1) {
@@ -622,7 +639,6 @@ export default {
           site_initials: this.allCmModules[0].site_initials
         })
       }
-      console.log(this.allFtpAsiModules)
     }
   },
   computed: {
@@ -707,23 +723,20 @@ export default {
       return semesterCourses
     }
   },
-  watch: {
-    allFtpModules: function () {
-      if (this.allFtpModules.length !== 0) {
-        console.log(this.allFtpModules.length)
-      }
-    },
-    allTsmModules: function () {
-      if (this.allTsmModules.length !== 0) {
-        console.log(this.allTsmModules.length)
-      }
-    },
-    allCmModules: function () {
-      if (this.allCmModules.length !== 0) {
-        console.log(this.allCmModules.length)
-      }
-    }
-  },
+  // watch: {
+  //   allFtpModules: function () {
+  //     if (this.allFtpModules.length !== 0) {
+  //     }
+  //   },
+  //   allTsmModules: function () {
+  //     if (this.allTsmModules.length !== 0) {
+  //     }
+  //   },
+  //   allCmModules: function () {
+  //     if (this.allCmModules.length !== 0) {
+  //     }
+  //   }
+  // },
   created() {
     this.fetchFtpModules()
     this.fetchTsmModules()
@@ -736,7 +749,7 @@ export default {
 }
 </script>
 
-
+ 
 <style scoped>
 .cardsContainers {
   min-height: 100vh;

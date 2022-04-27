@@ -47,10 +47,11 @@ const actions = {
         {
           AsiUserEmail: username,
           AsiUserPassword: password
-        },
-        {
-          headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
         }
+        // ,
+        // {
+        //   headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+        // }
       )
 
       if (response.status == 200) {
@@ -85,12 +86,7 @@ const actions = {
 
 const mutations = {
   setUserData: (state, userData) => (state.userData = userData),
-  //setSessionData: (state, sessionData) => (state.sessionData = sessionData),
   setUserType: (state, userType) => (state.userType = userType),
-  /*setToken: (state, token) => {
-    console.log(token)
-    state.token = token
-  },*/
 
   resetState(state) {
     state.isLogin = false

@@ -1,5 +1,6 @@
 <template>
-  <div class="project">
+  <Sidebar />
+  <div class="project" :style="{ 'margin-left': sidebarWidth }">
     <Navbar />
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
@@ -399,11 +400,17 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import Navbar from '../components/Navbar.vue'
+import Sidebar from '@/components/sidebar/Sidebar'
+import { sidebarWidth } from '@/components/sidebar/state'
 
 export default {
   name: 'AsiProjectScreen',
+  setup() {
+    return { sidebarWidth }
+  },
   components: {
-    Navbar
+    Navbar,
+    Sidebar
   },
   methods: {
     ...mapActions(['fetchProjects']),

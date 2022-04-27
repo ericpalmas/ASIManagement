@@ -1,5 +1,6 @@
 <template>
-  <div class="asiManagement">
+  <Sidebar />
+  <div class="asiManagement" :style="{ 'margin-left': sidebarWidth }">
     <Navbar />
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
@@ -361,11 +362,17 @@
 //import ASITechnicalTable from '../components/ASITechnicalTable.vue'
 import { mapGetters, mapActions } from 'vuex'
 import Navbar from '../components/Navbar.vue'
+import Sidebar from '@/components/sidebar/Sidebar'
+import { sidebarWidth } from '@/components/sidebar/state'
 
 export default {
   name: 'AsiTechnicalSpecializationManagementView',
+  setup() {
+    return { sidebarWidth }
+  },
   components: {
-    Navbar
+    Navbar,
+    Sidebar
   },
   data: () => ({
     userData: {
