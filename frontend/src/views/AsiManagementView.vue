@@ -446,12 +446,7 @@ import { sidebarWidth } from '../components/sidebar/state'
 
 export default {
   name: 'AsiManagementView',
-  data: () => ({
-    userData: {
-      username: 'marco.rossi@student.supsi.ch',
-      password: '123456'
-    }
-  }),
+  data: () => ({}),
   setup() {
     return { sidebarWidth }
   },
@@ -471,9 +466,10 @@ export default {
 
     saveAsi: function () {
       // controllo che non ci siano corsi uguali
-      // console.log(this.allCmAsiModules)
-      // console.log(this.allTsmAsiModules)
-      // console.log(this.allFtpAsiModules)
+      console.log(this.asiModuleGroups)
+      console.log(this.allCmAsiModules)
+      console.log(this.allTsmAsiModules)
+      console.log(this.allFtpAsiModules)
 
       var newModules = {
         asiModuleGroups: this.asiModuleGroups,
@@ -723,20 +719,23 @@ export default {
       return semesterCourses
     }
   },
-  // watch: {
-  //   allFtpModules: function () {
-  //     if (this.allFtpModules.length !== 0) {
-  //     }
-  //   },
-  //   allTsmModules: function () {
-  //     if (this.allTsmModules.length !== 0) {
-  //     }
-  //   },
-  //   allCmModules: function () {
-  //     if (this.allCmModules.length !== 0) {
-  //     }
-  //   }
-  // },
+  watch: {
+    allFtpModules: function () {
+      if (this.allFtpModules.length !== 0) {
+        console.log(this.allFtpModules.length)
+      }
+    },
+    allTsmModules: function () {
+      if (this.allTsmModules.length !== 0) {
+        console.log(this.allTsmModules.length)
+      }
+    },
+    allCmModules: function () {
+      if (this.allCmModules.length !== 0) {
+        console.log(this.allCmModules.length)
+      }
+    }
+  },
   created() {
     this.fetchFtpModules()
     this.fetchTsmModules()
@@ -744,7 +743,7 @@ export default {
     this.fetchFtpAsiModules()
     this.fetchTsmAsiModules()
     this.fetchCmAsiModules()
-    this.fetchAsiModuleGroups(this.userData)
+    this.fetchAsiModuleGroups()
   }
 }
 </script>

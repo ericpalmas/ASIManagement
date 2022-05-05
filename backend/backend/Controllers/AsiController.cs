@@ -15,6 +15,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 
+
+
+
 namespace backend.Controllers
 {
 
@@ -28,9 +31,36 @@ namespace backend.Controllers
         {
             _configuration = configuration;
         }
-        [HttpGet("api/asi/{id}")]
-        public JsonResult GetAsi(int id)
+
+        private AsiUser GetCurrentUser()
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            if (identity != null)
+            {
+                var userClaims = identity.Claims;
+                Console.WriteLine(userClaims.ToString());
+
+                return new AsiUser
+                {
+                    AsiUserId = Convert.ToInt32(userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value),
+                    AsiUserName = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.GivenName)?.Value,
+                    AsiUserSurname = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Surname)?.Value,
+                    AsiUserEmail = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Email)?.Value,
+                    Role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value
+                };
+            }
+            return null;
+        }
+
+        [HttpGet("api/asi")]
+        [Authorize(Roles = "Student")]
+
+        public JsonResult GetAsi()
+        {
+
+            var currentUser = GetCurrentUser();
+
             string query = @" 
                              select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
 from dbo.module
@@ -52,7 +82,7 @@ where asi.asi_user = @UserId
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@UserId", id);
+                    myCommand.Parameters.AddWithValue("@UserId", currentUser.AsiUserId);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
@@ -60,58 +90,26 @@ where asi.asi_user = @UserId
                 }
             }
 
-            return new JsonResult(table);
+            return new JsonResult(query);
         }
 
 
 
-        /*  [HttpPost("api/asi/moduleGroups")]
-          public JsonResult GetModuleGroups(AsiUser user)
-          {
-              Console.WriteLine(user);
 
-              string query = @" 
-
-  select *from dbo.asi_module 
-  right outer join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
-  inner join asi on asi_module_group.asi = asi.id_asi
-  inner join asi_user on asi_user.id_asi_user = asi.asi_user
-  where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AND asi.created_at = ( select max(created_at) from asi where asi.asi_user = asi_user.id_asi_user)  
-                                ";
-              DataTable table = new DataTable();
-              string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
-              SqlDataReader myReader;
-              using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-              {
-                  myCon.Open();
-                  using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                  {
-                      myCommand.Parameters.AddWithValue("@AsiUserEmail", user.AsiUserEmail);
-                      myCommand.Parameters.AddWithValue("@AsiUserPassword", user.AsiUserPassword);
-
-                      myReader = myCommand.ExecuteReader();
-                      table.Load(myReader);
-                      myReader.Close();
-                      myCon.Close();
-                  }
-              }
-
-              return new JsonResult(table);
-          }*/
-
-
-        [HttpPost("api/asi/moduleGroups")]
+        [HttpGet("api/asi/moduleGroups")]
         [Authorize(Roles = "Student")]
-        public JsonResult GetModuleGroups(AsiUser user)
+        public JsonResult GetModuleGroups()
         {
-            Console.WriteLine(user);
+            var currentUser = GetCurrentUser();
+
+
 
             string query = @" 
 
 select asi_module_group.id_asi_module_group, asi_module_group.asi, asi_module_group.module_group, asi_user.name, asi_user.surname, asi_user.id_asi_user from dbo.asi_module_group
 inner join asi on asi_module_group.asi = asi.id_asi
 inner join asi_user on asi_user.id_asi_user = asi.asi_user
-where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AND asi.created_at = ( select max(created_at) from asi where asi.asi_user = asi_user.id_asi_user)  
+where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(created_at) from asi where asi.asi_user = asi_user.id_asi_user)  
                               ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -121,8 +119,7 @@ where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AN
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@AsiUserEmail", user.AsiUserEmail);
-                    myCommand.Parameters.AddWithValue("@AsiUserPassword", user.AsiUserPassword);
+                    myCommand.Parameters.AddWithValue("@AsiUserId", currentUser.AsiUserId);
 
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
@@ -212,6 +209,9 @@ where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AN
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
             SqlDataReader myReader;
+
+            Console.WriteLine(query);
+
             using (SqlConnection myCon = new SqlConnection(sqlDataSource))
             {
                 myCon.Open();
@@ -316,17 +316,319 @@ where asi_user.email = @AsiUserEmail AND asi_user.password = @AsiUserPassword AN
                 }
             }
 
-            return new JsonResult(query);
+            return new JsonResult(table);
+        }
+
+        [HttpGet("api/asi/ftp/{id}")]
+        [Authorize(Roles = "Advisor,StudentAdvisor")]
+        public JsonResult GetAsiStudentFtp(int id)
+        {
+
+            string query = @" 
+                             select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
+                             from dbo.module
+                             inner join asi_module on module.id_module = asi_module.module
+                             inner join asi_user on module.responsible = asi_user.id_asi_user
+                             inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
+                             inner join asi on asi.id_asi = asi_module_group.asi
+                             inner join module_group on module.module_group = module_group.id_module_group
+                             inner join site on module.site = site.id_site
+                             where asi.asi_user = @UserId AND module.module_group = 1
+                           ";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@UserId", id);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+        [HttpGet("api/asi/tsm/{id}")]
+        [Authorize(Roles = "Advisor, StudentAdvisor")]
+        public JsonResult GetAsiStudentTsm(int id)
+        {
+
+            string query = @" 
+                            select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
+                            from dbo.module
+                            inner join asi_module on module.id_module = asi_module.module
+                            inner join asi_user on module.responsible = asi_user.id_asi_user
+                            inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
+                            inner join asi on asi.id_asi = asi_module_group.asi
+                            inner join module_group on module.module_group = module_group.id_module_group
+                            inner join site on module.site = site.id_site
+                            where asi.asi_user = @UserId AND module.module_group = 2
+                           ";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@UserId", id);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+        [HttpGet("api/asi/cm/{id}")]
+        [Authorize(Roles = "Advisor, StudentAdvisor")]
+        public JsonResult GetAsiStudentCm(int id)
+        {
+
+            string query = @" 
+                             select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
+                             from dbo.module
+                             inner join asi_module on module.id_module = asi_module.module
+                             inner join asi_user on module.responsible = asi_user.id_asi_user
+                             inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
+                             inner join asi on asi.id_asi = asi_module_group.asi
+                             inner join module_group on module.module_group = module_group.id_module_group
+                             inner join site on module.site = site.id_site
+                             where asi.asi_user = @UserId AND module.module_group = 3
+                           ";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@UserId", id);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
         }
 
 
-
-        [HttpGet("api/asi/ftp/{id}")]
+        [HttpGet("api/asi/ftp")]
         [Authorize(Roles = "Student")]
-        public JsonResult GetAsiFtp(int id)
+        public JsonResult GetAsiFtp()
         {
+
+            var currentUser = GetCurrentUser();
+
             string query = @" 
                              select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
+from dbo.module
+inner join asi_module on module.id_module = asi_module.module
+inner join asi_user on module.responsible = asi_user.id_asi_user
+inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
+inner join asi on asi.id_asi = asi_module_group.asi
+inner join module_group on module.module_group = module_group.id_module_group
+inner join site on module.site = site.id_site
+where asi.asi_user = @UserId AND module.module_group = 1
+                           ";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@UserId", currentUser.AsiUserId);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+        [HttpGet("api/asi/tsm")]
+        [Authorize(Roles = "Student")]
+        public JsonResult GetAsiTsm()
+        {
+            var currentUser = GetCurrentUser();
+
+            string query = @" 
+                            select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
+from dbo.module
+inner join asi_module on module.id_module = asi_module.module
+inner join asi_user on module.responsible = asi_user.id_asi_user
+inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
+inner join asi on asi.id_asi = asi_module_group.asi
+inner join module_group on module.module_group = module_group.id_module_group
+inner join site on module.site = site.id_site
+where asi.asi_user = @UserId AND module.module_group = 2
+                           ";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@UserId", currentUser.AsiUserId);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+        [HttpGet("api/asi/cm")]
+        [Authorize(Roles = "Student")]
+        public JsonResult GetCm()
+        {
+            var currentUser = GetCurrentUser();
+
+            string query = @" 
+                             select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
+from dbo.module
+inner join asi_module on module.id_module = asi_module.module
+inner join asi_user on module.responsible = asi_user.id_asi_user
+inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
+inner join asi on asi.id_asi = asi_module_group.asi
+inner join module_group on module.module_group = module_group.id_module_group
+inner join site on module.site = site.id_site
+where asi.asi_user = @UserId AND module.module_group = 3
+                           ";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@UserId", currentUser.AsiUserId);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+        [HttpGet("api/asi/supplementaryModules")]
+        [Authorize(Roles = "Student")]
+        public JsonResult GetSupplementaryModules()
+        {
+            var currentUser = GetCurrentUser();
+
+            string query = @" 
+                             select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
+from dbo.module
+inner join asi_module on module.id_module = asi_module.module
+inner join asi_user on module.responsible = asi_user.id_asi_user
+inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
+inner join asi on asi.id_asi = asi_module_group.asi
+inner join module_group on module.module_group = module_group.id_module_group
+inner join site on module.site = site.id_site
+where asi.asi_user = @UserId AND module.module_group = 5
+                           ";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@UserId", currentUser.AsiUserId);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+        [HttpGet("api/asi/masterProject")]
+        [Authorize(Roles = "Student")]
+        public JsonResult GetMasterProject()
+        {
+            var currentUser = GetCurrentUser();
+
+            string query = @" 
+                             select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
+                             from dbo.module
+                             inner join asi_module on module.id_module = asi_module.module
+                             left outer join asi_user on module.responsible = asi_user.id_asi_user
+                             inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
+                             inner join asi on asi.id_asi = asi_module_group.asi
+                             inner join module_group on module.module_group = module_group.id_module_group
+                             left outer join site on module.site = site.id_site
+                             where asi.asi_user = @UserId AND module.module_group = 6
+                           ";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@UserId", currentUser.AsiUserId);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+
+        [HttpGet("api/advisorStudents/{id}/ftp")]
+        [Authorize(Roles = "Advisor, StudentAdvisor")]
+        public JsonResult GetAdvisorStudentFtp(int id)
+        {
+            string query = @" 
+                select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
 from dbo.module
 inner join asi_module on module.id_module = asi_module.module
 inner join asi_user on module.responsible = asi_user.id_asi_user
@@ -357,12 +659,12 @@ where asi.asi_user = @UserId AND module.module_group = 1
             return new JsonResult(table);
         }
 
-        [HttpGet("api/asi/tsm/{id}")]
-        [Authorize(Roles = "Student")]
-        public JsonResult GetAsiTsm(int id)
+        [HttpGet("api/advisorStudents/{id}/tsm")]
+        [Authorize(Roles = "Advisor, StudentAdvisor")]
+        public JsonResult GetAdvisorStudentTsm(int id)
         {
             string query = @" 
-                            select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
+                select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
 from dbo.module
 inner join asi_module on module.id_module = asi_module.module
 inner join asi_user on module.responsible = asi_user.id_asi_user
@@ -393,12 +695,12 @@ where asi.asi_user = @UserId AND module.module_group = 2
             return new JsonResult(table);
         }
 
-        [HttpGet("api/asi/cm/{id}")]
-        [Authorize(Roles = "Student")]
-        public JsonResult GetCm(int id)
+        [HttpGet("api/advisorStudents/{id}/cm")]
+        [Authorize(Roles = "Advisor, StudentAdvisor")]
+        public JsonResult GetAdvisorStudentCm(int id)
         {
             string query = @" 
-                             select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
+                select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
 from dbo.module
 inner join asi_module on module.id_module = asi_module.module
 inner join asi_user on module.responsible = asi_user.id_asi_user
@@ -407,78 +709,6 @@ inner join asi on asi.id_asi = asi_module_group.asi
 inner join module_group on module.module_group = module_group.id_module_group
 inner join site on module.site = site.id_site
 where asi.asi_user = @UserId AND module.module_group = 3
-                           ";
-            DataTable table = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
-            SqlDataReader myReader;
-            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-            {
-                Console.WriteLine("SQL connection");
-                Console.WriteLine(myCon);
-                myCon.Open();
-                using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                {
-                    myCommand.Parameters.AddWithValue("@UserId", id);
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
-                }
-            }
-
-            return new JsonResult(table);
-        }
-
-        [HttpGet("api/asi/supplementaryModules/{id}")]
-        [Authorize(Roles = "Student")]
-        public JsonResult GetSupplementaryModules(int id)
-        {
-            string query = @" 
-                             select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
-from dbo.module
-inner join asi_module on module.id_module = asi_module.module
-inner join asi_user on module.responsible = asi_user.id_asi_user
-inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
-inner join asi on asi.id_asi = asi_module_group.asi
-inner join module_group on module.module_group = module_group.id_module_group
-inner join site on module.site = site.id_site
-where asi.asi_user = @UserId AND module.module_group = 5
-                           ";
-            DataTable table = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
-            SqlDataReader myReader;
-            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-            {
-                Console.WriteLine("SQL connection");
-                Console.WriteLine(myCon);
-                myCon.Open();
-                using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                {
-                    myCommand.Parameters.AddWithValue("@UserId", id);
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
-                }
-            }
-
-            return new JsonResult(table);
-        }
-
-        [HttpGet("api/asi/masterProject/{id}")]
-        [Authorize(Roles = "Student")]
-        public JsonResult GetMasterProject(int id)
-        {
-            string query = @" 
-                             select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
-from dbo.module
-inner join asi_module on module.id_module = asi_module.module
-left outer join asi_user on module.responsible = asi_user.id_asi_user
-inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
-inner join asi on asi.id_asi = asi_module_group.asi
-inner join module_group on module.module_group = module_group.id_module_group
-left outer join site on module.site = site.id_site
-where asi.asi_user = @UserId AND module.module_group = 6
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");

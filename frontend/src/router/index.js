@@ -7,6 +7,8 @@ import AsiProjectsView from '../views/AsiProjectsView.vue'
 import AsiTechnicalSpecializationManagementView from '../views/AsiTechnicalSpecializationManagementView.vue'
 import LoginView from '../views/LoginView'
 import SelectUserTypeView from '../views/SelectUserTypeView'
+import StudentListView from '../views/StudentListView'
+import StudentView from '../views/StudentView'
 
 const routes = [
   {
@@ -50,6 +52,16 @@ const routes = [
     path: '/selectType',
     name: 'SelectUserType',
     component: SelectUserTypeView
+  },
+  {
+    path: '/StudentList',
+    name: 'StudentListView',
+    component: StudentListView
+  },
+  {
+    path: '/Student/:studentId',
+    name: 'StudentView',
+    component: StudentView
   }
 ]
 

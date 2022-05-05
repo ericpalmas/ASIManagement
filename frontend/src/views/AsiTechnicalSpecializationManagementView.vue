@@ -43,6 +43,7 @@
                 </td>
                 <td class="table-active">
                   <button
+                    id="addProjectButton"
                     type="button"
                     class="btn btn-outline-primary"
                     @click="addNewRow(0)"
@@ -152,6 +153,7 @@
                 </td>
                 <td class="table-active">
                   <button
+                    id="addSupplementaryModuleButton"
                     type="button"
                     class="btn btn-outline-primary"
                     @click="addNewRow(1)"
@@ -251,6 +253,7 @@
                 </td>
                 <td class="table-active">
                   <button
+                    id="addMasterThesisButton"
                     type="button"
                     class="btn btn-outline-primary"
                     @click="addNewRow(2)"
@@ -362,8 +365,8 @@
 //import ASITechnicalTable from '../components/ASITechnicalTable.vue'
 import { mapGetters, mapActions } from 'vuex'
 import Navbar from '../components/Navbar.vue'
-import Sidebar from '@/components/sidebar/Sidebar'
-import { sidebarWidth } from '@/components/sidebar/state'
+import Sidebar from '../components/sidebar/Sidebar'
+import { sidebarWidth } from '../components/sidebar/state'
 
 export default {
   name: 'AsiTechnicalSpecializationManagementView',
@@ -375,10 +378,10 @@ export default {
     Sidebar
   },
   data: () => ({
-    userData: {
-      username: 'marco.rossi@student.supsi.ch',
-      password: '123456'
-    }
+    // userData: {
+    //   username: 'marco.rossi@student.supsi.ch',
+    //   password: '123456'
+    // }
   }),
 
   methods: {
@@ -563,7 +566,7 @@ export default {
     this.fetchSupplementaryModules()
     this.fetchAsiSupplementaryModules()
     this.fetchAsiMasterProject()
-    this.fetchAsiModuleGroups(this.userData)
+    this.fetchAsiModuleGroups()
   }
 }
 </script>

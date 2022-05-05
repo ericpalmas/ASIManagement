@@ -27,19 +27,9 @@ namespace backend.Controllers
             _configuration = configuration;
         }
 
-
-        //select id_module, code, module.name as module_name, module_group.initials as module_group_initials, ects, asi_user.name as responsible_name, asi_user.surname as responsible_surname ,site.name as site, site.initials as site_initials from dbo.module
-                          //  inner join asi_user on asi_user.id_asi_user = module.responsible
-                           // inner join site on module.site = site.id_site
-
-                          //  inner join module_group on module.module_group = module_group.id_module_group
-
-                          //  where not module.module_group = 4 & 5
-
-
         [Route("api/[controller]")]
         [HttpGet]
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = "Student,Advisor, StudentAdvisor, Administrator")]
         public JsonResult GetCourses()
         {
             string query = @" 
@@ -71,7 +61,7 @@ select id_module, code, module.name as module_name, module_group.initials as mod
 
         [Route("api/ftp")]
         [HttpGet]
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = "Student, Advisor, StudentAdvisor, Administrator")]
         public JsonResult GetFtp()
         {
             string query = @" 
@@ -103,7 +93,7 @@ select id_module, code, module.name as module_name, module_group.initials as mod
 
         [Route("api/tsm")]
         [HttpGet]
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = "Student,Advisor, StudentAdvisor, Administrator")]
         public JsonResult GetTsm()
         {
             string query = @" 
@@ -135,7 +125,7 @@ select id_module, code, module.name as module_name, module_group.initials as mod
 
         [Route("api/cm")]
         [HttpGet]
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = "Student,Advisor, StudentAdvisor, Administrator")]
         public JsonResult GetCm()
         {
             string query = @" 
@@ -167,7 +157,7 @@ select id_module, code, module.name as module_name, module_group.initials as mod
 
         [Route("api/supplementaryModules")]
         [HttpGet]
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = "Student,Advisor, StudentAdvisor, Administrator")]
         public JsonResult GetSupplementaryModules()
         {
             string query = @" 
@@ -196,6 +186,35 @@ select id_module, code, module.name as module_name, module_group.initials as mod
 
             return new JsonResult(table);
         }
+
+        [Route("api/moduleGroupRules")]
+        [HttpGet]
+        [Authorize(Roles = "Student,Advisor, StudentAdvisor, Administrator")]
+        public JsonResult GetModuleGroupRules()
+        {
+            string query = @" select * from module_group_rules
+                           ";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+
     }
 
 }

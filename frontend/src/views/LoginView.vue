@@ -33,6 +33,14 @@
             <button type="button" class="btn btn-primary" @click="doLogin">
               Log in
             </button>
+
+            <!-- <router-link :to="{name: 'editpost', params: {post: data}}">
+							<button type="button" class="btn btn-primary" @click="doLogin">
+									<span class="icon is-small">
+											<i class="mdi mdi-pencil"></i>
+									</span>
+							</button>
+						</router-link> -->
           </form>
           <!-- 
           <div class="modal-footer clearfix">
@@ -45,6 +53,7 @@
 </template>
 <script>
 import { mapActions, mapGetters } from 'vuex'
+import router from '../router/index'
 
 export default {
   name: 'LoginView',
@@ -62,7 +71,11 @@ export default {
   watch: {
     isLogin: function () {
       if (this.isLogin) {
-        window.location.href = '/AsiManagement'
+        //window.location.href = '/AsiManagement'
+
+        router.push({ name: 'AdministrativeDataView', params: { userId: 2 } })
+
+        //router.push({ name: 'user', params: { username: 'eduardo' } })
       }
     }
   },

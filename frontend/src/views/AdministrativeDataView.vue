@@ -6,6 +6,7 @@
       <div class="card">
         <h1 class="title">AdministrativeDataView</h1>
 
+        <h1>{{ userId }}</h1>
         <div class="card-body" v-for="user in userData" :key="user.student_id">
           <div class="row justify-content-center">
             <div class="col-3">Student’s family name(s):</div>
@@ -76,6 +77,7 @@ import { sidebarWidth } from '../components/sidebar/state'
 
 export default {
   name: 'AdministrativeDataView',
+  props: ['userId'],
   setup() {
     return { sidebarWidth }
   },
@@ -85,12 +87,19 @@ export default {
   },
   methods: {
     ...mapActions(['fetchUserData'])
+    //...mapActions(['fetchLoggedUser'])
   },
   computed: {
     ...mapGetters(['userData'])
+    //...mapGetters(['loggedUser'])
   },
   created() {
+    // this.fetchLoggedUser()
+    // console.log(this.loggedUser[0])
+
+    //if (this.loggedUser[0]) {
     this.fetchUserData()
+    //}
   }
 }
 </script>

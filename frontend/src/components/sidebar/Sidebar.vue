@@ -1,5 +1,7 @@
 <script>
 import SidebarLink from './SidebarLink'
+import { mapActions, mapGetters } from 'vuex'
+
 import { collapsed, toggleSidebar, sidebarWidth } from './state'
 
 export default {
@@ -7,6 +9,24 @@ export default {
   components: { SidebarLink },
   setup() {
     return { collapsed, toggleSidebar, sidebarWidth }
+  },
+  computed: {
+    ...mapGetters(['token']),
+    ...mapGetters(['loggedUser'])
+  },
+
+  methods: {
+    ...mapActions(['fetchLoggedUser'])
+  },
+
+  created() {
+    this.fetchLoggedUser()
+  },
+
+  watch: {
+    loggedUser: function () {
+      console.log(this.loggedUser)
+    }
   }
 }
 </script>
@@ -18,22 +38,62 @@ export default {
         <div style="padding-left: 25%">S</div>
         <div style="padding-left: 25%">I</div>
       </span>
-      <span style="padding-left: 4%" v-else>SUPSI</span>
+      <span style="padding-left: 5%" v-else>SUPSI</span>
     </h1>
-    <SidebarLink to="/AsiManagement" icon="fas fa-home">
-      ASI creation
-    </SidebarLink>
-    <SidebarLink to="/AsiTechnicalSpecialization" icon="fas fa-home">
-      Technical
-    </SidebarLink>
-    <SidebarLink to="/AsiProjects" icon="fas fa-columns">Projects</SidebarLink>
-    <SidebarLink to="/AsiAdminData" icon="fas fa-chart-bar">
-      Profile
-    </SidebarLink>
-    <SidebarLink to="/AsiCourseList" icon="fas fa-users">Courses</SidebarLink>
-    <SidebarLink to="/AsiInformation" icon="fas fa-image">
-      Informations
-    </SidebarLink>
+    <div v-if="loggedUser !== undefined && loggedUser !== null">
+      <SidebarLink
+        v-if="loggedUser.Role === 'Student'"
+        to="/AsiManagement"
+        icon="fas fa-home"
+      >
+        ASI creation
+      </SidebarLink>
+
+      <SidebarLink
+        v-if="loggedUser.Role === 'Student'"
+        to="/AsiTechnicalSpecialization"
+        icon="fas fa-home"
+      >
+        Technical
+      </SidebarLink>
+
+      <SidebarLink
+        v-if="loggedUser.Role === 'Student'"
+        to="/AsiProjects"
+        icon="fas fa-columns"
+      >
+        Projects
+      </SidebarLink>
+      <SidebarLink
+        v-if="loggedUser.Role === 'Student' || loggedUser.Role === 'Advisor'"
+        to="/AsiAdminData"
+        icon="fas fa-chart-bar"
+      >
+        Profile
+      </SidebarLink>
+      <SidebarLink
+        v-if="loggedUser.Role === 'Student' || loggedUser.Role === 'Advisor'"
+        to="/AsiCourseList"
+        icon="fas fa-users"
+      >
+        Courses
+      </SidebarLink>
+      <SidebarLink
+        v-if="loggedUser.Role === 'Student' || loggedUser.Role === 'Advisor'"
+        to="/AsiInformation"
+        icon="fas fa-image"
+      >
+        Informations
+      </SidebarLink>
+
+      <SidebarLink
+        v-if="loggedUser.Role === 'Advisor'"
+        to="/StudentList"
+        icon="fas fa-users"
+      >
+        Students
+      </SidebarLink>
+    </div>
 
     <span
       class="collapse-icon"

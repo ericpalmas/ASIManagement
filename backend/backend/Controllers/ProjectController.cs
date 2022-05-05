@@ -6,6 +6,16 @@ using backend.Models;
 using Microsoft.Extensions.Configuration;
 using System;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
+using System.Security.Cryptography;
+
+
 namespace backend.Controllers
 {
     [Produces("application/json")]
@@ -19,11 +29,35 @@ namespace backend.Controllers
             _configuration = configuration;
         }
 
-        [Route("api/asi/projects/{id}")]
+
+        private AsiUser GetCurrentUser()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            if (identity != null)
+            {
+                var userClaims = identity.Claims;
+                Console.WriteLine(userClaims.ToString());
+
+                return new AsiUser
+                {
+                    AsiUserId = Convert.ToInt32(userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value),
+                    AsiUserName = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.GivenName)?.Value,
+                    AsiUserSurname = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Surname)?.Value,
+                    AsiUserEmail = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Email)?.Value,
+                    Role = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value
+                };
+            }
+            return null;
+        }
+
+        [Route("api/asi/projects")]
         [HttpGet]
         [Authorize(Roles = "Student")]
-        public JsonResult GetProjects(int id)
+        public JsonResult GetProjects()
         {
+            var currentUser = GetCurrentUser();
+
             string query = @" 
                             select id_module, code, module.name as module_name, module_group.initials as module_group_initials, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
 from dbo.module
@@ -45,7 +79,7 @@ where asi.asi_user = @UserId AND module.module_group = 4
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@UserId", id);
+                    myCommand.Parameters.AddWithValue("@UserId", currentUser.AsiUserId);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();

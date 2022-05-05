@@ -23,27 +23,50 @@ const getters = {
 }
 
 const actions = {
-  /*async fetchAsi({ commit }) {
-    const response = await axios.get('http://localhost:8732/api/asi/2')
+  async fetchFtpAsiStudentModules({ commit }, id) {
+    const response = await axios.get(
+      'http://localhost:8732/api/asi/ftp/' + id,
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
 
-    commit('setAsi', response.data)
-  },*/
+    commit('setFtpAsiModules', response.data)
+  },
+  async fetchTsmAsiStudentModules({ commit }, id) {
+    const response = await axios.get(
+      'http://localhost:8732/api/asi/tsm/' + id,
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+
+    commit('setTsmAsiModules', response.data)
+  },
+  async fetchCmAsiStudentModules({ commit }, id) {
+    const response = await axios.get('http://localhost:8732/api/asi/cm/' + id, {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
+
+    commit('setCmAsiModules', response.data)
+  },
+
   async fetchFtpAsiModules({ commit }) {
-    const response = await axios.get('http://localhost:8732/api/asi/ftp/2', {
+    const response = await axios.get('http://localhost:8732/api/asi/ftp', {
       headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
     })
 
     commit('setFtpAsiModules', response.data)
   },
   async fetchTsmAsiModules({ commit }) {
-    const response = await axios.get('http://localhost:8732/api/asi/tsm/2', {
+    const response = await axios.get('http://localhost:8732/api/asi/tsm', {
       headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
     })
 
     commit('setTsmAsiModules', response.data)
   },
   async fetchCmAsiModules({ commit }) {
-    const response = await axios.get('http://localhost:8732/api/asi/cm/2', {
+    const response = await axios.get('http://localhost:8732/api/asi/cm', {
       headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
     })
 
@@ -51,7 +74,7 @@ const actions = {
   },
   async fetchAsiSupplementaryModules({ commit }) {
     const response = await axios.get(
-      'http://localhost:8732/api/asi/supplementaryModules/2',
+      'http://localhost:8732/api/asi/supplementaryModules',
       {
         headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
       }
@@ -59,18 +82,15 @@ const actions = {
     commit('setAsiSupplementaryModules', response.data)
   },
   async fetchProjects({ commit }) {
-    const response = await axios.get(
-      'http://localhost:8732/api/asi/projects/2',
-      {
-        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
-      }
-    )
+    const response = await axios.get('http://localhost:8732/api/asi/projects', {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
 
     commit('setProjects', response.data)
   },
   async fetchAsiMasterProject({ commit }) {
     const response = await axios.get(
-      'http://localhost:8732/api/asi/masterProject/2',
+      'http://localhost:8732/api/asi/masterProject',
       {
         headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
       }
@@ -79,13 +99,9 @@ const actions = {
     commit('setAsiMasterProject', response.data)
   },
 
-  async fetchAsiModuleGroups({ commit }, { username, password }) {
-    const response = await axios.post(
+  async fetchAsiModuleGroups({ commit }) {
+    const response = await axios.get(
       'http://localhost:8732/api/asi/moduleGroups',
-      {
-        AsiUserEmail: username,
-        AsiUserPassword: password
-      },
       {
         headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
       }
@@ -95,6 +111,7 @@ const actions = {
   },
 
   async updateAsi({ commit }, { newModules }) {
+    console.log(newModules)
     await axios.post(
       'http://localhost:8732/api/asi',
       {

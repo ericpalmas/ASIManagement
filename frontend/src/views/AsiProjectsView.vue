@@ -400,8 +400,8 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import Navbar from '../components/Navbar.vue'
-import Sidebar from '@/components/sidebar/Sidebar'
-import { sidebarWidth } from '@/components/sidebar/state'
+import Sidebar from '../components/sidebar/Sidebar'
+import { sidebarWidth } from '../components/sidebar/state'
 
 export default {
   name: 'AsiProjectScreen',
