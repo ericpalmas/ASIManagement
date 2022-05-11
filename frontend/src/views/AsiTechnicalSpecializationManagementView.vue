@@ -21,6 +21,7 @@
                 <td colspan="1">Code</td>
                 <td colspan="2">Module title</td>
                 <td colspan="1">ECTS</td>
+                <td colspan="1">Tutor</td>
                 <td colspan="1">Semester</td>
                 <td colspan="1">
                   <button
@@ -36,7 +37,7 @@
             <!-- asiProjects -->
             <tbody>
               <tr>
-                <td colspan="5" class="table-active">
+                <td colspan="6" class="table-active">
                   <label for="exampleColorInput" class="form-label">
                     asiProjects
                   </label>
@@ -87,8 +88,25 @@
                     @change="onChangeEcts($event, 0, i)"
                   />
                 </td>
+                <td colspan="1" span="1" style="width: 17%">
+                  <select
+                    class="form-select form-select-sm"
+                    aria-label=".form-select-sm example"
+                  >
+                    <option
+                      v-for="advisor in advisors"
+                      :key="advisor.id_asi_user"
+                    >
+                      {{ advisor.name }}&nbsp;
+                      {{ advisor.surname }}
+                    </option>
+                  </select>
+                </td>
                 <td colspan="1" span="1" style="width: 10%">
                   <select
+                    multiple="true"
+                    v-bind:class="{ 'fix-height': multiple === 'true' }"
+                    v-model="multipleSelections"
                     class="form-select form-select-sm"
                     aria-label=".form-select-sm example"
                     @change="onChangeSemester($event, 0, i)"
@@ -146,7 +164,7 @@
             <!-- Supplementary modules -->
             <tbody>
               <tr>
-                <td colspan="5" class="table-active">
+                <td colspan="6" class="table-active">
                   <label for="exampleColorInput" class="form-label">
                     Supplementary modules
                   </label>
@@ -188,6 +206,7 @@
                     </option>
                   </select>
                 </td>
+                <td colspan="1" span="1" style="width: 10%"></td>
                 <td colspan="1" span="1" style="width: 10%">
                   <select
                     class="form-select form-select-sm"
@@ -246,7 +265,7 @@
             <!-- Master -->
             <tbody>
               <tr>
-                <td colspan="5" class="table-active">
+                <td colspan="6" class="table-active">
                   <label for="exampleColorInput" class="form-label">
                     Master
                   </label>
@@ -294,6 +313,21 @@
                     v-model="project.ects"
                   />
                 </td>
+                <td colspan="1" span="1" style="width: 17%">
+                  <select
+                    class="form-select form-select-sm"
+                    aria-label=".form-select-sm example"
+                  >
+                    <option
+                      v-for="advisor in advisors"
+                      :key="advisor.id_asi_user"
+                    >
+                      {{ advisor.name }}&nbsp;
+                      {{ advisor.surname }}
+                    </option>
+                  </select>
+                </td>
+
                 <td colspan="1" span="1" style="width: 10%">
                   <select
                     class="form-select form-select-sm"
@@ -378,6 +412,7 @@ export default {
     Sidebar
   },
   data: () => ({
+    multipleSelections: []
     // userData: {
     //   username: 'marco.rossi@student.supsi.ch',
     //   password: '123456'
@@ -390,6 +425,7 @@ export default {
     ...mapActions(['fetchAsiSupplementaryModules']),
     ...mapActions(['fetchAsiMasterProject']),
     ...mapActions(['fetchAsiModuleGroups']),
+    ...mapActions(['fetchAdvisors']),
     ...mapActions(['updateTechnicalAsi']),
 
     saveAsi: function () {
@@ -538,6 +574,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['advisors']),
     ...mapGetters(['asiProjects']),
     ...mapGetters(['allSupplementaryModules']),
     ...mapGetters(['allSupplementaryModulesAsiModules']),
@@ -567,6 +604,7 @@ export default {
     this.fetchAsiSupplementaryModules()
     this.fetchAsiMasterProject()
     this.fetchAsiModuleGroups()
+    this.fetchAdvisors()
   }
 }
 </script>
