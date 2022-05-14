@@ -2502,6 +2502,11 @@
   "resolved" "https://registry.npmjs.org/@vue/web-component-wrapper/-/web-component-wrapper-1.3.0.tgz"
   "version" "1.3.0"
 
+"@vueform/multiselect@^2.3.3":
+  "integrity" "sha512-CLhtUZJwRGLyPqcgwuRrODOjT3Yqu6KNs5vV1O12kNOR/8c8ecX5vJyTcD0Mv1SJvnrslZgENmvYRRPpb5Cnjg=="
+  "resolved" "https://registry.npmjs.org/@vueform/multiselect/-/multiselect-2.3.3.tgz"
+  "version" "2.3.3"
+
 "@webassemblyjs/ast@1.9.0":
   "integrity" "sha512-C6wW5L+b7ogSDVqymbkkvuW9kruN//YisMED04xzeBBqjHa2FYnmvOlS6Xj68xWQRgWvI9cIglsjFowH/RJyEA=="
   "resolved" "https://registry.npmjs.org/@webassemblyjs/ast/-/ast-1.9.0.tgz"
@@ -7256,7 +7261,7 @@
   "resolved" "https://registry.npmjs.org/lodash.uniq/-/lodash.uniq-4.5.0.tgz"
   "version" "4.5.0"
 
-"lodash@^4.17.11", "lodash@^4.17.14", "lodash@^4.17.15", "lodash@^4.17.19", "lodash@^4.17.20", "lodash@^4.17.3", "lodash@^4.7.0":
+"lodash@^4.17.11", "lodash@^4.17.14", "lodash@^4.17.15", "lodash@^4.17.19", "lodash@^4.17.20", "lodash@^4.17.21", "lodash@^4.17.3", "lodash@^4.7.0":
   "integrity" "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg=="
   "resolved" "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
   "version" "4.17.21"
@@ -9380,6 +9385,16 @@
   "version" "1.10.11"
   dependencies:
     "node-forge" "^0.10.0"
+
+"semantic-ui-dropdown@^2.4.1":
+  "integrity" "sha512-TZio+bIeTLD7xXM9CGrDQj2GDJZp5DzedQvFazuh9LSiU2Y+YNT1ZP2LJJMvKtL8qlmrIQz3as2ibBCz5wii5A=="
+  "resolved" "https://registry.npmjs.org/semantic-ui-dropdown/-/semantic-ui-dropdown-2.4.1.tgz"
+  "version" "2.4.1"
+
+"semantic-ui-label@^2.3.2":
+  "integrity" "sha512-HlE0WOJ9R1arp0qvpnpi0xmUeaGB5m6Z0gB999nly42yEjwTlNj0cLI0lwZnA0vdZTuHIqL8Y4HVNRjsyR+Ivw=="
+  "resolved" "https://registry.npmjs.org/semantic-ui-label/-/semantic-ui-label-2.3.2.tgz"
+  "version" "2.3.2"
 
 "semver@^5.5.0":
   "integrity" "sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ=="

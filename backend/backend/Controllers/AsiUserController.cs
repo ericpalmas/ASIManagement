@@ -93,6 +93,34 @@ namespace backend.Controllers
             return new JsonResult(table);
         }
 
+        [HttpGet("api/asiuser/advisors")]
+        [Authorize(Roles = "Advisor, StudentAdvisor, Student")]
+        public JsonResult GetAdvisors()
+        {
+
+            string query = @"                          
+                 select * from dbo.asi_user where asi_user.role = 5
+                           ";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
         [HttpGet("api/asiuser/followStudent/{id}")]
         [Authorize(Roles = "Advisor, StudentAdvisor")]
         public JsonResult followStudent(int id)

@@ -103,7 +103,7 @@
                   </select>
                 </td>
                 <td colspan="1" span="1" style="width: 10%">
-                  <select
+                  <!-- <select
                     multiple="true"
                     v-bind:class="{ 'fix-height': multiple === 'true' }"
                     v-model="multipleSelections"
@@ -147,7 +147,112 @@
                     >
                       6
                     </option>
-                  </select>
+                  </select> -->
+
+                  <div v-if="i === 0">
+                    <button
+                      class="btn btn-secondary dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    ></button>
+                    <ul
+                      class="dropdown-menu"
+                      aria-labelledby="dropdownMenuButton1"
+                    >
+                      <li v-for="(option, k) in options" :key="k">
+                        <a class="dropdown-item">
+                          <div
+                            v-if="project.semester.split(',').includes(option)"
+                          >
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="flexCheckDefault"
+                              checked
+                              @change="updateFirstProjectValues($event, option)"
+                            />
+                            <label
+                              class="form-check-label"
+                              for="flexCheckDefault"
+                            >
+                              &nbsp; {{ option }}
+                            </label>
+                          </div>
+                          <div v-else>
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="flexCheckDefault"
+                              @change="updateFirstProjectValues($event, option)"
+                            />
+
+                            <label
+                              class="form-check-label"
+                              for="flexCheckDefault"
+                            >
+                              &nbsp; {{ option }}
+                            </label>
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div v-else-if="i === 1">
+                    <button
+                      class="btn btn-secondary dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    ></button>
+                    <ul
+                      class="dropdown-menu"
+                      aria-labelledby="dropdownMenuButton1"
+                    >
+                      <li v-for="(option, k) in options" :key="k">
+                        <a class="dropdown-item">
+                          <div
+                            v-if="project.semester.split(',').includes(option)"
+                          >
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="flexCheckDefault"
+                              checked
+                              @change="
+                                updateSecondProjectValues($event, option)
+                              "
+                            />
+                            <label
+                              class="form-check-label"
+                              for="flexCheckDefault"
+                            >
+                              &nbsp; {{ option }}
+                            </label>
+                          </div>
+                          <div v-else>
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="flexCheckDefault"
+                              @change="
+                                updateSecondProjectValues($event, option)
+                              "
+                            />
+
+                            <label
+                              class="form-check-label"
+                              for="flexCheckDefault"
+                            >
+                              &nbsp; {{ option }}
+                            </label>
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                 </td>
 
                 <td>
@@ -329,48 +434,60 @@
                 </td>
 
                 <td colspan="1" span="1" style="width: 10%">
-                  <select
-                    class="form-select form-select-sm"
-                    aria-label=".form-select-sm example"
-                    @change="onChangeSemester($event, 2, i)"
-                  >
-                    <option
-                      value="1"
-                      :selected="1 === project.semester ? true : false"
+                  <div class="dropdown">
+                    <button
+                      class="btn btn-secondary dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton1"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    ></button>
+                    <ul
+                      class="dropdown-menu"
+                      aria-labelledby="dropdownMenuButton1"
                     >
-                      1
-                    </option>
-                    <option
-                      value="2"
-                      :selected="2 === project.semester ? true : false"
-                    >
-                      2
-                    </option>
-                    <option
-                      value="3"
-                      :selected="3 === project.semester ? true : false"
-                    >
-                      3
-                    </option>
-                    <option
-                      value="4"
-                      :selected="4 === project.semester ? true : false"
-                    >
-                      4
-                    </option>
-                    <option
-                      value="5"
-                      :selected="5 === project.semester ? true : false"
-                    >
-                      5
-                    </option>
-                    <option
-                      value="6"
-                      :selected="6 === project.semester ? true : false"
-                    >
-                      6
-                    </option>
-                  </select>
+                      <li v-for="(option, k) in options" :key="k">
+                        <a class="dropdown-item">
+                          <div
+                            v-if="project.semester.split(',').includes(option)"
+                          >
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="flexCheckDefault"
+                              checked
+                              @change="
+                                updateMasterProjectValues($event, option)
+                              "
+                            />
+                            <label
+                              class="form-check-label"
+                              for="flexCheckDefault"
+                            >
+                              &nbsp; {{ option }}
+                            </label>
+                          </div>
+                          <div v-else>
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              id="flexCheckDefault"
+                              @change="
+                                updateMasterProjectValues($event, option)
+                              "
+                            />
+
+                            <label
+                              class="form-check-label"
+                              for="flexCheckDefault"
+                            >
+                              &nbsp; {{ option }}
+                            </label>
+                          </div>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                 </td>
 
                 <td>
@@ -401,6 +518,8 @@ import { mapGetters, mapActions } from 'vuex'
 import Navbar from '../components/Navbar.vue'
 import Sidebar from '../components/sidebar/Sidebar'
 import { sidebarWidth } from '../components/sidebar/state'
+//import Multiselect from '@vueform/multiselect'
+//import MultiExample from '../components/Multi/_Multi.vue'
 
 export default {
   name: 'AsiTechnicalSpecializationManagementView',
@@ -410,13 +529,16 @@ export default {
   components: {
     Navbar,
     Sidebar
+    //Multiselect,
+    //MultiExample
   },
   data: () => ({
-    multipleSelections: []
-    // userData: {
-    //   username: 'marco.rossi@student.supsi.ch',
-    //   password: '123456'
-    // }
+    firstProjectValues: [],
+    secondProjectValues: [],
+    masterProjectValues: [],
+    values: [],
+    options: ['1', '2', '3', '4', '5', '6']
+    //checkedCategories: []
   }),
 
   methods: {
@@ -428,23 +550,55 @@ export default {
     ...mapActions(['fetchAdvisors']),
     ...mapActions(['updateTechnicalAsi']),
 
+    updateMasterProjectValues: function (e, option) {
+      if (e.target.checked === true) {
+        this.masterProjectValues.push(option)
+      } else {
+        var index = this.asiMasterProject.indexOf(option)
+        this.masterProjectValues.splice(index, 1)
+      }
+      this.value = this.masterProjectValues.toString()
+      console.log(this.masterProjectValues)
+    },
+
+    updateFirstProjectValues: function (e, option) {
+      if (e.target.checked === true) {
+        this.firstProjectValues.push(option)
+      } else {
+        var index = this.asiProjects.indexOf(option)
+        this.firstProjectValues.splice(index, 1)
+      }
+      this.value = this.firstProjectValues.toString()
+      console.log(this.firstProjectValues)
+    },
+    updateSecondProjectValues: function (e, option) {
+      if (e.target.checked === true) {
+        this.secondProjectValues.push(option)
+      } else {
+        var index = this.asiProjects.indexOf(option)
+        this.secondProjectValues.splice(index, 1)
+      }
+      this.value = this.secondProjectValues.toString()
+      console.log(this.secondProjectValues)
+    },
     saveAsi: function () {
       // controllo che non ci siano corsi uguali
       // console.log(this.asiProjects)
       // console.log(this.allSupplementaryModulesAsiModules)
       // console.log(this.asiMasterProject)
 
-      var newModules = {
-        asiModuleGroups: this.asiModuleGroups,
-        asiProjects: this.asiProjects,
-        allSupplementaryModulesAsiModules:
-          this.allSupplementaryModulesAsiModules,
-        asiMasterProject: this.asiMasterProject
-      }
+      // var newModules = {
+      //   asiModuleGroups: this.asiModuleGroups,
+      //   asiProjects: this.asiProjects,
+      //   allSupplementaryModulesAsiModules:
+      //     this.allSupplementaryModulesAsiModules,
+      //   asiMasterProject: this.asiMasterProject
+      // }
 
-      this.updateTechnicalAsi({
-        newModules
-      })
+      console.log(this.value)
+      // this.updateTechnicalAsi({
+      //   newModules
+      // })
     },
 
     // mettere controllo prima di cancellare una riga
@@ -494,7 +648,7 @@ export default {
     },
     onChangeSemester(event, i, k) {
       const newSemester = parseInt(event.target.value)
-      console.log(event.target.value, i, k)
+      //console.log(event.target.value, i, k)
       if (i === 0) {
         this.asiProjects[k].semester = newSemester
       } else if (i === 1) {
@@ -505,7 +659,7 @@ export default {
     },
     onChangeEcts(event, i, k) {
       const newEcts = parseInt(event.target.value)
-      console.log(event.target.value, i, k)
+      //console.log(event.target.value, i, k)
       if (i === 0) {
         this.asiProjects[k].ects = newEcts
       } else if (i === 1) {
@@ -517,7 +671,7 @@ export default {
     onChangeCode(event, i, k) {
       const newCode = event.target.value
 
-      console.log(event.target.value, i, k)
+      //(event.target.value, i, k)
       if (i === 0) {
         this.asiProjects[k].code = newCode
       } else if (i === 1) {
@@ -530,7 +684,7 @@ export default {
     onChangeModuleName(event, i, k) {
       const newModuleName = event.target.value
 
-      console.log(event.target.value, i, k)
+      //console.log(event.target.value, i, k)
       if (i === 0) {
         this.asiProjects[k].module_name = newModuleName
       } else if (i === 1) {
@@ -584,20 +738,46 @@ export default {
   watch: {
     asiProjects: function () {
       if (this.asiProjects.length !== 0) {
-        console.log(this.asiProjects.length)
+        if (this.firstProjectValues.length === 0) {
+          if (this.asiProjects[0] !== undefined) {
+            console.log(this.asiProjects[0].semester.split(','))
+            this.firstProjectValues = this.asiProjects[0].semester.split(',')
+            console.log(this.firstProjectValues)
+          }
+        }
+        if (this.secondProjectValues.length === 0) {
+          if (this.asiProjects[1] !== undefined) {
+            console.log(this.asiProjects[1].semester.split(','))
+            this.secondProjectValues = this.asiProjects[1].semester.split(',')
+            console.log(this.secondProjectValues)
+          }
+        }
+        if (this.asiProjects.length !== 0) {
+          console.log(this.asiProjects.length)
+        }
       }
     },
+
     allSupplementaryModulesAsiModules: function () {
       if (this.allSupplementaryModulesAsiModules.length !== 0) {
         console.log(this.allSupplementaryModulesAsiModules.length)
       }
     },
     asiMasterProject: function () {
+      if (this.masterProjectValues.length === 0) {
+        if (this.asiMasterProject[0] !== undefined) {
+          console.log(this.asiMasterProject[0].semester.split(','))
+          this.masterProjectValues =
+            this.asiMasterProject[0].semester.split(',')
+          console.log(this.masterProjectValues)
+        }
+      }
       if (this.asiMasterProject.length !== 0) {
         console.log(this.asiMasterProject.length)
       }
     }
   },
+
   created() {
     this.fetchProjects()
     this.fetchSupplementaryModules()
@@ -627,3 +807,5 @@ export default {
   padding: 2%;
 }
 </style>
+
+<style src="@vueform/multiselect/themes/default.css"></style>

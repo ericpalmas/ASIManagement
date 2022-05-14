@@ -10,8 +10,4 @@ import '@fortawesome/fontawesome-free/js/all'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap'
 
-createApp(App)
-  .use(router)
-  .use(store)
-  // .use(BalmUI).use(BalmUIPlus)
-  .mount('#app')
+createApp(App).use(router).use(store).mount('#app')
