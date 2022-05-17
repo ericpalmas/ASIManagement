@@ -5,8 +5,26 @@
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
-          <h1 class="title">Technical specialization with an MRU</h1>
-
+          <div class="container">
+            <div class="row justify-content-md-center">
+              <div class="col col-lg-2" style="width: 60%">
+                <h2 id="title" class="title">
+                  Technical specialization with an MRU
+                </h2>
+              </div>
+              <div class="col-md-auto"></div>
+              <div class="col col-lg-2">
+                <button
+                  id="saveButton"
+                  type="button"
+                  class="btn btn-primary"
+                  @click="saveAsi"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
           <!-- <div
             v-for="module in asiModuleGroups"
             :key="module.id_asi_module_group"
@@ -24,13 +42,13 @@
                 <td colspan="1">Tutor</td>
                 <td colspan="1">Semester</td>
                 <td colspan="1">
-                  <button
+                  <!-- <button
                     type="button"
                     class="btn btn-outline-secondary"
                     @click="saveAsi"
                   >
                     <i class="fas fa-save"></i>
-                  </button>
+                  </button> -->
                 </td>
               </tr>
             </thead>
@@ -48,6 +66,7 @@
                     type="button"
                     class="btn btn-outline-primary"
                     @click="addNewRow(0)"
+                    :disabled="asiProjects.length === 2"
                   >
                     <i class="fas fa-plus-circle"></i>
                   </button>
@@ -92,10 +111,17 @@
                   <select
                     class="form-select form-select-sm"
                     aria-label=".form-select-sm example"
+                    @change="onChangeResponsible($event, 0, i)"
                   >
                     <option
                       v-for="advisor in advisors"
                       :key="advisor.id_asi_user"
+                      :value="advisor.id_asi_user"
+                      :selected="
+                        advisor.id_asi_user === project.responsible
+                          ? true
+                          : false
+                      "
                     >
                       {{ advisor.name }}&nbsp;
                       {{ advisor.surname }}
@@ -103,52 +129,6 @@
                   </select>
                 </td>
                 <td colspan="1" span="1" style="width: 10%">
-                  <!-- <select
-                    multiple="true"
-                    v-bind:class="{ 'fix-height': multiple === 'true' }"
-                    v-model="multipleSelections"
-                    class="form-select form-select-sm"
-                    aria-label=".form-select-sm example"
-                    @change="onChangeSemester($event, 0, i)"
-                  >
-                    <option
-                      value="1"
-                      :selected="1 === project.semester ? true : false"
-                    >
-                      1
-                    </option>
-                    <option
-                      value="2"
-                      :selected="2 === project.semester ? true : false"
-                    >
-                      2
-                    </option>
-                    <option
-                      value="3"
-                      :selected="3 === project.semester ? true : false"
-                    >
-                      3
-                    </option>
-                    <option
-                      value="4"
-                      :selected="4 === project.semester ? true : false"
-                    >
-                      4
-                    </option>
-                    <option
-                      value="5"
-                      :selected="5 === project.semester ? true : false"
-                    >
-                      5
-                    </option>
-                    <option
-                      value="6"
-                      :selected="6 === project.semester ? true : false"
-                    >
-                      6
-                    </option>
-                  </select> -->
-
                   <div v-if="i === 0">
                     <button
                       class="btn btn-secondary dropdown-toggle"
@@ -381,6 +361,7 @@
                     type="button"
                     class="btn btn-outline-primary"
                     @click="addNewRow(2)"
+                    :disabled="asiMasterProject.length === 1"
                   >
                     <i class="fas fa-plus-circle"></i>
                   </button>
@@ -422,10 +403,17 @@
                   <select
                     class="form-select form-select-sm"
                     aria-label=".form-select-sm example"
+                    @change="onChangeResponsible($event, 2, i)"
                   >
                     <option
                       v-for="advisor in advisors"
                       :key="advisor.id_asi_user"
+                      :value="advisor.id_asi_user"
+                      :selected="
+                        advisor.id_asi_user === project.responsible
+                          ? true
+                          : false
+                      "
                     >
                       {{ advisor.name }}&nbsp;
                       {{ advisor.surname }}
@@ -536,6 +524,9 @@ export default {
     firstProjectValues: [],
     secondProjectValues: [],
     masterProjectValues: [],
+    firstProjectEnabledValues: [],
+    secondProjectEnabledValues: [],
+    masterProjectEnabledValues: [],
     values: [],
     options: ['1', '2', '3', '4', '5', '6']
     //checkedCategories: []
@@ -551,64 +542,107 @@ export default {
     ...mapActions(['updateTechnicalAsi']),
 
     updateMasterProjectValues: function (e, option) {
+      // console.log(this.masterProjectValues)
+      // console.log(option)
+
       if (e.target.checked === true) {
         this.masterProjectValues.push(option)
       } else {
-        var index = this.asiMasterProject.indexOf(option)
+        var index = this.masterProjectValues.indexOf(option)
+        //console.log(index)
         this.masterProjectValues.splice(index, 1)
       }
       this.value = this.masterProjectValues.toString()
-      console.log(this.masterProjectValues)
+      //console.log(this.masterProjectValues)
     },
 
     updateFirstProjectValues: function (e, option) {
       if (e.target.checked === true) {
         this.firstProjectValues.push(option)
       } else {
-        var index = this.asiProjects.indexOf(option)
+        var index = this.firstProjectValues.indexOf(option)
         this.firstProjectValues.splice(index, 1)
       }
       this.value = this.firstProjectValues.toString()
-      console.log(this.firstProjectValues)
+      //console.log(this.firstProjectValues)
     },
     updateSecondProjectValues: function (e, option) {
       if (e.target.checked === true) {
         this.secondProjectValues.push(option)
       } else {
-        var index = this.asiProjects.indexOf(option)
+        var index = this.secondProjectValues.indexOf(option)
         this.secondProjectValues.splice(index, 1)
       }
       this.value = this.secondProjectValues.toString()
-      console.log(this.secondProjectValues)
+      //console.log(this.secondProjectValues)
     },
     saveAsi: function () {
       // controllo che non ci siano corsi uguali
       // console.log(this.asiProjects)
       // console.log(this.allSupplementaryModulesAsiModules)
       // console.log(this.asiMasterProject)
+      // console.log(this.firstProjectValues)
+      // console.log(this.secondProjectValues)
+      // console.log(this.masterProjectValues)
 
-      // var newModules = {
-      //   asiModuleGroups: this.asiModuleGroups,
-      //   asiProjects: this.asiProjects,
-      //   allSupplementaryModulesAsiModules:
-      //     this.allSupplementaryModulesAsiModules,
-      //   asiMasterProject: this.asiMasterProject
-      // }
+      if (this.asiProjects[0] !== undefined) {
+        this.asiProjects[0].firstProjectValues = this.firstProjectValues
+        //this.asiProjects[0].semester = 1
+      }
 
-      console.log(this.value)
-      // this.updateTechnicalAsi({
-      //   newModules
-      // })
+      if (this.asiProjects[1] !== undefined) {
+        this.asiProjects[1].secondProjectValues = this.secondProjectValues
+        //this.asiProjects[1].semester = 1
+      }
+
+      if (this.asiMasterProject[0] !== undefined) {
+        this.asiMasterProject[0].masterProjectValues = this.masterProjectValues
+        //this.asiMasterProject[0].semester = 1
+      }
+
+      var newModules = {
+        asiModuleGroups: this.asiModuleGroups,
+        asiProjects: this.asiProjects,
+        allSupplementaryModulesAsiModules:
+          this.allSupplementaryModulesAsiModules,
+        asiMasterProject: this.asiMasterProject
+        // firstProjectValues: this.firstProjectValues,
+        // secondProjectValues: this.secondProjectValues,
+        // masterProjectValues: this.masterProjectValues
+      }
+
+      if (newModules.asiProjects[0] !== undefined)
+        newModules.asiProjects[0].semester = 1
+      if (newModules.asiProjects[1] !== undefined)
+        newModules.asiProjects[1].semester = 1
+      if (newModules.asiMasterProject[0] !== undefined)
+        newModules.asiMasterProject[0].semester = 1
+
+      console.log(newModules)
+
+      this.updateTechnicalAsi({
+        newModules
+      })
     },
 
     // mettere controllo prima di cancellare una riga
     deleteRow(i, k) {
       if (i === 0) {
         this.asiProjects.splice(k, 1)
+        if (k === 0) {
+          this.firstProjectValues = []
+        } else if (k === 1) {
+          this.secondProjectValues = []
+        }
       } else if (i === 1) {
         this.allSupplementaryModulesAsiModules.splice(k, 1)
       } else if (i === 2) {
+        //console.log(i, k)
         this.asiMasterProject.splice(k, 1)
+        if (k === 0) {
+          this.masterProjectValues = []
+          //console.log(this.masterProjectValues)
+        }
       }
     },
 
@@ -619,8 +653,11 @@ export default {
           code: '',
           module_name: '',
           ects: 15,
-          semester: 1
+          semester: '1',
+          responsible: this.advisors[0].id_asi_user
         })
+        if (this.asiProjects.length === 1) this.firstProjectValues = ['1']
+        else if (this.asiProjects.length === 2) this.secondProjectValues = ['1']
       } else if (i === 1) {
         this.allSupplementaryModulesAsiModules.push({
           id_module: this.allSupplementaryModules[0].id_module,
@@ -642,10 +679,25 @@ export default {
           code: '',
           module_name: '',
           ects: 30,
-          semester: 1
+          semester: '1',
+          responsible: this.advisors[0].id_asi_user
         })
+        if (this.asiMasterProject.length === 1) this.masterProjectValues = ['1']
       }
     },
+
+    onChangeResponsible(event, i, k) {
+      const newResponsible = parseInt(event.target.value)
+      console.log(newResponsible)
+      if (i === 0) {
+        this.asiProjects[k].responsible = newResponsible
+      } else if (i === 1) {
+        this.asiProjects[k].responsible = newResponsible
+      } else if (i === 2) {
+        this.asiMasterProject[k].responsible = newResponsible
+      }
+    },
+
     onChangeSemester(event, i, k) {
       const newSemester = parseInt(event.target.value)
       //console.log(event.target.value, i, k)
@@ -738,18 +790,21 @@ export default {
   watch: {
     asiProjects: function () {
       if (this.asiProjects.length !== 0) {
+        //console.log('dentro al watch')
         if (this.firstProjectValues.length === 0) {
           if (this.asiProjects[0] !== undefined) {
-            console.log(this.asiProjects[0].semester.split(','))
+            //console.log(this.asiProjects[0].semester.split(','))
             this.firstProjectValues = this.asiProjects[0].semester.split(',')
-            console.log(this.firstProjectValues)
+            //this.asiProjects[0].semester = 1
+            //console.log(this.firstProjectValues)
           }
         }
         if (this.secondProjectValues.length === 0) {
           if (this.asiProjects[1] !== undefined) {
-            console.log(this.asiProjects[1].semester.split(','))
+            //console.log(this.asiProjects[1].semester.split(','))
             this.secondProjectValues = this.asiProjects[1].semester.split(',')
-            console.log(this.secondProjectValues)
+            //this.asiProjects[1].semester = 1
+            //console.log(this.secondProjectValues)
           }
         }
         if (this.asiProjects.length !== 0) {
@@ -765,11 +820,14 @@ export default {
     },
     asiMasterProject: function () {
       if (this.masterProjectValues.length === 0) {
+        //console.log('dentro al watch')
+
         if (this.asiMasterProject[0] !== undefined) {
-          console.log(this.asiMasterProject[0].semester.split(','))
+          //console.log(this.asiMasterProject[0].semester.split(','))
           this.masterProjectValues =
             this.asiMasterProject[0].semester.split(',')
-          console.log(this.masterProjectValues)
+          //this.asiMasterProject[0].semester = 1
+          //console.log(this.masterProjectValues)
         }
       }
       if (this.asiMasterProject.length !== 0) {
@@ -798,6 +856,12 @@ export default {
   padding-top: 2%;
   background-color: #eeeded;
   /* text-align: center; */
+}
+
+#dropdownMenuButton1 {
+  background-color: #e5e6e7;
+  border-color: #dfe0e1;
+  color: white;
 }
 
 .asiManagement {

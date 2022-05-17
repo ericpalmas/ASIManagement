@@ -99,7 +99,7 @@ namespace backend.Controllers
         {
 
             string query = @"                          
-                 select * from dbo.asi_user where asi_user.role = 5
+                  select * from dbo.asi_user where asi_user.role = 5 OR  asi_user.role = 7
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");

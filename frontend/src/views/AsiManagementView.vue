@@ -5,6 +5,27 @@
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
+          <div></div>
+
+          <div class="container">
+            <div class="row justify-content-md-center">
+              <div class="col col-lg-2" style="width: 40%">
+                <h2 id="title" class="title">ASI management</h2>
+              </div>
+              <div class="col-md-auto"></div>
+              <div class="col col-lg-2">
+                <button
+                  id="saveButton"
+                  type="button"
+                  class="btn btn-primary"
+                  @click="saveAsi"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+
           <!-- <h1>ASI management</h1> -->
 
           <!-- <div
@@ -337,9 +358,6 @@
                     </tr>
                   </tbody>
                 </table>
-                <button type="button" class="btn btn-primary" @click="saveAsi">
-                  Save
-                </button>
               </div>
             </div>
           </div>
@@ -757,6 +775,7 @@ export default {
   padding-top: 2%;
   background-color: #eeeded;
   text-align: center;
+  align-content: center;
 }
 
 .asiManagement {
@@ -765,4 +784,13 @@ export default {
 .title {
   padding: 2%;
 }
+
+/* #title {
+  float: left;
+  overflow: hidden;
+}
+#saveButton {
+  float: left;
+  overflow: hidden;
+} */
 </style>

@@ -232,6 +232,7 @@ where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(create
         [Authorize(Roles = "Student")]
         public JsonResult addTechnicalModules(Asi asi)
         {
+            Console.WriteLine(asi);
 
             // il problema è che i progetti e il master project essendo progetti non hanno un id_module e va inserito il modulo
 
@@ -240,7 +241,6 @@ where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(create
             string masterModuleGroupId = "";
 
             // save asi module group id and create module group id pool
-
             for (int i = 0; i < asi.moduleGroups.Length; i++)
             {
                 switch (asi.moduleGroups[i].module_group)
@@ -268,11 +268,39 @@ where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(create
             {
                 if (asi.projectAsiModules[i].id_module == -1)
                 {
-                    query += "INSERT INTO dbo.module(code, name, ects, site, module_group  ) VALUES ('"+ asi.projectAsiModules[i].code + "','"+ asi.projectAsiModules[i].module_name + "',"+ asi.projectAsiModules[i].ects + ", 1, 4);";
-                    query += "INSERT INTO dbo.asi_module (asi_module_group, module, semester, asi_module_state ) values ("+ projectModuleGroupId + ", (SELECT @@IDENTITY AS ID), "+ asi.projectAsiModules[i].semester + ",1);";
+                    query += "INSERT INTO dbo.module(code, name, ects, site,  responsible, module_group  ) VALUES ('" + asi.projectAsiModules[i].code + "','"+ asi.projectAsiModules[i].module_name + "',"+ asi.projectAsiModules[i].ects + ", 1,"+asi.projectAsiModules[i].responsible + ", 4);";
+                    query += "INSERT INTO dbo.asi_module (asi_module_group, module,  asi_module_state ) values (" + projectModuleGroupId + ", (SELECT @@IDENTITY AS ID), "+ "1);";
+                    
                 } else
                 {
-                    query += "INSERT INTO dbo.asi_module (asi_module_group, module, semester, asi_module_state ) values (" + projectModuleGroupId + ", " + asi.projectAsiModules[i].id_module + "," + asi.projectAsiModules[i].semester + "," + "1);";
+                    query += "INSERT INTO dbo.asi_module (asi_module_group, module, asi_module_state ) values (" + projectModuleGroupId + ", " + asi.projectAsiModules[i].id_module + "," + "1);";
+                    query += "UPDATE dbo.module SET responsible = " + asi.projectAsiModules[i].responsible + " WHERE module.id_module = " + asi.projectAsiModules[i].id_module + ";";
+
+                }
+
+                if (i == 0)
+                {
+                    query += "INSERT INTO dbo.asi_module_semester(semester, asi_module) VALUES ";
+                    for (int j = 0; j < asi.projectAsiModules[i].firstProjectValues.Length; j++)
+                    {
+                        query += "(" + asi.projectAsiModules[i].firstProjectValues[j] + ",(SELECT @@IDENTITY AS ID)" + ")";
+                        if (j != asi.projectAsiModules[i].firstProjectValues.Length - 1)
+                            query += ",";
+                        else
+                            query += ";";
+                    }
+                }
+                else if (i == 1)
+                {
+                    query += "INSERT INTO dbo.asi_module_semester(semester, asi_module) VALUES ";
+                    for (int j = 0; j < asi.projectAsiModules[i].secondProjectValues.Length; j++)
+                    {
+                        query += "(" + asi.projectAsiModules[i].secondProjectValues[j] + ",(SELECT @@IDENTITY AS ID)" + ")";
+                        if (j != asi.projectAsiModules[i].secondProjectValues.Length - 1)
+                            query += ",";
+                        else
+                            query += ";";
+                    }
                 }
             }
 
@@ -280,6 +308,7 @@ where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(create
             for (int i = 0; i < asi.supplementaryAsiModules.Length; i++)
             {
                 query += "INSERT INTO dbo.asi_module (asi_module_group, module, semester, asi_module_state ) values (" + supplementaryModuleGroupId + "," + asi.supplementaryAsiModules[i].id_module + "," + asi.supplementaryAsiModules[i].semester + "," + "1);";
+                // alter table modify responsible
             }
 
 
@@ -288,13 +317,27 @@ where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(create
             {
                 if (asi.masterAsiModules[i].id_module == -1)
                 {
-                    query += "INSERT INTO dbo.module(code, name, ects, site, module_group  ) VALUES ('" + asi.masterAsiModules[i].code + "','" + asi.masterAsiModules[i].module_name + "'," + asi.masterAsiModules[i].ects + ", 1, 6);";
-                    query += "INSERT INTO dbo.asi_module (asi_module_group, module, semester, asi_module_state ) values (" + masterModuleGroupId + ", (SELECT @@IDENTITY AS ID), " + asi.masterAsiModules[i].semester + ",1);";
+                    query += "INSERT INTO dbo.module(code, name, ects, site, responsible, module_group  ) VALUES ('" + asi.masterAsiModules[i].code + "','" + asi.masterAsiModules[i].module_name + "'," + asi.masterAsiModules[i].ects + ", 1," + asi.masterAsiModules[i].responsible + ",6);";
+                    query += "INSERT INTO dbo.asi_module (asi_module_group, module,  asi_module_state ) values (" + masterModuleGroupId + ", (SELECT @@IDENTITY AS ID), " +  "1);";
                 } else
                 {
-                    query += "INSERT INTO dbo.asi_module (asi_module_group, module, semester, asi_module_state ) values (" + masterModuleGroupId + "," + asi.masterAsiModules[i].id_module + "," + asi.masterAsiModules[i].semester + "," + "1);";
-
+                    query += "INSERT INTO dbo.asi_module (asi_module_group, module, asi_module_state ) values (" + masterModuleGroupId + "," + asi.masterAsiModules[i].id_module + "," +  "1);";
+                    query += "UPDATE dbo.module SET responsible = " + asi.masterAsiModules[i].responsible + " WHERE module.id_module = " + asi.masterAsiModules[i].id_module + ";";
                 }
+
+                if (i == 0)
+                {
+                    query += "INSERT INTO dbo.asi_module_semester(semester, asi_module) VALUES ";
+                    for (int j = 0; j < asi.masterAsiModules[i].masterProjectValues.Length; j++)
+                    {
+                        query += "(" + asi.masterAsiModules[i].masterProjectValues[j] + ",(SELECT @@IDENTITY AS ID)" + ")";
+                        if (j != asi.masterAsiModules[i].masterProjectValues.Length - 1)
+                            query += ",";
+                        else
+                            query += ";";
+                    }
+                }
+                
             }
 
 
@@ -316,7 +359,7 @@ where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(create
                 }
             }
 
-            return new JsonResult(table);
+            return new JsonResult(query);
         }
 
         [HttpGet("api/asi/ftp/{id}")]
@@ -602,7 +645,7 @@ ORDER BY asi_module.id_asi_module asc */
             var currentUser = GetCurrentUser();
 
             string query = @" 
-SELECT id_module, code, module.name as module_name,asi_module.id_asi_module,asi_module.module,asi_module.asi_module_state,asi_module.asi_module_group, module.module_group, module.ects, module_group.initials as module_group_initials,asi_user.name as responsible_name, asi_user.surname as responsible_surname, STRING_AGG(asi_module_semester.semester,',')  WITHIN GROUP(ORDER BY asi_module_semester.id_asi_module_semester ASC)  AS semester FROM dbo.asi_module
+SELECT id_module, code, module.name as module_name,asi_module.id_asi_module,asi_module.module,asi_module.asi_module_state,asi_module.asi_module_group, module.module_group, module.ects, module_group.initials as module_group_initials,asi_user.id_asi_user as responsible, asi_user.name as responsible_name, asi_user.surname as responsible_surname, STRING_AGG(asi_module_semester.semester,',')  WITHIN GROUP(ORDER BY asi_module_semester.id_asi_module_semester ASC)  AS semester FROM dbo.asi_module
 left outer join asi_module_semester on asi_module_semester.asi_module = asi_module.id_asi_module
 inner join module on module.id_module = asi_module.module
 inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
@@ -610,7 +653,7 @@ inner join module_group on module.module_group = module_group.id_module_group
 left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 where asi.asi_user = @UserId AND module.module_group = 6
-GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname
+GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user
 ORDER BY asi_module.id_asi_module asc
                            ";
             DataTable table = new DataTable();
