@@ -17,7 +17,7 @@
                 <button
                   id="saveButton"
                   type="button"
-                  class="btn btn-primary"
+                  class="btn btn-secondary"
                   @click="saveAsi"
                 >
                   Save

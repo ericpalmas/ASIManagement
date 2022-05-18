@@ -17,7 +17,7 @@
                 <button
                   id="saveButton"
                   type="button"
-                  class="btn btn-primary"
+                  class="btn btn-secondary"
                   @click="saveAsi"
                 >
                   Save
@@ -25,6 +25,16 @@
               </div>
             </div>
           </div>
+
+          <div
+            v-if="notContiguousError"
+            class="alert alert-danger"
+            role="alert"
+          >
+            Project semesters must be contigous
+          </div>
+
+          <!-- <div v-else-if="notContiguousError === false">prova</div> -->
           <!-- <div
             v-for="module in asiModuleGroups"
             :key="module.id_asi_module_group"
@@ -528,7 +538,9 @@ export default {
     secondProjectEnabledValues: [],
     masterProjectEnabledValues: [],
     values: [],
-    options: ['1', '2', '3', '4', '5', '6']
+    options: ['1', '2', '3', '4', '5', '6'],
+    notContiguousError: false
+
     //checkedCategories: []
   }),
 
@@ -540,6 +552,11 @@ export default {
     ...mapActions(['fetchAsiModuleGroups']),
     ...mapActions(['fetchAdvisors']),
     ...mapActions(['updateTechnicalAsi']),
+
+    // hideAlert() {
+    //   // This was for me to test the click even - PREFER AUTO HIDE AFTER A FEW SECONDS
+    //   document.querySelector('.alert').style.display = 'none'
+    // },
 
     updateMasterProjectValues: function (e, option) {
       // console.log(this.masterProjectValues)
@@ -576,53 +593,87 @@ export default {
       this.value = this.secondProjectValues.toString()
       //console.log(this.secondProjectValues)
     },
+    checkContiguous: function (array) {
+      var sortedArray = array.map((i) => Number(i)).sort()
+      console.log(sortedArray)
+
+      var error = false
+      for (var i = 0; i < sortedArray.length; i++) {
+        if (i !== 0) {
+          if (sortedArray[i] - sortedArray[i - 1] !== 1) error = true
+        }
+      }
+      return error
+    },
     saveAsi: function () {
       // controllo che non ci siano corsi uguali
       // console.log(this.asiProjects)
       // console.log(this.allSupplementaryModulesAsiModules)
       // console.log(this.asiMasterProject)
+
       // console.log(this.firstProjectValues)
       // console.log(this.secondProjectValues)
       // console.log(this.masterProjectValues)
 
-      if (this.asiProjects[0] !== undefined) {
-        this.asiProjects[0].firstProjectValues = this.firstProjectValues
-        //this.asiProjects[0].semester = 1
+      var firstProjectControl = this.checkContiguous(this.firstProjectValues)
+      var secondProjectControl = this.checkContiguous(this.secondProjectValues)
+      var masterProjectControl = this.checkContiguous(this.masterProjectValues)
+
+      console.log(
+        firstProjectControl,
+        secondProjectControl,
+        masterProjectControl
+      )
+
+      if (firstProjectControl || secondProjectControl || masterProjectControl) {
+        this.notContiguousError = true
+        console.log('ERRORE')
+        document.querySelector('.alert').style.display = 'block'
+      } else {
+        this.notContiguousError = false
+        document.querySelector('.alert').style.display = 'none'
+        console.log(this.notContiguousError)
+
+        if (this.asiProjects[0] !== undefined) {
+          this.asiProjects[0].firstProjectValues = this.firstProjectValues
+          //this.asiProjects[0].semester = 1
+        }
+
+        if (this.asiProjects[1] !== undefined) {
+          this.asiProjects[1].secondProjectValues = this.secondProjectValues
+          //this.asiProjects[1].semester = 1
+        }
+
+        if (this.asiMasterProject[0] !== undefined) {
+          this.asiMasterProject[0].masterProjectValues =
+            this.masterProjectValues
+          //this.asiMasterProject[0].semester = 1
+        }
+
+        var newModules = {
+          asiModuleGroups: this.asiModuleGroups,
+          asiProjects: this.asiProjects,
+          allSupplementaryModulesAsiModules:
+            this.allSupplementaryModulesAsiModules,
+          asiMasterProject: this.asiMasterProject
+          // firstProjectValues: this.firstProjectValues,
+          // secondProjectValues: this.secondProjectValues,
+          // masterProjectValues: this.masterProjectValues
+        }
+
+        if (newModules.asiProjects[0] !== undefined)
+          newModules.asiProjects[0].semester = 1
+        if (newModules.asiProjects[1] !== undefined)
+          newModules.asiProjects[1].semester = 1
+        if (newModules.asiMasterProject[0] !== undefined)
+          newModules.asiMasterProject[0].semester = 1
+
+        console.log(newModules)
+
+        this.updateTechnicalAsi({
+          newModules
+        })
       }
-
-      if (this.asiProjects[1] !== undefined) {
-        this.asiProjects[1].secondProjectValues = this.secondProjectValues
-        //this.asiProjects[1].semester = 1
-      }
-
-      if (this.asiMasterProject[0] !== undefined) {
-        this.asiMasterProject[0].masterProjectValues = this.masterProjectValues
-        //this.asiMasterProject[0].semester = 1
-      }
-
-      var newModules = {
-        asiModuleGroups: this.asiModuleGroups,
-        asiProjects: this.asiProjects,
-        allSupplementaryModulesAsiModules:
-          this.allSupplementaryModulesAsiModules,
-        asiMasterProject: this.asiMasterProject
-        // firstProjectValues: this.firstProjectValues,
-        // secondProjectValues: this.secondProjectValues,
-        // masterProjectValues: this.masterProjectValues
-      }
-
-      if (newModules.asiProjects[0] !== undefined)
-        newModules.asiProjects[0].semester = 1
-      if (newModules.asiProjects[1] !== undefined)
-        newModules.asiProjects[1].semester = 1
-      if (newModules.asiMasterProject[0] !== undefined)
-        newModules.asiMasterProject[0].semester = 1
-
-      console.log(newModules)
-
-      this.updateTechnicalAsi({
-        newModules
-      })
     },
 
     // mettere controllo prima di cancellare una riga
