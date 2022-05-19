@@ -43,7 +43,7 @@
               </div>
             </div>
 
-            <button
+            <!-- <button
               type="button"
               class="btn btn-outline-primary"
               data-bs-toggle="modal"
@@ -51,8 +51,6 @@
             >
               <i class="fas fa-plus-circle"></i>
             </button>
-
-            <!-- Modal -->
             <div
               class="modal fade"
               id="exampleModal"
@@ -113,7 +111,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>

@@ -37,7 +37,9 @@
                   <th scope="row">1</th>
                   <td id="moduleCode">{{ module.code }}</td>
                   <td id="moduleEcts">{{ module.ects }}</td>
-                  <td></td>
+                  <td id="moduleProfile">
+                    {{ module.module_profile_initials }}
+                  </td>
                   <td id="moduleName">{{ module.module_name }}</td>
                   <td id="moduleResponsible">
                     {{ module.responsible_surname }}

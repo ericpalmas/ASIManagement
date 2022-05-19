@@ -262,7 +262,7 @@ namespace backend.Controllers
         }*/
 
         [HttpGet("api/asiuser/adminData")]
-        [Authorize(Roles = "Student,Advisor, StudentAdvisor, Administrator")]
+        [Authorize(Roles = "Advisor,Student, StudentAdvisor, Administrator,ProfileResponsible,ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor ")]
         public JsonResult GetAdministrativeData()
         {
             var currentUser = GetCurrentUser();
@@ -461,7 +461,7 @@ left outer join dbo.asi_user on student.id_advisor = asi_user.id_asi_user
         }
 
         [HttpGet("api/asiuser/current")]
-        [Authorize(Roles = "Advisor,Student,Administrator")]
+        [Authorize(Roles = "Advisor,Student, StudentAdvisor, Administrator,ProfileResponsible,ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor ")]
         public JsonResult GetLoggedUser()
         {
             var currentUser = GetCurrentUser();

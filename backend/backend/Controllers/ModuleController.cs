@@ -29,15 +29,16 @@ namespace backend.Controllers
 
         [Route("api/[controller]")]
         [HttpGet]
-        [Authorize(Roles = "Student,Advisor, StudentAdvisor, Administrator")]
+        [Authorize(Roles = "Advisor,Student, StudentAdvisor, Administrator,ProfileResponsible,ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor ")]
         public JsonResult GetCourses()
         {
             string query = @" 
-select id_module, code, module.name as module_name, module_group.initials as module_group_initials, ects, asi_user.name as responsible_name, asi_user.surname as responsible_surname ,site.name as site, site.initials as site_initials from dbo.module 
-                            inner join asi_user on asi_user.id_asi_user = module.responsible
-                            inner join site on module.site = site.id_site
-							inner join module_group on module.module_group = module_group.id_module_group
-                            where not module.module_group = 4 & 6;
+                            select id_module, code, module_profile.name as module_profile,module_profile.initials as module_profile_initials, module.name as module_name, module_group.initials as module_group_initials, ects, asi_user.name as responsible_name, asi_user.surname as responsible_surname ,site.name as site, site.initials as site_initials from dbo.module 
+inner join asi_user on asi_user.id_asi_user = module.responsible
+inner join site on module.site = site.id_site
+inner join module_group on module.module_group = module_group.id_module_group
+left outer join module_profile on module_profile.id_module_profile = module.module_profile
+where not module.module_group = 4 & 6;
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");

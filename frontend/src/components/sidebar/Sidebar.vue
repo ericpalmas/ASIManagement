@@ -65,21 +65,42 @@ export default {
         Projects
       </SidebarLink>
       <SidebarLink
-        v-if="loggedUser.Role === 'Student' || loggedUser.Role === 'Advisor'"
+        v-if="
+          loggedUser.Role === 'Student' ||
+          loggedUser.Role === 'Advisor' ||
+          loggedUser.Role === 'StudentAdvisor' ||
+          loggedUser.Role === 'ProfileResponsible' ||
+          loggedUser.Role === 'ProfileResponsibleAdvisor' ||
+          loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
+        "
         to="/AsiAdminData"
         icon="fas fa-chart-bar"
       >
         Profile
       </SidebarLink>
       <SidebarLink
-        v-if="loggedUser.Role === 'Student' || loggedUser.Role === 'Advisor'"
+        v-if="
+          loggedUser.Role === 'Student' ||
+          loggedUser.Role === 'Advisor' ||
+          loggedUser.Role === 'StudentAdvisor' ||
+          loggedUser.Role === 'ProfileResponsible' ||
+          loggedUser.Role === 'ProfileResponsibleAdvisor' ||
+          loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
+        "
         to="/AsiCourseList"
         icon="fas fa-users"
       >
         Courses
       </SidebarLink>
       <SidebarLink
-        v-if="loggedUser.Role === 'Student' || loggedUser.Role === 'Advisor'"
+        v-if="
+          loggedUser.Role === 'Student' ||
+          loggedUser.Role === 'Advisor' ||
+          loggedUser.Role === 'StudentAdvisor' ||
+          loggedUser.Role === 'ProfileResponsible' ||
+          loggedUser.Role === 'ProfileResponsibleAdvisor' ||
+          loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
+        "
         to="/AsiInformation"
         icon="fas fa-image"
       >
@@ -89,6 +110,18 @@ export default {
       <SidebarLink
         v-if="loggedUser.Role === 'Advisor'"
         to="/StudentList"
+        icon="fas fa-users"
+      >
+        Students
+      </SidebarLink>
+
+      <SidebarLink
+        v-if="
+          loggedUser.Role === 'ProfileResponsible' ||
+          loggedUser.Role === 'ProfileResponsibleAdvisor' ||
+          loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
+        "
+        to="/StudentListResponsibleProfile"
         icon="fas fa-users"
       >
         Students

@@ -372,6 +372,7 @@
                     <tr>
                       <td>Module group</td>
                       <td>Credits</td>
+                      <td>Necessary credits</td>
                     </tr>
                   </thead>
                   <tbody>
@@ -382,6 +383,16 @@
                           {{ moduleCredits(0) }}
                         </label>
                       </td>
+                      <td>
+                        <label
+                          v-if="9 - moduleCredits(0) >= 0"
+                          for="exampleInputEmail1"
+                          class="form-label"
+                        >
+                          {{ 9 - moduleCredits(0) }}
+                        </label>
+                        <label v-else>0</label>
+                      </td>
                     </tr>
                     <tr>
                       <td>TSM</td>
@@ -389,6 +400,16 @@
                         <label for="exampleInputEmail1" class="form-label">
                           {{ moduleCredits(1) }}
                         </label>
+                      </td>
+                      <td>
+                        <label
+                          v-if="9 - moduleCredits(1) >= 0"
+                          for="exampleInputEmail1"
+                          class="form-label"
+                        >
+                          {{ 12 - moduleCredits(1) }}
+                        </label>
+                        <label v-else>0</label>
                       </td>
                     </tr>
                     <tr>
@@ -398,6 +419,16 @@
                           {{ moduleCredits(2) }}
                         </label>
                       </td>
+                      <td>
+                        <label
+                          v-if="9 - moduleCredits(2) >= 0"
+                          for="exampleInputEmail1"
+                          class="form-label"
+                        >
+                          {{ 6 - moduleCredits(2) }}
+                        </label>
+                        <label v-else>0</label>
+                      </td>
                     </tr>
 
                     <tr>
@@ -406,6 +437,12 @@
                         <p>
                           {{ totalCredits }}
                         </p>
+                      </td>
+                      <td>
+                        <p v-if="30 - totalCredits >= 0">
+                          {{ 30 - totalCredits }}
+                        </p>
+                        <p v-else>0</p>
                       </td>
                     </tr>
                   </tbody>
