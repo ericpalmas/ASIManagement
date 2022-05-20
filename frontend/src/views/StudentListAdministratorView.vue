@@ -5,10 +5,10 @@
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
-          <h4 class="container pb-4">StudentList</h4>
+          <h4 class="container pb-4">Student List</h4>
           <div v-if="loggedUser !== undefined && loggedUser !== null">
             <div
-              v-for="student in advisorStudents"
+              v-for="student in students"
               :key="student.id_asi_user"
               class="pb-2"
             >
@@ -127,7 +127,7 @@ import Sidebar from '../components/sidebar/Sidebar'
 import { sidebarWidth } from '../components/sidebar/state'
 
 export default {
-  name: 'StudentListView',
+  name: 'StudentListAdministratorView',
   data: () => ({
     studentId: -1,
     id: 0
@@ -140,49 +140,49 @@ export default {
     Sidebar
   },
   methods: {
-    ...mapActions(['fetchAdvisorStudents']),
-    ...mapActions(['fetchAvailableStudents']),
-    ...mapActions(['followStudent']),
-    ...mapActions(['stopFollowStudent']),
-    ...mapActions(['fetchLoggedUser']),
+    ...mapActions(['fetchStudents']),
+    // ...mapActions(['fetchAvailableStudents']),
+    // ...mapActions(['followStudent']),
+    // ...mapActions(['stopFollowStudent']),
+    ...mapActions(['fetchLoggedUser'])
 
-    onChangeStudent: function (event) {
-      this.studentId = event.target.value
-    },
-    addStudent: function () {
-      this.followStudent({ id: this.id, advisorId: this.loggedUser.AsiUserId })
-    },
-    removeStudent: function (removedId) {
-      this.stopFollowStudent({
-        id: removedId,
-        advisorId: this.loggedUser.AsiUserId
-      })
-    }
+    // onChangeStudent: function (event) {
+    //   this.studentId = event.target.value
+    // },
+    // addStudent: function () {
+    //   this.followStudent({ id: this.id, advisorId: this.loggedUser.AsiUserId })
+    // },
+    // removeStudent: function (removedId) {
+    //   this.stopFollowStudent({
+    //     id: removedId,
+    //     advisorId: this.loggedUser.AsiUserId
+    //   })
+    // }
   },
 
   computed: {
-    ...mapGetters(['advisorStudents']),
-    ...mapGetters(['availableStudents']),
+    //...mapGetters(['advisorStudents']),
+    ...mapGetters(['students']),
     ...mapGetters(['loggedUser'])
   },
   watch: {
-    advisorStudents: function () {
-      if (this.advisorStudents.length !== 0) {
-        console.log(this.advisorStudents.length)
-      }
-    },
-    availableStudents: function () {
-      if (this.availableStudents.length !== 0) {
-        console.log(this.availableStudents.length)
-      }
-    },
+    // advisorStudents: function () {
+    //   if (this.advisorStudents.length !== 0) {
+    //     console.log(this.advisorStudents.length)
+    //   }
+    // },
+    // availableStudents: function () {
+    //   if (this.availableStudents.length !== 0) {
+    //     console.log(this.availableStudents.length)
+    //   }
+    // },
     loggedUser: function () {
       console.log(this.loggedUser)
     }
   },
   created() {
-    this.fetchAdvisorStudents()
-    this.fetchAvailableStudents()
+    // this.fetchAdvisorStudents()
+    this.fetchStudents()
     this.fetchLoggedUser()
   }
 }

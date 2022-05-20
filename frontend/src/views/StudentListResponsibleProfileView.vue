@@ -8,7 +8,7 @@
           <h4 class="container pb-4">StudentList</h4>
           <div v-if="loggedUser !== undefined && loggedUser !== null">
             <div
-              v-for="student in advisorStudents"
+              v-for="student in studentsByProfile"
               :key="student.id_asi_user"
               class="pb-2"
             >
@@ -27,7 +27,7 @@
                           <h5>{{ student.name }} {{ student.surname }}</h5>
                         </router-link>
                       </div>
-                      <div class="col-sm-4">
+                      <!-- <div class="col-sm-4">
                         <button
                           id="deleteStudent"
                           type="button"
@@ -36,7 +36,7 @@
                         >
                           <i class="fas fa-trash"></i>
                         </button>
-                      </div>
+                      </div> -->
                     </div>
                   </div>
                 </div>
@@ -77,7 +77,7 @@ export default {
     Sidebar
   },
   methods: {
-    // ...mapActions(['fetchAdvisorStudents']),
+    ...mapActions(['fetchStudentsByProfile']),
     // ...mapActions(['fetchAvailableStudents']),
     // ...mapActions(['followStudent']),
     // ...mapActions(['stopFollowStudent']),
@@ -85,7 +85,8 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['loggedUser'])
+    ...mapGetters(['loggedUser']),
+    ...mapGetters(['studentsByProfile'])
   },
   watch: {
     // advisorStudents: function () {
@@ -104,6 +105,7 @@ export default {
   },
   created() {
     this.fetchLoggedUser()
+    this.fetchStudentsByProfile()
   }
 }
 </script>

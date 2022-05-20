@@ -68,6 +68,7 @@ export default {
         v-if="
           loggedUser.Role === 'Student' ||
           loggedUser.Role === 'Advisor' ||
+          loggedUser.Role === 'Administrator' ||
           loggedUser.Role === 'StudentAdvisor' ||
           loggedUser.Role === 'ProfileResponsible' ||
           loggedUser.Role === 'ProfileResponsibleAdvisor' ||
@@ -96,6 +97,7 @@ export default {
         v-if="
           loggedUser.Role === 'Student' ||
           loggedUser.Role === 'Advisor' ||
+          loggedUser.Role === 'Administrator' ||
           loggedUser.Role === 'StudentAdvisor' ||
           loggedUser.Role === 'ProfileResponsible' ||
           loggedUser.Role === 'ProfileResponsibleAdvisor' ||
@@ -125,6 +127,22 @@ export default {
         icon="fas fa-users"
       >
         Students
+      </SidebarLink>
+
+      <SidebarLink
+        v-if="loggedUser.Role === 'Administrator'"
+        to="/StudentListAdministrator"
+        icon="fas fa-users"
+      >
+        Students
+      </SidebarLink>
+
+      <SidebarLink
+        v-if="loggedUser.Role === 'Administrator'"
+        to="/AdvisorListAdministrator"
+        icon="fas fa-users"
+      >
+        Advisors
       </SidebarLink>
     </div>
 

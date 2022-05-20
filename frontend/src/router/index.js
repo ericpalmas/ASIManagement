@@ -10,6 +10,8 @@ import SelectUserTypeView from '../views/SelectUserTypeView'
 import StudentListView from '../views/StudentListView'
 import StudentView from '../views/StudentView'
 import StudentListResponsibleProfileView from '../views/StudentListResponsibleProfileView'
+import StudentListAdministratorView from '../views/StudentListAdministratorView'
+import AdvisorListAdministratorView from '../views/AdvisorListAdministratorView'
 
 const routes = [
   {
@@ -68,6 +70,16 @@ const routes = [
     path: '/StudentListResponsibleProfile',
     name: 'StudentListResponsibleProfileView',
     component: StudentListResponsibleProfileView
+  },
+  {
+    path: '/StudentListAdministrator',
+    name: 'StudentListAdministratorView',
+    component: StudentListAdministratorView
+  },
+  {
+    path: '/AdvisorListAdministrator',
+    name: 'AdvisorListAdministratorView',
+    component: AdvisorListAdministratorView
   }
 ]
 
