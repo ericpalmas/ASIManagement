@@ -11,7 +11,7 @@
         public string module_group_initials { get; set; }
         public int module_group_id { get; set; }
         public int ects { get; set; }
-        public int semester { get; set; }
+        public string semester { get; set; }
         public int responsible { get; set; }
         public string responsible_name { get; set; }
         public string responsible_surname { get; set; }

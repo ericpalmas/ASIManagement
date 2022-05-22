@@ -1,3 +1,5 @@
+
+   
 <template>
   <Sidebar />
   <div class="asiManagement" :style="{ 'margin-left': sidebarWidth }">
@@ -27,11 +29,36 @@
           </div>
 
           <div
-            v-if="notContiguousError"
             class="alert alert-danger"
             role="alert"
+            v-if="notContiguousError"
+            :v-bind:notContiguousError="notContiguousError"
           >
             Project semesters must be contigous
+          </div>
+          <div
+            class="alert alert-danger"
+            role="alert"
+            v-if="duplicatesError"
+            :v-bind:duplicatesError="duplicatesError"
+          >
+            Some modules are duplicates
+          </div>
+          <div
+            class="alert alert-danger"
+            role="alert"
+            v-if="emptyField"
+            :v-bind:emptyField="emptyField"
+          >
+            Empty field
+          </div>
+          <div
+            class="alert alert-success"
+            role="alert"
+            v-if="pageSaved"
+            :v-bind:pageSaved="pageSaved"
+          >
+            Page saved correctly
           </div>
 
           <!-- <div v-else-if="notContiguousError === false">prova</div> -->
@@ -114,6 +141,8 @@
                     placeholder="ects"
                     aria-label="default input example"
                     v-model="project.ects"
+                    min="9"
+                    max="15"
                     @change="onChangeEcts($event, 0, i)"
                   />
                 </td>
@@ -139,110 +168,58 @@
                   </select>
                 </td>
                 <td colspan="1" span="1" style="width: 10%">
-                  <div v-if="i === 0">
-                    <button
-                      class="btn btn-secondary dropdown-toggle"
-                      type="button"
-                      id="dropdownMenuButton1"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    ></button>
-                    <ul
-                      class="dropdown-menu"
-                      aria-labelledby="dropdownMenuButton1"
-                    >
-                      <li v-for="(option, k) in options" :key="k">
-                        <a class="dropdown-item">
-                          <div
-                            v-if="project.semester.split(',').includes(option)"
+                  <button
+                    class="btn btn-secondary dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton1"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                  ></button>
+                  <ul
+                    class="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton1"
+                  >
+                    <li v-for="(option, k) in options" :key="k">
+                      <a class="dropdown-item">
+                        <div
+                          v-if="project.semester.split(',').includes(option)"
+                        >
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="flexCheckDefault"
+                            @change="
+                              updateProjectSemester(0, i, $event, option)
+                            "
+                            checked
+                          />
+                          <label
+                            class="form-check-label"
+                            for="flexCheckDefault"
                           >
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              id="flexCheckDefault"
-                              checked
-                              @change="updateFirstProjectValues($event, option)"
-                            />
-                            <label
-                              class="form-check-label"
-                              for="flexCheckDefault"
-                            >
-                              &nbsp; {{ option }}
-                            </label>
-                          </div>
-                          <div v-else>
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              id="flexCheckDefault"
-                              @change="updateFirstProjectValues($event, option)"
-                            />
+                            &nbsp; {{ option }}
+                          </label>
+                        </div>
+                        <div v-else>
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="flexCheckDefault"
+                            @change="
+                              updateProjectSemester(0, i, $event, option)
+                            "
+                          />
 
-                            <label
-                              class="form-check-label"
-                              for="flexCheckDefault"
-                            >
-                              &nbsp; {{ option }}
-                            </label>
-                          </div>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div v-else-if="i === 1">
-                    <button
-                      class="btn btn-secondary dropdown-toggle"
-                      type="button"
-                      id="dropdownMenuButton1"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    ></button>
-                    <ul
-                      class="dropdown-menu"
-                      aria-labelledby="dropdownMenuButton1"
-                    >
-                      <li v-for="(option, k) in options" :key="k">
-                        <a class="dropdown-item">
-                          <div
-                            v-if="project.semester.split(',').includes(option)"
+                          <label
+                            class="form-check-label"
+                            for="flexCheckDefault"
                           >
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              id="flexCheckDefault"
-                              checked
-                              @change="
-                                updateSecondProjectValues($event, option)
-                              "
-                            />
-                            <label
-                              class="form-check-label"
-                              for="flexCheckDefault"
-                            >
-                              &nbsp; {{ option }}
-                            </label>
-                          </div>
-                          <div v-else>
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              id="flexCheckDefault"
-                              @change="
-                                updateSecondProjectValues($event, option)
-                              "
-                            />
-
-                            <label
-                              class="form-check-label"
-                              for="flexCheckDefault"
-                            >
-                              &nbsp; {{ option }}
-                            </label>
-                          </div>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
+                            &nbsp; {{ option }}
+                          </label>
+                        </div>
+                      </a>
+                    </li>
+                  </ul>
                 </td>
 
                 <td>
@@ -303,6 +280,20 @@
                 </td>
                 <td colspan="1" span="1" style="width: 10%"></td>
                 <td colspan="1" span="1" style="width: 10%">
+                  <!-- <select
+                    class="form-select form-select-sm"
+                    aria-label=".form-select-sm example"
+                    @change="onChangeSemester($event, 1, i)"
+                  >
+                    <option
+                      v-for="(option, k) in options"
+                      :key="k"
+                      :selected="option === module.semester ? true : false"
+                    >
+                      {{ option }}
+                    </option>
+                  </select> -->
+
                   <select
                     class="form-select form-select-sm"
                     aria-label=".form-select-sm example"
@@ -406,6 +397,7 @@
                     type="text"
                     placeholder="ects"
                     aria-label="default input example"
+                    disabled
                     v-model="project.ects"
                   />
                 </td>
@@ -453,10 +445,10 @@
                               class="form-check-input"
                               type="checkbox"
                               id="flexCheckDefault"
-                              checked
                               @change="
-                                updateMasterProjectValues($event, option)
+                                updateProjectSemester(2, i, $event, option)
                               "
+                              checked
                             />
                             <label
                               class="form-check-label"
@@ -471,7 +463,7 @@
                               type="checkbox"
                               id="flexCheckDefault"
                               @change="
-                                updateMasterProjectValues($event, option)
+                                updateProjectSemester(2, i, $event, option)
                               "
                             />
 
@@ -510,14 +502,10 @@
 
 
 <script>
-//import ASITable from '../components/ASITable.vue'
-//import ASITechnicalTable from '../components/ASITechnicalTable.vue'
 import { mapGetters, mapActions } from 'vuex'
 import Navbar from '../components/Navbar.vue'
 import Sidebar from '../components/sidebar/Sidebar'
 import { sidebarWidth } from '../components/sidebar/state'
-//import Multiselect from '@vueform/multiselect'
-//import MultiExample from '../components/Multi/_Multi.vue'
 
 export default {
   name: 'AsiTechnicalSpecializationManagementView',
@@ -527,23 +515,23 @@ export default {
   components: {
     Navbar,
     Sidebar
-    //Multiselect,
-    //MultiExample
   },
   data: () => ({
-    firstProjectValues: [],
-    secondProjectValues: [],
-    masterProjectValues: [],
-    firstProjectEnabledValues: [],
-    secondProjectEnabledValues: [],
-    masterProjectEnabledValues: [],
+    // firstProjectValues: [],
+    // secondProjectValues: [],
+    // masterProjectValues: [],
+    // firstProjectEnabledValues: [],
+    // secondProjectEnabledValues: [],
+    // masterProjectEnabledValues: [],
     values: [],
     options: ['1', '2', '3', '4', '5', '6'],
-    notContiguousError: false
+    notContiguousError: false,
+    duplicatesError: false,
+    emptyField: false,
+    pageSaved: false
 
     //checkedCategories: []
   }),
-
   methods: {
     ...mapActions(['fetchProjects']),
     ...mapActions(['fetchSupplementaryModules']),
@@ -552,51 +540,15 @@ export default {
     ...mapActions(['fetchAsiModuleGroups']),
     ...mapActions(['fetchAdvisors']),
     ...mapActions(['updateTechnicalAsi']),
-
     // hideAlert() {
     //   // This was for me to test the click even - PREFER AUTO HIDE AFTER A FEW SECONDS
     //   document.querySelector('.alert').style.display = 'none'
     // },
 
-    updateMasterProjectValues: function (e, option) {
-      // console.log(this.masterProjectValues)
-      // console.log(option)
-
-      if (e.target.checked === true) {
-        this.masterProjectValues.push(option)
-      } else {
-        var index = this.masterProjectValues.indexOf(option)
-        //console.log(index)
-        this.masterProjectValues.splice(index, 1)
-      }
-      this.value = this.masterProjectValues.toString()
-      //console.log(this.masterProjectValues)
-    },
-
-    updateFirstProjectValues: function (e, option) {
-      if (e.target.checked === true) {
-        this.firstProjectValues.push(option)
-      } else {
-        var index = this.firstProjectValues.indexOf(option)
-        this.firstProjectValues.splice(index, 1)
-      }
-      this.value = this.firstProjectValues.toString()
-      //console.log(this.firstProjectValues)
-    },
-    updateSecondProjectValues: function (e, option) {
-      if (e.target.checked === true) {
-        this.secondProjectValues.push(option)
-      } else {
-        var index = this.secondProjectValues.indexOf(option)
-        this.secondProjectValues.splice(index, 1)
-      }
-      this.value = this.secondProjectValues.toString()
-      //console.log(this.secondProjectValues)
-    },
-    checkContiguous: function (array) {
+    checkContiguous: function (stringSemester) {
+      var array = stringSemester.split(',')
       var sortedArray = array.map((i) => Number(i)).sort()
       console.log(sortedArray)
-
       var error = false
       for (var i = 0; i < sortedArray.length; i++) {
         if (i !== 0) {
@@ -605,98 +557,145 @@ export default {
       }
       return error
     },
+
+    checkDuplicates: function (array) {
+      var valueArr = array.map(function (item) {
+        return item.id_module
+      })
+      var isDuplicate = valueArr.some(function (item, idx) {
+        return valueArr.indexOf(item) != idx
+      })
+      return isDuplicate
+    },
+
+    checkEmptyField: function (array) {
+      var emptyField = false
+      for (var i = 0; i < array.length; i++) {
+        if (array[i].code === '') emptyField = true
+        if (array[i].module_name === '') emptyField = true
+      }
+      return emptyField
+    },
     saveAsi: function () {
-      // controllo che non ci siano corsi uguali
-      // console.log(this.asiProjects)
-      // console.log(this.allSupplementaryModulesAsiModules)
-      // console.log(this.asiMasterProject)
+      console.log(this.asiProjects)
+      console.log(this.allSupplementaryModulesAsiModules)
+      console.log(this.asiMasterProject)
 
-      // console.log(this.firstProjectValues)
-      // console.log(this.secondProjectValues)
-      // console.log(this.masterProjectValues)
+      var firstProjectControl = false
+      var secondProjectControl = false
+      var masterProjectControl = false
 
-      var firstProjectControl = this.checkContiguous(this.firstProjectValues)
-      var secondProjectControl = this.checkContiguous(this.secondProjectValues)
-      var masterProjectControl = this.checkContiguous(this.masterProjectValues)
-
-      console.log(
-        firstProjectControl,
-        secondProjectControl,
-        masterProjectControl
+      if (this.asiProjects[0] !== undefined) {
+        firstProjectControl = this.checkContiguous(this.asiProjects[0].semester)
+      }
+      if (this.asiProjects[1] !== undefined) {
+        secondProjectControl = this.checkContiguous(
+          this.asiProjects[1].semester
+        )
+      }
+      if (this.asiMasterProject[0] !== undefined) {
+        masterProjectControl = this.checkContiguous(
+          this.asiMasterProject[0].semester
+        )
+      }
+      var duplicatesSupplementaryModules = this.checkDuplicates(
+        this.allSupplementaryModulesAsiModules
       )
+      var emptyFieldProject = this.checkEmptyField(this.asiProjects)
+      var emptyFieldMaster = this.checkEmptyField(this.asiMasterProject)
 
       if (firstProjectControl || secondProjectControl || masterProjectControl) {
         this.notContiguousError = true
-        console.log('ERRORE')
-        document.querySelector('.alert').style.display = 'block'
+        this.pageSaved = false
+      } else if (duplicatesSupplementaryModules) {
+        this.duplicatesError = true
+        this.pageSaved = false
+      } else if (emptyFieldProject || emptyFieldMaster) {
+        this.emptyField = true
+        this.pageSaved = false
       } else {
-        this.notContiguousError = false
-        document.querySelector('.alert').style.display = 'none'
-        console.log(this.notContiguousError)
+        if (confirm('Do you really want to save?')) {
+          this.notContiguousError = false
+          this.emptyField = false
+          this.duplicatesError = false
+          this.pageSaved = false
 
-        if (this.asiProjects[0] !== undefined) {
-          this.asiProjects[0].firstProjectValues = this.firstProjectValues
-          //this.asiProjects[0].semester = 1
+          var newModules = {
+            asiModuleGroups: this.asiModuleGroups,
+            asiProjects: this.asiProjects,
+            allSupplementaryModulesAsiModules:
+              this.allSupplementaryModulesAsiModules,
+            asiMasterProject: this.asiMasterProject
+          }
+          if (newModules.asiProjects[0] !== undefined) {
+            newModules.asiProjects[0].firstProjectValues =
+              this.asiProjects[0].semester.split(',')
+          }
+          if (newModules.asiProjects[1] !== undefined) {
+            newModules.asiProjects[1].secondProjectValues =
+              this.asiProjects[1].semester.split(',')
+          }
+          if (newModules.asiMasterProject[0] !== undefined) {
+            newModules.asiMasterProject[0].masterProjectValues =
+              this.asiMasterProject[0].semester.split(',')
+          }
+
+          console.log(newModules)
+
+          this.updateTechnicalAsi({
+            newModules
+          })
+
+          this.pageSaved = true
         }
+      }
+    },
 
-        if (this.asiProjects[1] !== undefined) {
-          this.asiProjects[1].secondProjectValues = this.secondProjectValues
-          //this.asiProjects[1].semester = 1
-        }
+    splitAndJoin: function (stringSemester, e, option) {
+      var semesterArray = stringSemester.split(',')
+      if (e.target.checked === true) {
+        semesterArray.push(option)
+      } else {
+        var index = semesterArray.indexOf(option)
+        semesterArray.splice(index, 1)
+      }
+      var reverse = semesterArray.join(',')
+      if (reverse.charAt(0) === ',') {
+        reverse = reverse.substring(1)
+      }
+      return reverse
+    },
 
-        if (this.asiMasterProject[0] !== undefined) {
-          this.asiMasterProject[0].masterProjectValues =
-            this.masterProjectValues
-          //this.asiMasterProject[0].semester = 1
-        }
-
-        var newModules = {
-          asiModuleGroups: this.asiModuleGroups,
-          asiProjects: this.asiProjects,
-          allSupplementaryModulesAsiModules:
-            this.allSupplementaryModulesAsiModules,
-          asiMasterProject: this.asiMasterProject
-          // firstProjectValues: this.firstProjectValues,
-          // secondProjectValues: this.secondProjectValues,
-          // masterProjectValues: this.masterProjectValues
-        }
-
-        if (newModules.asiProjects[0] !== undefined)
-          newModules.asiProjects[0].semester = 1
-        if (newModules.asiProjects[1] !== undefined)
-          newModules.asiProjects[1].semester = 1
-        if (newModules.asiMasterProject[0] !== undefined)
-          newModules.asiMasterProject[0].semester = 1
-
-        console.log(newModules)
-
-        this.updateTechnicalAsi({
-          newModules
-        })
+    updateProjectSemester(i, k, e, option) {
+      if (i === 0) {
+        this.asiProjects[k].semester = this.splitAndJoin(
+          this.asiProjects[k].semester,
+          e,
+          option
+        )
+        console.log(this.asiProjects[k].semester)
+      } else if (i === 2) {
+        this.asiMasterProject[k].semester = this.splitAndJoin(
+          this.asiMasterProject[k].semester,
+          e,
+          option
+        )
+        console.log(this.asiMasterProject[k].semester)
       }
     },
 
     // mettere controllo prima di cancellare una riga
     deleteRow(i, k) {
-      if (i === 0) {
-        this.asiProjects.splice(k, 1)
-        if (k === 0) {
-          this.firstProjectValues = []
-        } else if (k === 1) {
-          this.secondProjectValues = []
-        }
-      } else if (i === 1) {
-        this.allSupplementaryModulesAsiModules.splice(k, 1)
-      } else if (i === 2) {
-        //console.log(i, k)
-        this.asiMasterProject.splice(k, 1)
-        if (k === 0) {
-          this.masterProjectValues = []
-          //console.log(this.masterProjectValues)
+      if (confirm('Do you really want to delete?')) {
+        if (i === 0) {
+          this.asiProjects.splice(k, 1)
+        } else if (i === 1) {
+          this.allSupplementaryModulesAsiModules.splice(k, 1)
+        } else if (i === 2) {
+          this.asiMasterProject.splice(k, 1)
         }
       }
     },
-
     addNewRow(i) {
       if (i === 0) {
         this.asiProjects.push({
@@ -707,8 +706,8 @@ export default {
           semester: '1',
           responsible: this.advisors[0].id_asi_user
         })
-        if (this.asiProjects.length === 1) this.firstProjectValues = ['1']
-        else if (this.asiProjects.length === 2) this.secondProjectValues = ['1']
+        // if (this.asiProjects.length === 1) this.firstProjectValues = ['1']
+        // else if (this.asiProjects.length === 2) this.secondProjectValues = ['1']
       } else if (i === 1) {
         this.allSupplementaryModulesAsiModules.push({
           id_module: this.allSupplementaryModules[0].id_module,
@@ -733,13 +732,12 @@ export default {
           semester: '1',
           responsible: this.advisors[0].id_asi_user
         })
-        if (this.asiMasterProject.length === 1) this.masterProjectValues = ['1']
+        //if (this.asiMasterProject.length === 1) this.masterProjectValues = ['1']
       }
     },
-
     onChangeResponsible(event, i, k) {
       const newResponsible = parseInt(event.target.value)
-      console.log(newResponsible)
+      //console.log(newResponsible)
       if (i === 0) {
         this.asiProjects[k].responsible = newResponsible
       } else if (i === 1) {
@@ -748,7 +746,6 @@ export default {
         this.asiMasterProject[k].responsible = newResponsible
       }
     },
-
     onChangeSemester(event, i, k) {
       const newSemester = parseInt(event.target.value)
       //console.log(event.target.value, i, k)
@@ -773,7 +770,6 @@ export default {
     },
     onChangeCode(event, i, k) {
       const newCode = event.target.value
-
       //(event.target.value, i, k)
       if (i === 0) {
         this.asiProjects[k].code = newCode
@@ -783,10 +779,8 @@ export default {
         this.asiMasterProject[k].code = newCode
       }
     },
-
     onChangeModuleName(event, i, k) {
       const newModuleName = event.target.value
-
       //console.log(event.target.value, i, k)
       if (i === 0) {
         this.asiProjects[k].module_name = newModuleName
@@ -796,7 +790,6 @@ export default {
         this.asiMasterProject[k].module_name = newModuleName
       }
     },
-
     onChangeModule(event, i, k) {
       if (i === 1) {
         ;(this.allSupplementaryModulesAsiModules[k].id_module =
@@ -841,52 +834,20 @@ export default {
   watch: {
     asiProjects: function () {
       if (this.asiProjects.length !== 0) {
-        //console.log('dentro al watch')
-        if (this.firstProjectValues.length === 0) {
-          if (this.asiProjects[0] !== undefined) {
-            //console.log(this.asiProjects[0].semester.split(','))
-            this.firstProjectValues = this.asiProjects[0].semester.split(',')
-            //this.asiProjects[0].semester = 1
-            //console.log(this.firstProjectValues)
-          }
-        }
-        if (this.secondProjectValues.length === 0) {
-          if (this.asiProjects[1] !== undefined) {
-            //console.log(this.asiProjects[1].semester.split(','))
-            this.secondProjectValues = this.asiProjects[1].semester.split(',')
-            //this.asiProjects[1].semester = 1
-            //console.log(this.secondProjectValues)
-          }
-        }
-        if (this.asiProjects.length !== 0) {
-          console.log(this.asiProjects.length)
-        }
+        console.log(this.asiProjects)
       }
     },
-
     allSupplementaryModulesAsiModules: function () {
       if (this.allSupplementaryModulesAsiModules.length !== 0) {
-        console.log(this.allSupplementaryModulesAsiModules.length)
+        console.log(this.allSupplementaryModulesAsiModules)
       }
     },
     asiMasterProject: function () {
-      if (this.masterProjectValues.length === 0) {
-        //console.log('dentro al watch')
-
-        if (this.asiMasterProject[0] !== undefined) {
-          //console.log(this.asiMasterProject[0].semester.split(','))
-          this.masterProjectValues =
-            this.asiMasterProject[0].semester.split(',')
-          //this.asiMasterProject[0].semester = 1
-          //console.log(this.masterProjectValues)
-        }
-      }
       if (this.asiMasterProject.length !== 0) {
-        console.log(this.asiMasterProject.length)
+        console.log(this.asiMasterProject)
       }
     }
   },
-
   created() {
     this.fetchProjects()
     this.fetchSupplementaryModules()
@@ -908,13 +869,11 @@ export default {
   background-color: #eeeded;
   /* text-align: center; */
 }
-
 #dropdownMenuButton1 {
   background-color: #e5e6e7;
   border-color: #dfe0e1;
   color: white;
 }
-
 .asiManagement {
   text-align: center;
 }

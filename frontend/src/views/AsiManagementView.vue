@@ -26,6 +26,31 @@
             </div>
           </div>
 
+          <div
+            class="alert alert-danger"
+            role="alert"
+            v-if="duplicatesError"
+            :v-bind:duplicatesError="duplicatesError"
+          >
+            Some modules are duplicates
+          </div>
+          <div
+            class="alert alert-danger"
+            role="alert"
+            v-if="emptyField"
+            :v-bind:emptyField="emptyField"
+          >
+            Empty field
+          </div>
+          <div
+            class="alert alert-success"
+            role="alert"
+            v-if="pageSaved"
+            :v-bind:pageSaved="pageSaved"
+          >
+            Page saved correctly
+          </div>
+
           <!-- <h1>ASI management</h1> -->
 
           <!-- <div
@@ -501,7 +526,10 @@ import { sidebarWidth } from '../components/sidebar/state'
 
 export default {
   name: 'AsiManagementView',
-  data: () => ({}),
+  data: () => ({
+    duplicatesError: false,
+    pageSaved: false
+  }),
   setup() {
     return { sidebarWidth }
   },
@@ -518,7 +546,15 @@ export default {
     ...mapActions(['fetchCmAsiModules']),
     ...mapActions(['fetchAsiModuleGroups']),
     ...mapActions(['updateAsi']),
-
+    checkDuplicates: function (array) {
+      var valueArr = array.map(function (item) {
+        return item.id_module
+      })
+      var isDuplicate = valueArr.some(function (item, idx) {
+        return valueArr.indexOf(item) != idx
+      })
+      return isDuplicate
+    },
     saveAsi: function () {
       // controllo che non ci siano corsi uguali
       console.log(this.asiModuleGroups)
@@ -526,16 +562,30 @@ export default {
       console.log(this.allTsmAsiModules)
       console.log(this.allFtpAsiModules)
 
-      var newModules = {
-        asiModuleGroups: this.asiModuleGroups,
-        allFtpAsiModules: this.allFtpAsiModules,
-        allTsmAsiModules: this.allTsmAsiModules,
-        allCmAsiModules: this.allCmAsiModules
-      }
+      var duplicatesCmModules = this.checkDuplicates(this.allCmAsiModules)
+      var duplicatesTsmModules = this.checkDuplicates(this.allTsmAsiModules)
+      var duplicatesFtpModules = this.checkDuplicates(this.allFtpAsiModules)
 
-      this.updateAsi({
-        newModules
-      })
+      if (duplicatesCmModules || duplicatesTsmModules || duplicatesFtpModules) {
+        this.duplicatesError = true
+        this.pageSaved = false
+      } else {
+        this.duplicatesError = false
+        this.pageSaved = false
+
+        if (confirm('Do you really want to save?')) {
+          var newModules = {
+            asiModuleGroups: this.asiModuleGroups,
+            allFtpAsiModules: this.allFtpAsiModules,
+            allTsmAsiModules: this.allTsmAsiModules,
+            allCmAsiModules: this.allCmAsiModules
+          }
+          this.updateAsi({
+            newModules
+          })
+          this.pageSaved = true
+        }
+      }
     },
 
     moduleCredits: function (i) {
@@ -644,9 +694,11 @@ export default {
     },
 
     deleteRow(i, k) {
-      if (i === 0) this.allFtpAsiModules.splice(k, 1)
-      else if (i === 1) this.allTsmAsiModules.splice(k, 1)
-      else if (i === 2) this.allCmAsiModules.splice(k, 1)
+      if (confirm('Do you really want to delete?')) {
+        if (i === 0) this.allFtpAsiModules.splice(k, 1)
+        else if (i === 1) this.allTsmAsiModules.splice(k, 1)
+        else if (i === 2) this.allCmAsiModules.splice(k, 1)
+      }
     },
 
     addNewRow(i) {

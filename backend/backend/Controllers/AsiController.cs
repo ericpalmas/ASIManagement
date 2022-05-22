@@ -275,6 +275,11 @@ where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(create
                 {
                     query += "INSERT INTO dbo.asi_module (asi_module_group, module, asi_module_state ) values (" + projectModuleGroupId + ", " + asi.projectAsiModules[i].id_module + "," + "1);";
                     query += "UPDATE dbo.module SET responsible = " + asi.projectAsiModules[i].responsible + " WHERE module.id_module = " + asi.projectAsiModules[i].id_module + ";";
+                    query += "UPDATE dbo.module SET code = '" + asi.projectAsiModules[i].code + "' WHERE module.id_module = " + asi.projectAsiModules[i].id_module + ";";
+                    query += "UPDATE dbo.module SET name = '" + asi.projectAsiModules[i].module_name + "' WHERE module.id_module = " + asi.projectAsiModules[i].id_module + ";";
+                    query += "UPDATE dbo.module SET ects = " + asi.projectAsiModules[i].ects + " WHERE module.id_module = " + asi.projectAsiModules[i].id_module + ";";
+
+
 
                 }
 
@@ -323,6 +328,9 @@ where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(create
                 {
                     query += "INSERT INTO dbo.asi_module (asi_module_group, module, asi_module_state ) values (" + masterModuleGroupId + "," + asi.masterAsiModules[i].id_module + "," +  "1);";
                     query += "UPDATE dbo.module SET responsible = " + asi.masterAsiModules[i].responsible + " WHERE module.id_module = " + asi.masterAsiModules[i].id_module + ";";
+                    query += "UPDATE dbo.module SET code = '" + asi.masterAsiModules[i].code + "' WHERE module.id_module = " + asi.masterAsiModules[i].id_module + ";";
+                    query += "UPDATE dbo.module SET name = '" + asi.masterAsiModules[i].module_name + "' WHERE module.id_module = " + asi.masterAsiModules[i].id_module + ";";
+                    query += "UPDATE dbo.module SET ects = " + asi.masterAsiModules[i].ects + " WHERE module.id_module = " + asi.masterAsiModules[i].id_module + ";";
                 }
 
                 if (i == 0)
@@ -340,6 +348,8 @@ where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(create
                 
             }
 
+
+            //////////// errore nel server, si cerca di convertire semester = "2,3,4" in intero da qualche parte
 
 
             //string query2 = @"select * from dbo.asi_module";
