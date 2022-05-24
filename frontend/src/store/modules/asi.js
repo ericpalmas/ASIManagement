@@ -23,6 +23,37 @@ const getters = {
 }
 
 const actions = {
+  // get module of a student
+  async fetchProjectsAsiStudentModules({ commit }, id) {
+    const response = await axios.get(
+      'http://localhost:8732/api/asi/projects/' + id,
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+
+    commit('setProjects', response.data)
+  },
+  async fetchSupplementaryModulesAsiStudentModules({ commit }, id) {
+    const response = await axios.get(
+      'http://localhost:8732/api/asi/supplementaryModules/' + id,
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+
+    commit('setAsiSupplementaryModules', response.data)
+  },
+  async fetchMasterProjectAsiStudentModules({ commit }, id) {
+    const response = await axios.get(
+      'http://localhost:8732/api/asi/masterProject/' + id,
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+
+    commit('setAsiMasterProject', response.data)
+  },
   async fetchFtpAsiStudentModules({ commit }, id) {
     const response = await axios.get(
       'http://localhost:8732/api/asi/ftp/' + id,

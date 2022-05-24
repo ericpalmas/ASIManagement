@@ -357,6 +357,10 @@ left outer join dbo.asi_user on student.id_advisor = asi_user.id_asi_user
             return new JsonResult(table);
         }
 
+ /* select* from dbo.asi_user
+where profile = (select profile from asi_user where asi_user.id_asi_user = @UserId)
+AND(role = 1 OR role = 7) */
+
         [HttpGet("api/asiuser/studentsByProfile")]
         [Authorize(Roles = "ProfileResponsible, ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor")]
         public JsonResult GetStudentByProfile()
@@ -364,9 +368,12 @@ left outer join dbo.asi_user on student.id_advisor = asi_user.id_asi_user
             var currentUser = GetCurrentUser();
 
             string query = @"                    
-                select * from dbo.asi_user
-where profile = (select profile from asi_user where asi_user.id_asi_user = @UserId)
-AND (role = 1 OR role = 7)
+select asi_user.id_asi_user, asi_user.name , asi_user.surname, asi_user.email, asi_user.modality, asi_user.profile, asi_user.enrollment_number, asi_user.role, asi_user.profile_responsible 
+, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname
+from dbo.asi_user
+left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
+where asi_user.profile = (select profile_responsible from asi_user where asi_user.id_asi_user = @UserId)
+AND (asi_user.role = 1 OR asi_user.role = 7)
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");

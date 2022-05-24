@@ -24,7 +24,14 @@
                             params: { studentId: student.id_asi_user }
                           }"
                         >
-                          <h5>{{ student.name }} {{ student.surname }}</h5>
+                          <div class="student">
+                            <h5>{{ student.name }} {{ student.surname }}</h5>
+                            &nbsp;&nbsp;
+                            <p>
+                              {{ student.advisor_name }}
+                              {{ student.advisor_surname }}
+                            </p>
+                          </div>
                         </router-link>
                       </div>
                       <!-- <div class="col-sm-4">
@@ -127,5 +134,17 @@ export default {
 #deleteStudent {
   float: right;
   overflow: hidden;
+}
+
+.student p {
+  /* other styles goes here... */
+  display: inline-block;
+  vertical-align: top;
+}
+
+.student h5 {
+  /* other styles goes here... */
+  display: inline-block;
+  vertical-align: top;
 }
 </style>

@@ -5,62 +5,198 @@
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <h1 class="title">AdministrativeDataView</h1>
-
-        <h1>{{ userId }}</h1>
         <div class="card-body" v-for="user in userData" :key="user.student_id">
-          <div class="row justify-content-center">
-            <div class="col-3">Student’s family name(s):</div>
-            <div class="col-3" id="familyName">{{ user.student_surname }}</div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="col-3">Student’s given name(s):</div>
-            <div class="col-3" id="studentName">{{ user.student_name }}</div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="col-3">Enrollment Nr.:</div>
-            <div class="col-3" id="enrollmentNumber">
-              {{ user.student_enrollment_number }}
-            </div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="col-3">Modality:</div>
-            <div class="col-3" id="studentModality">{{ user.modality }}</div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="col-3">Profile:</div>
-            <div class="col-3" id="studentProfile">{{ user.profile }}</div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="col-3">Profile responsible:</div>
-            <div class="col-3">Prof. Roberto Mastropietro</div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="col-3">Istitute:</div>
-            <div class="col-3">ISIN</div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="col-3">Istitute director:</div>
-            <div class="col-3">Prof. Tiziano Leidi</div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="col-3">Research areas</div>
-            <div class="col-3">Xxx (e.g. Bioelectronics)</div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="col-3">Awarded degree:</div>
-            <div class="col-3">
-              Master of Science in Engineering with specialty in Computer
-              Engineering
-            </div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="col-3">Start of program:</div>
-            <div class="col-3">September 14, 2020</div>
-          </div>
-          <div class="row justify-content-center">
-            <div class="col-3">Student’s advisor:</div>
-            <div class="col-3" id="studentAdvisor">
-              Prof. {{ user.advisor_name }} {{ user.advisor_surname }}
+          <!-- <table class="table">
+            <thead class="table-light"></thead>
+            <tbody>
+              <tr>
+                <td style="width: 40%">
+                  <div class="row justify-content-start">
+                    <div class="col-3">Student’s family name(s):</div>
+                  </div>
+                </td>
+                <td style="width: 40%">
+                  <div class="row justify-content-start">
+                    <div class="col-3" id="familyName">
+                      {{ user.student_surname }}
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table> -->
+
+          <div id="cardsContainers" class="container pt-3 pb-4">
+            <div class="card">
+              <div class="card-body">
+                <table class="table table-light">
+                  <tbody>
+                    <tr v-if="user.student_surname !== null">
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">
+                          Student’s family name(s):
+                        </div>
+                      </td>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left" id="familyName">
+                          {{ user.student_surname }}
+                        </div>
+                      </td>
+                    </tr>
+                    <tr v-if="user.student_name !== null">
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">
+                          Student’s given name(s):
+                        </div>
+                      </td>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left" id="studentName">
+                          {{ user.student_name }}
+                        </div>
+                      </td>
+                    </tr>
+                    <tr v-if="user.student_enrollment_number !== null">
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">Enrollment Nr.:</div>
+                      </td>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left" id="enrollmentNumber">
+                          {{ user.student_enrollment_number }}
+                        </div>
+                      </td>
+                    </tr>
+                    <tr v-if="user.modality !== null">
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">Modality:</div>
+                      </td>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left" id="studentModality">
+                          {{ user.modality }}
+                        </div>
+                      </td>
+                    </tr>
+                    <tr v-if="user.profile !== null">
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">Profile:</div>
+                      </td>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left" id="studentProfile">
+                          {{ user.profile }}
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">Profile responsible:</div>
+                      </td>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">
+                          Prof. Roberto Mastropietro
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">Istitute:</div>
+                      </td>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">ISIN</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">Istitute director:</div>
+                      </td>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">Prof. Tiziano Leidi</div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">Research areas</div>
+                      </td>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">
+                          Xxx (e.g. Bioelectronics)
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">Awarded degree:</div>
+                      </td>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">
+                          Master of Science in Engineering with specialty in
+                          Computer Engineering
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">Start of program:</div>
+                      </td>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">September 14, 2020</div>
+                      </td>
+                    </tr>
+                    <tr v-if="user.advisor_surname !== null">
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left">Student’s advisor:</div>
+                      </td>
+                      <td style="width: 40 %; padding-left: 4%">
+                        <div style="text-align: left" id="studentAdvisor">
+                          {{ user.advisor_surname }}
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>

@@ -5,6 +5,39 @@
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
+          <div class="container">
+            <div class="row justify-content-md-center">
+              <div class="col col-lg-2" style="width: 40%">
+                <h2 id="title" class="title">Student view</h2>
+              </div>
+              <div class="col-md-auto"></div>
+              <div class="col col-lg-2">
+                <div id="approvation">
+                  <div v-if="approved">
+                    <button
+                      type="button"
+                      class="btn btn-success"
+                      @click="approveAsi"
+                    >
+                      Approved
+                      <i class="fas fa-check"></i>
+                    </button>
+                  </div>
+                  <div v-else>
+                    <button
+                      type="button"
+                      class="btn btn-warning me-2"
+                      @click="approveAsi"
+                    >
+                      Approve
+                      <i class="fas fa-loader"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div id="cardsContainers" class="container pt-3 pb-4">
             <div class="card">
               <div class="card-body">
@@ -129,28 +162,131 @@
                     </tr>
                   </tbody>
                 </table>
-                <div id="approvation">
-                  <div v-if="approved">
-                    <button
-                      type="button"
-                      class="btn btn-success"
-                      @click="approveAsi"
+              </div>
+            </div>
+          </div>
+
+          <div id="cardsContainers" class="container pt-3 pb-4">
+            <div class="card">
+              <div class="card-body">
+                <table class="table table-light">
+                  <tbody>
+                    <tr>
+                      <td colspan="6" class="table-active">
+                        <label for="exampleColorInput" class="form-label">
+                          Projects
+                        </label>
+                      </td>
+                      <td class="table-active"></td>
+                    </tr>
+                    <tr v-for="module in asiProjects" :key="module.id_module">
+                      <td>
+                        <label for="exampleDataList" class="form-label">
+                          Code: &nbsp;&nbsp; {{ module.code }}
+                        </label>
+                      </td>
+                      <td>
+                        <label for="exampleDataList" class="form-label">
+                          Name: &nbsp;&nbsp; {{ module.module_name }}
+                        </label>
+                      </td>
+                      <td>
+                        <label for="exampleDataList" class="form-label">
+                          Site: &nbsp;&nbsp; {{ module.site_initials }}
+                        </label>
+                      </td>
+                      <td>
+                        <label for="exampleDataList" class="form-label">
+                          Credits: &nbsp;&nbsp; {{ module.ects }}
+                        </label>
+                      </td>
+
+                      <td>
+                        <label for="exampleDataList" class="form-label">
+                          Semester: &nbsp;&nbsp; {{ module.semester }}
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="6" class="table-active">
+                        <label for="exampleColorInput" class="form-label">
+                          Supplementary modules
+                        </label>
+                      </td>
+                      <td class="table-active"></td>
+                    </tr>
+                    <tr
+                      v-for="module in allSupplementaryModulesAsiModules"
+                      :key="module.id_module"
                     >
-                      Approved
-                      <i class="fas fa-check"></i>
-                    </button>
-                  </div>
-                  <div v-else>
-                    <button
-                      type="button"
-                      class="btn btn-warning me-2"
-                      @click="approveAsi"
+                      <td>
+                        <label for="exampleDataList" class="form-label">
+                          Code: &nbsp;&nbsp; {{ module.code }}
+                        </label>
+                      </td>
+                      <td>
+                        <label for="exampleDataList" class="form-label">
+                          Name: &nbsp;&nbsp; {{ module.module_name }}
+                        </label>
+                      </td>
+                      <td>
+                        <label for="exampleDataList" class="form-label">
+                          Site: &nbsp;&nbsp; {{ module.site_initials }}
+                        </label>
+                      </td>
+                      <td>
+                        <label for="exampleDataList" class="form-label">
+                          Credits: &nbsp;&nbsp; {{ module.ects }}
+                        </label>
+                      </td>
+                      <td>
+                        <label for="exampleDataList" class="form-label">
+                          Semester: &nbsp;&nbsp; {{ module.semester }}
+                        </label>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td colspan="6" class="table-active">
+                        <label for="exampleColorInput" class="form-label">
+                          Master thesis
+                        </label>
+                      </td>
+                      <td class="table-active">
+                        {{ $route.params.id }}
+                      </td>
+                    </tr>
+                    <tr
+                      v-for="module in asiMasterProject"
+                      :key="module.id_module"
                     >
-                      Approve
-                      <i class="fas fa-loader"></i>
-                    </button>
-                  </div>
-                </div>
+                      <td>
+                        <label for="exampleDataList" class="form-label">
+                          Code: &nbsp;&nbsp; {{ module.code }}
+                        </label>
+                      </td>
+                      <td>
+                        <label for="exampleDataList" class="form-label">
+                          Name: &nbsp;&nbsp; {{ module.module_name }}
+                        </label>
+                      </td>
+                      <td>
+                        <label for="exampleDataList" class="form-label">
+                          Site: &nbsp;&nbsp; {{ module.site_initials }}
+                        </label>
+                      </td>
+                      <td>
+                        <label for="exampleDataList" class="form-label">
+                          Credits: &nbsp;&nbsp; {{ module.ects }}
+                        </label>
+                      </td>
+                      <td>
+                        <label for="exampleDataList" class="form-label">
+                          Semester: &nbsp;&nbsp; {{ module.semester }}
+                        </label>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -270,6 +406,9 @@ export default {
     ...mapActions(['fetchFtpAsiStudentModules']),
     ...mapActions(['fetchTsmAsiStudentModules']),
     ...mapActions(['fetchCmAsiStudentModules']),
+    ...mapActions(['fetchProjectsAsiStudentModules']),
+    ...mapActions(['fetchSupplementaryModulesAsiStudentModules']),
+    ...mapActions(['fetchMasterProjectAsiStudentModules']),
     // ...mapActions(['fetchAsiModuleGroups']),
     // ...mapActions(['updateAsi']),
     approveAsi: function () {
@@ -311,6 +450,9 @@ export default {
     ...mapGetters(['allFtpAsiModules']),
     ...mapGetters(['allTsmAsiModules']),
     ...mapGetters(['allCmAsiModules']),
+    ...mapGetters(['asiProjects']),
+    ...mapGetters(['allSupplementaryModulesAsiModules']),
+    ...mapGetters(['asiMasterProject']),
     // ...mapGetters(['asiModuleGroups']),
     totalCredits: function () {
       var tot = 0
@@ -407,6 +549,11 @@ export default {
     this.fetchFtpAsiStudentModules(this.$route.params.studentId)
     this.fetchTsmAsiStudentModules(this.$route.params.studentId)
     this.fetchCmAsiStudentModules(this.$route.params.studentId)
+    this.fetchProjectsAsiStudentModules(this.$route.params.studentId)
+    this.fetchSupplementaryModulesAsiStudentModules(
+      this.$route.params.studentId
+    )
+    this.fetchMasterProjectAsiStudentModules(this.$route.params.studentId)
   }
 }
 </script>

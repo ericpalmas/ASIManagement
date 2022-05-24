@@ -397,7 +397,7 @@
                     <tr>
                       <td>Module group</td>
                       <td>Credits</td>
-                      <td>Necessary credits</td>
+                      <td>Missing credits</td>
                     </tr>
                   </thead>
                   <tbody>
