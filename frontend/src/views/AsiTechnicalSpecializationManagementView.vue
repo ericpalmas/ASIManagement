@@ -300,40 +300,12 @@
                     @change="onChangeSemester($event, 1, i)"
                   >
                     <option
-                      value="1"
-                      :selected="1 === module.semester ? true : false"
+                      v-for="option in options"
+                      :key="option"
+                      :selected="option === module.semester ? true : false"
+                      :value="option"
                     >
-                      1
-                    </option>
-                    <option
-                      value="2"
-                      :selected="2 === module.semester ? true : false"
-                    >
-                      2
-                    </option>
-                    <option
-                      value="3"
-                      :selected="3 === module.semester ? true : false"
-                    >
-                      3
-                    </option>
-                    <option
-                      value="4"
-                      :selected="4 === module.semester ? true : false"
-                    >
-                      4
-                    </option>
-                    <option
-                      value="5"
-                      :selected="5 === module.semester ? true : false"
-                    >
-                      5
-                    </option>
-                    <option
-                      value="6"
-                      :selected="6 === module.semester ? true : false"
-                    >
-                      6
+                      {{ option }}
                     </option>
                   </select>
                 </td>
@@ -540,6 +512,9 @@ export default {
     ...mapActions(['fetchAsiModuleGroups']),
     ...mapActions(['fetchAdvisors']),
     ...mapActions(['updateTechnicalAsi']),
+    ...mapActions(['removeProfileResponsibleApprovation']),
+    ...mapActions(['removeAdvisorApprovation']),
+    ...mapActions(['fetchLoggedUser']),
     // hideAlert() {
     //   // This was for me to test the click even - PREFER AUTO HIDE AFTER A FEW SECONDS
     //   document.querySelector('.alert').style.display = 'none'
@@ -647,6 +622,10 @@ export default {
           })
 
           this.pageSaved = true
+
+          console.log(this.loggedUser.AsiUserId)
+          this.removeProfileResponsibleApprovation(this.loggedUser.AsiUserId)
+          this.removeAdvisorApprovation(this.loggedUser.AsiUserId)
         }
       }
     },
@@ -829,7 +808,8 @@ export default {
     ...mapGetters(['allSupplementaryModules']),
     ...mapGetters(['allSupplementaryModulesAsiModules']),
     ...mapGetters(['asiMasterProject']),
-    ...mapGetters(['asiModuleGroups'])
+    ...mapGetters(['asiModuleGroups']),
+    ...mapGetters(['loggedUser'])
   },
   watch: {
     asiProjects: function () {

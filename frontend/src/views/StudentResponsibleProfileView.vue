@@ -12,7 +12,7 @@
               </div>
               <div class="col-md-auto">
                 <div id="approvation">
-                  <div v-if="asiStudentState.advisor_approvation">
+                  <div v-if="asiStudentState.profile_responsible_approvation">
                     <button type="button" class="btn btn-success">
                       Approved
                       <i class="fas fa-check"></i>
@@ -28,7 +28,11 @@
               </div>
               <div class="col col-lg-2">
                 <div id="approvation">
-                  <div v-if="asiStudentState.advisor_approvation === false">
+                  <div
+                    v-if="
+                      asiStudentState.profile_responsible_approvation === false
+                    "
+                  >
                     <button
                       type="button"
                       class="btn btn-light"
@@ -414,7 +418,7 @@ import { sidebarWidth } from '../components/sidebar/state'
 // }
 
 export default {
-  name: 'StudentView',
+  name: 'StudentResponsibleProfileView',
   data: () => ({
     approved: false
   }),
@@ -433,18 +437,18 @@ export default {
     ...mapActions(['fetchSupplementaryModulesAsiStudentModules']),
     ...mapActions(['fetchMasterProjectAsiStudentModules']),
     ...mapActions(['fetchStudentAsiState']),
-    ...mapActions(['advisorApprovation']),
-    ...mapActions(['removeAdvisorApprovation']),
+    ...mapActions(['profileResponsibleApprovation']),
+    ...mapActions(['removeProfileResponsibleApprovation']),
 
     approveAsi: function () {
       if (confirm('Do you really want to approve?')) {
-        this.advisorApprovation(this.$route.params.studentId)
+        this.profileResponsibleApprovation(this.$route.params.studentId)
       }
     },
 
     removeAsiApprovation: function () {
       if (confirm('Do you really want to remove approvation?')) {
-        this.removeAdvisorApprovation(this.$route.params.studentId)
+        this.removeProfileResponsibleApprovation(this.$route.params.studentId)
       }
     },
 

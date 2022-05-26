@@ -20,7 +20,7 @@
                         <router-link
                           style="text-decoration: none"
                           :to="{
-                            name: 'StudentView',
+                            name: 'StudentResponsibleProfileView',
                             params: { studentId: student.id_asi_user }
                           }"
                         >

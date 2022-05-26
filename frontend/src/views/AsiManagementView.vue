@@ -132,40 +132,14 @@
                           @change="onChangeSemester($event, 0, i)"
                         >
                           <option
-                            value="1"
-                            :selected="1 === module.semester ? true : false"
+                            v-for="option in options"
+                            :key="option"
+                            :selected="
+                              option === module.semester ? true : false
+                            "
+                            :value="option"
                           >
-                            1
-                          </option>
-                          <option
-                            value="2"
-                            :selected="2 === module.semester ? true : false"
-                          >
-                            2
-                          </option>
-                          <option
-                            value="3"
-                            :selected="3 === module.semester ? true : false"
-                          >
-                            3
-                          </option>
-                          <option
-                            value="4"
-                            :selected="4 === module.semester ? true : false"
-                          >
-                            4
-                          </option>
-                          <option
-                            value="5"
-                            :selected="5 === module.semester ? true : false"
-                          >
-                            5
-                          </option>
-                          <option
-                            value="6"
-                            :selected="6 === module.semester ? true : false"
-                          >
-                            6
+                            {{ option }}
                           </option>
                         </select>
                       </td>
@@ -233,40 +207,14 @@
                           @change="onChangeSemester($event, 1, i)"
                         >
                           <option
-                            value="1"
-                            :selected="1 === module.semester ? true : false"
+                            v-for="option in options"
+                            :key="option"
+                            :selected="
+                              option === module.semester ? true : false
+                            "
+                            :value="option"
                           >
-                            1
-                          </option>
-                          <option
-                            value="2"
-                            :selected="2 === module.semester ? true : false"
-                          >
-                            2
-                          </option>
-                          <option
-                            value="3"
-                            :selected="3 === module.semester ? true : false"
-                          >
-                            3
-                          </option>
-                          <option
-                            value="4"
-                            :selected="4 === module.semester ? true : false"
-                          >
-                            4
-                          </option>
-                          <option
-                            value="5"
-                            :selected="5 === module.semester ? true : false"
-                          >
-                            5
-                          </option>
-                          <option
-                            value="6"
-                            :selected="6 === module.semester ? true : false"
-                          >
-                            6
+                            {{ option }}
                           </option>
                         </select>
                       </td>
@@ -334,40 +282,14 @@
                           @change="onChangeSemester($event, 2, i)"
                         >
                           <option
-                            value="1"
-                            :selected="1 === module.semester ? true : false"
+                            v-for="option in options"
+                            :key="option"
+                            :selected="
+                              option === module.semester ? true : false
+                            "
+                            :value="option"
                           >
-                            1
-                          </option>
-                          <option
-                            value="2"
-                            :selected="2 === module.semester ? true : false"
-                          >
-                            2
-                          </option>
-                          <option
-                            value="3"
-                            :selected="3 === module.semester ? true : false"
-                          >
-                            3
-                          </option>
-                          <option
-                            value="4"
-                            :selected="4 === module.semester ? true : false"
-                          >
-                            4
-                          </option>
-                          <option
-                            value="5"
-                            :selected="5 === module.semester ? true : false"
-                          >
-                            5
-                          </option>
-                          <option
-                            value="6"
-                            :selected="6 === module.semester ? true : false"
-                          >
-                            6
+                            {{ option }}
                           </option>
                         </select>
                       </td>
@@ -528,7 +450,8 @@ export default {
   name: 'AsiManagementView',
   data: () => ({
     duplicatesError: false,
-    pageSaved: false
+    pageSaved: false,
+    options: ['1', '2', '3', '4', '5', '6']
   }),
   setup() {
     return { sidebarWidth }
@@ -546,6 +469,10 @@ export default {
     ...mapActions(['fetchCmAsiModules']),
     ...mapActions(['fetchAsiModuleGroups']),
     ...mapActions(['updateAsi']),
+    ...mapActions(['removeProfileResponsibleApprovation']),
+    ...mapActions(['removeAdvisorApprovation']),
+    ...mapActions(['fetchLoggedUser']),
+
     checkDuplicates: function (array) {
       var valueArr = array.map(function (item) {
         return item.id_module
@@ -584,6 +511,9 @@ export default {
             newModules
           })
           this.pageSaved = true
+          console.log(this.loggedUser.AsiUserId)
+          this.removeProfileResponsibleApprovation(this.loggedUser.AsiUserId)
+          this.removeAdvisorApprovation(this.loggedUser.AsiUserId)
         }
       }
     },
@@ -752,6 +682,8 @@ export default {
     ...mapGetters(['allTsmAsiModules']),
     ...mapGetters(['allCmAsiModules']),
     ...mapGetters(['asiModuleGroups']),
+    ...mapGetters(['loggedUser']),
+
     totalCredits: function () {
       var tot = 0
 

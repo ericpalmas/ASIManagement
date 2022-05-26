@@ -2,6 +2,8 @@ import axios from 'axios'
 
 const state = {
   asi: [],
+  asiState: {},
+  asiStudentState: {},
   ftpAsiModules: [],
   tsmAsiModules: [],
   cmAsiModules: [],
@@ -19,11 +21,77 @@ const getters = {
   allSupplementaryModulesAsiModules: (state) => state.asiSupplementaryModules,
   asiProjects: (state) => state.projects,
   asiMasterProject: (state) => state.asiMasterProject,
-  asiModuleGroups: (state) => state.asiModuleGroups
+  asiModuleGroups: (state) => state.asiModuleGroups,
+  asiState: (state) => state.asiState,
+  asiStudentState: (state) => state.asiStudentState
 }
 
 const actions = {
-  // get module of a student
+  async removeProfileResponsibleApprovation({ commit }, id) {
+    console.log(id)
+
+    await axios.post(
+      'http://localhost:8732/api/asi/removeProfileResponsibleApprovation/' + id,
+      {},
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+    commit('disableProfileResponsibleApprovation')
+  },
+
+  async removeAdvisorApprovation({ commit }, id) {
+    console.log(id)
+    await axios.post(
+      'http://localhost:8732/api/asi/removeAdvisorApprovation/' + id,
+      {},
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+    commit('disableAdvisorApprovation')
+  },
+  async advisorApprovation({ commit }, id) {
+    await axios.post(
+      'http://localhost:8732/api/asi/advisorApprovation/' + id,
+      {},
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+    commit('enableAdvisorApprovation')
+  },
+  async profileResponsibleApprovation({ commit }, id) {
+    await axios.post(
+      'http://localhost:8732/api/asi/profileResponsibleApprovation/' + id,
+      {},
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+    commit('enableProfileResponsibleApprovation')
+  },
+  async fetchAsiState({ commit }) {
+    const response = await axios.get('http://localhost:8732/api/asi/state', {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
+
+    console.log(response.data[0])
+
+    commit('setAsiState', response.data[0])
+  },
+
+  async fetchStudentAsiState({ commit }, id) {
+    const response = await axios.get(
+      'http://localhost:8732/api/asi/state/' + id,
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+    console.log(response.data[0])
+
+    commit('setAsiStudentState', response.data[0])
+  },
   async fetchProjectsAsiStudentModules({ commit }, id) {
     const response = await axios.get(
       'http://localhost:8732/api/asi/projects/' + id,
@@ -177,7 +245,6 @@ const actions = {
 }
 
 const mutations = {
-  //setAsi: (state, asi) => (state.asi = asi),
   setFtpAsiModules: (state, ftpAsiModules) =>
     (state.ftpAsiModules = ftpAsiModules),
   setTsmAsiModules: (state, tsmAsiModules) =>
@@ -190,6 +257,24 @@ const mutations = {
     (state.asiMasterProject = asiMasterProject),
   setAsiModuleGroups: (state, asiModuleGroups) =>
     (state.asiModuleGroups = asiModuleGroups),
+
+  setAsiState: (state, asiState) => (state.asiState = asiState),
+  setAsiStudentState: (state, asiStudentState) =>
+    (state.asiStudentState = asiStudentState),
+
+  enableAdvisorApprovation: (state) => {
+    state.asiStudentState.advisor_approvation = true
+  },
+  disableAdvisorApprovation: (state) => {
+    state.asiStudentState.advisor_approvation = false
+  },
+
+  enableProfileResponsibleApprovation: (state) => {
+    state.asiStudentState.profile_responsible_approvation = true
+  },
+  disableProfileResponsibleApprovation: (state) => {
+    state.asiStudentState.profile_responsible_approvation = false
+  },
 
   updateAsi: (state, newModules) => {
     ;(state.ftpAsiModules = newModules.allFtpAsiModules),

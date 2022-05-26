@@ -9,6 +9,7 @@ import LoginView from '../views/LoginView'
 import SelectUserTypeView from '../views/SelectUserTypeView'
 import StudentListView from '../views/StudentListView'
 import StudentView from '../views/StudentView'
+import StudentResponsibleProfileView from '../views/StudentResponsibleProfileView'
 import StudentListResponsibleProfileView from '../views/StudentListResponsibleProfileView'
 import StudentListAdministratorView from '../views/StudentListAdministratorView'
 import AdvisorListAdministratorView from '../views/AdvisorListAdministratorView'
@@ -65,6 +66,11 @@ const routes = [
     path: '/Student/:studentId',
     name: 'StudentView',
     component: StudentView
+  },
+  {
+    path: '/StudentListResponsibleProfile/:studentId',
+    name: 'StudentResponsibleProfileView',
+    component: StudentResponsibleProfileView
   },
   {
     path: '/StudentListResponsibleProfile',
