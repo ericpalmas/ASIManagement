@@ -6,6 +6,7 @@ import AsiManagementView from '../views/AsiManagementView.vue'
 import AsiProjectsView from '../views/AsiProjectsView.vue'
 import AsiTechnicalSpecializationManagementView from '../views/AsiTechnicalSpecializationManagementView.vue'
 import LoginView from '../views/LoginView'
+import UserRegistrationAdministratorView from '../views/UserRegistrationAdministratorView'
 import SelectUserTypeView from '../views/SelectUserTypeView'
 import StudentListView from '../views/StudentListView'
 import StudentView from '../views/StudentView'
@@ -13,6 +14,7 @@ import StudentResponsibleProfileView from '../views/StudentResponsibleProfileVie
 import StudentListResponsibleProfileView from '../views/StudentListResponsibleProfileView'
 import StudentListAdministratorView from '../views/StudentListAdministratorView'
 import AdvisorListAdministratorView from '../views/AdvisorListAdministratorView'
+import ProfileResponsibleListAdministratorView from '../views/ProfileResponsibleListAdministratorView'
 
 const routes = [
   {
@@ -86,6 +88,16 @@ const routes = [
     path: '/AdvisorListAdministrator',
     name: 'AdvisorListAdministratorView',
     component: AdvisorListAdministratorView
+  },
+  {
+    path: '/ProfileResponsibleListAdministrator',
+    name: 'ProfileResponsibleListAdministratorView',
+    component: ProfileResponsibleListAdministratorView
+  },
+  {
+    path: '/UserRegistrationAdministrator',
+    name: 'UserRegistrationAdministratorView',
+    component: UserRegistrationAdministratorView
   }
 ]
 

@@ -5,11 +5,11 @@
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
-          <h4 class="container pb-4">Advisor List</h4>
+          <h4 class="container pb-4">Profile responsible List</h4>
           <div v-if="loggedUser !== undefined && loggedUser !== null">
             <div
-              v-for="student in advisors"
-              :key="student.id_asi_user"
+              v-for="profileResponsible in profilesResponsible"
+              :key="profileResponsible.id_asi_user"
               class="pb-2"
             >
               <div class="card">
@@ -17,22 +17,21 @@
                   <div class="container">
                     <div class="row">
                       <div class="col-sm-8">
-                        <router-link
-                          style="text-decoration: none"
-                          :to="{
-                            name: 'StudentView',
-                            params: { studentId: student.id_asi_user }
-                          }"
-                        >
-                          <h5>{{ student.name }} {{ student.surname }}</h5>
-                        </router-link>
+                        <h5>
+                          {{ profileResponsible.name }}
+                          {{ profileResponsible.surname }}
+                        </h5>
                       </div>
                       <div class="col-sm-4">
                         <button
                           id="deleteStudent"
                           type="button"
                           class="btn btn-outline-danger"
-                          @click="removeAdvisor(student.id_asi_user)"
+                          @click="
+                            removeProfileResponsible(
+                              profileResponsible.id_asi_user
+                            )
+                          "
                         >
                           <i class="fas fa-trash"></i>
                         </button>
@@ -126,7 +125,7 @@ import Sidebar from '../components/sidebar/Sidebar'
 import { sidebarWidth } from '../components/sidebar/state'
 
 export default {
-  name: 'AdvisorListAdministratorView',
+  name: 'ProfileResponsibleListAdministratorView',
   data: () => ({
     studentId: -1,
     id: 0,
@@ -151,7 +150,7 @@ export default {
     Sidebar
   },
   methods: {
-    ...mapActions(['fetchAdvisors']),
+    ...mapActions(['fetchProfilesResponsible']),
     ...mapActions(['fetchLoggedUser']),
 
     // onChangeStudent: function (event) {
@@ -161,7 +160,7 @@ export default {
       //this.followStudent({ id: this.id, advisorId: this.loggedUser.AsiUserId })
       console.log(this.name)
     },
-    removeAdvisor: function (removedId) {
+    removeProfileResponsible: function (removedId) {
       // this.stopFollowStudent({
       //   id: removedId,
       //   advisorId: this.loggedUser.AsiUserId
@@ -172,7 +171,7 @@ export default {
 
   computed: {
     //...mapGetters(['advisorStudents']),
-    ...mapGetters(['advisors']),
+    ...mapGetters(['profilesResponsible']),
     ...mapGetters(['loggedUser'])
   },
   watch: {
@@ -191,7 +190,7 @@ export default {
     }
   },
   created() {
-    this.fetchAdvisors()
+    this.fetchProfilesResponsible()
     this.fetchLoggedUser()
   }
 }

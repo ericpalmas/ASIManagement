@@ -144,6 +144,22 @@ export default {
       >
         Advisors
       </SidebarLink>
+
+      <SidebarLink
+        v-if="loggedUser.Role === 'Administrator'"
+        to="/ProfileResponsibleListAdministrator"
+        icon="fas fa-users"
+      >
+        Responsibles
+      </SidebarLink>
+
+      <SidebarLink
+        v-if="loggedUser.Role === 'Administrator'"
+        to="/UserRegistrationAdministrator"
+        icon="fas fa-users"
+      >
+        Add user
+      </SidebarLink>
     </div>
 
     <span

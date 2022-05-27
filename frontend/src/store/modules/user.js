@@ -9,6 +9,7 @@ const state = {
   studentsByProfile: [],
   advisors: [],
   students: [],
+  profilesResponsible: [],
   isLogin: false,
   token: null,
   user: null,
@@ -23,6 +24,7 @@ const getters = {
   studentsByProfile: (state) => state.studentsByProfile,
   students: (state) => state.students,
   advisors: (state) => state.advisors,
+  profilesResponsible: (state) => state.profilesResponsible,
   userType: (state) => state.userType,
   token: (state) => state.token,
   isLogin: (state) => state.isLogin,
@@ -57,6 +59,16 @@ const actions = {
       }
     )
     commit('setAdvisors', response.data)
+  },
+
+  async fetchProfilesResponsible({ commit }) {
+    const response = await axios.get(
+      'http://localhost:8732/api/asiuser/profilesResponsible',
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+    commit('setProfilesResponsible', response.data)
   },
   async fetchAvailableStudents({ commit }) {
     const response = await axios.get(
@@ -223,6 +235,8 @@ const mutations = {
     (state.studentsByProfile = studentsByProfile),
   setAdvisors: (state, advisors) => (state.advisors = advisors),
   setStudents: (state, students) => (state.students = students),
+  setProfilesResponsible: (state, profilesResponsible) =>
+    (state.profilesResponsible = profilesResponsible),
   setUserType: (state, userType) => (state.userType = userType),
 
   resetState(state) {

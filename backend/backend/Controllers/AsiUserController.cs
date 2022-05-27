@@ -99,7 +99,35 @@ namespace backend.Controllers
         {
 
             string query = @"                          
-                  select * from dbo.asi_user where asi_user.role = 5 OR  asi_user.role = 7
+select id_asi_user, name, surname, email, modality, profile, advisor, enrollment_number, role, profile_responsible from dbo.asi_user where asi_user.role = 5 OR  asi_user.role = 7
+                           ";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+        [HttpGet("api/asiuser/profilesResponsible")]
+        [Authorize(Roles = "Advisor, StudentAdvisor, Student, Administrator")]
+        public JsonResult GetProfileResponsibles()
+        {
+
+            string query = @"                          
+select id_asi_user, name, surname, email, modality, profile, advisor, enrollment_number, role, profile_responsible from dbo.asi_user where asi_user.role = 8 OR  asi_user.role = 9 OR  asi_user.role = 10
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
