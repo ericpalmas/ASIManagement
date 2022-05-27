@@ -255,6 +255,7 @@
                               type="checkbox"
                               value=""
                               id="flexCheckChecked"
+                              v-model="adminOption"
                             />
                             <label
                               class="form-check-label"
