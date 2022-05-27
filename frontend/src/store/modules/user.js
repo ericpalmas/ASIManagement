@@ -129,6 +129,37 @@ const actions = {
     }
   },
 
+  async register(
+    { commit },
+    { name, surname, email, password, profile, modality, role }
+  ) {
+    //commit('registrationRequest', { username })
+
+    //let result = loginService.login(username, password)
+
+    console.log(name, surname, email, password, profile, modality, role)
+
+    const response = await axios.post(
+      'http://localhost:8732/api/asiuser/register',
+      {
+        AsiUserName: name,
+        AsiUserSurname: surname,
+        AsiUserEmail: email,
+        AsiUserPassword: password,
+        Profile: profile,
+        Modality: modality,
+        Role: role
+      }
+    )
+
+    if (response.status == 200) {
+      commit('registrationSuccess', response.data[0])
+      // localStorage.setItem('token', response.data.Token)
+    } else if (response.status == 404) {
+      //commit('registrationFailure', response.data)
+    }
+  },
+
   async followStudent({ commit }, { id, advisorId }) {
     const response = await axios.get(
       'http://localhost:8732/api/asiuser/followStudent/' + id,
@@ -144,6 +175,19 @@ const actions = {
     commit('setFollowStudent', res)
   },
 
+  async removeStudent({ commit }, { id }) {
+    const response = await axios.delete(
+      'http://localhost:8732/api/asiuser/students/' + id,
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+
+    console.log(response.data)
+
+    commit('setRemoveStudent', response.data)
+  },
+
   async stopFollowStudent({ commit }, { id, advisorId }) {
     const response = await axios.get(
       'http://localhost:8732/api/asiuser/stopFollowStudent/' + id,
@@ -151,7 +195,6 @@ const actions = {
         headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
       }
     )
-
     var res = {
       response: response.data,
       advisorId: advisorId
@@ -216,28 +259,17 @@ const mutations = {
 
     //console.log(state.availableStudents)
   },
+  setRemoveStudent(state, students) {
+    state.students = students
+  },
   setStopFollowStudent(state, res) {
     state.advisorStudents = res.response.filter(
       (student) => student.advisor === res.advisorId
     )
-    //console.log(res.response)
 
     state.availableStudents = res.response
       .filter((student) => student.advisor === null)
       .filter((student) => student.id_user_type === 1)
-
-    // console.log(
-    //   (state.availableStudents = res.response.filter(
-    //     (student) => student.advisor === null
-    //   ))
-    // )
-
-    // console.log(
-    //   (state.availableStudents = res.response.filter(
-    //     (student) => student.id_user_type === 1
-    //   ))
-    // )
-    // console.log(state.availableStudents)
   },
   loginFailure(state, response) {
     state.isLogin = false
@@ -248,6 +280,23 @@ const mutations = {
   },
   setLoggedUser(state, userLogged) {
     state.loggedUser = userLogged
+  },
+  registrationSuccess(state, newUser) {
+    if (newUser.role === 1) {
+      console.log(state, newUser)
+
+      state.students.push(newUser)
+      // state.students.push({
+      //   name: newUser.name,
+      //   surname: newUser.surname,
+      //   email: newUser.email,
+      //   enrollment_number: newUser.enrollmentNumber,
+      //   advisor: null,
+      //   profile_responsible: null,
+      //   profile: newUser.profile,
+      //   modality: newUser.modality
+      // })
+    }
   }
 }
 

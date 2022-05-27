@@ -6,6 +6,31 @@
       <div class="card">
         <div class="card-body">
           <h4 class="container pb-4">Student List</h4>
+          <div
+            class="alert alert-danger"
+            role="alert"
+            v-if="confirmedPasswordError"
+            :v-bind:confirmedPasswordError="confirmedPasswordError"
+          >
+            Password and confirmed password are different
+          </div>
+          <div
+            class="alert alert-danger"
+            role="alert"
+            v-if="emptyFieldsError"
+            :v-bind:emptyFieldsError="emptyFieldsError"
+          >
+            Empty field
+          </div>
+          <div
+            class="alert alert-success"
+            role="alert"
+            v-if="pageSaved"
+            :v-bind:pageSaved="pageSaved"
+          >
+            Page saved correctly
+          </div>
+
           <div v-if="loggedUser !== undefined && loggedUser !== null">
             <div
               v-for="student in students"
@@ -17,33 +42,35 @@
                   <div class="container">
                     <div class="row">
                       <div class="col-sm-8">
-                        <router-link
+                        <label>
+                          <h5>{{ student.name }} {{ student.surname }}</h5>
+                        </label>
+                        <!-- <router-link
                           style="text-decoration: none"
                           :to="{
                             name: 'StudentView',
                             params: { studentId: student.id_asi_user }
                           }"
                         >
-                          <h5>{{ student.name }} {{ student.surname }}</h5>
-                        </router-link>
+                        </router-link> -->
                       </div>
-                      <!-- <div class="col-sm-4">
+                      <div class="col-sm-4">
                         <button
                           id="deleteStudent"
                           type="button"
                           class="btn btn-outline-danger"
-                          @click="removeStudent(student.id_asi_user)"
+                          @click="deleteStudent(student.id_asi_user)"
                         >
                           <i class="fas fa-trash"></i>
                         </button>
-                      </div> -->
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <!-- <button
+            <button
               type="button"
               class="btn btn-outline-primary"
               data-bs-toggle="modal"
@@ -62,7 +89,7 @@
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">
-                      Add student
+                      Student registration
                     </h5>
                     <button
                       type="button"
@@ -71,27 +98,131 @@
                       aria-label="Close"
                     ></button>
                   </div>
-
                   <div class="modal-body">
-                    <p>Student list</p>
+                    <form>
+                      <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">
+                          Name:
+                        </label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="recipient-name"
+                          v-model="name"
+                        />
+                      </div>
 
-                    <select
-                      class="form-select form-select-sm"
-                      aria-label=".form-select-sm example"
-                      @change="onChangeStudent($event)"
-                      v-model="id"
-                    >
-                      <option
-                        v-for="student in availableStudents"
-                        :key="student.id_asi_user"
-                        v-bind:value="student.id_asi_user"
-                      >
-                        Name:&nbsp;&nbsp;{{ student.name }},
-                        Surname:&nbsp;&nbsp;{{ student.surname }},
-                        Email:&nbsp;&nbsp;{{ student.email }}
-                      </option>
-                    </select>
+                      <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">
+                          Surname:
+                        </label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="recipient-name"
+                          v-model="surname"
+                        />
+                      </div>
+
+                      <div class="mb-3">
+                        <label
+                          for="exampleFormControlInput1"
+                          class="form-label"
+                        >
+                          Email address
+                        </label>
+                        <input
+                          type="email"
+                          class="form-control"
+                          id="exampleFormControlInput1"
+                          placeholder="name@example.com"
+                          v-model="email"
+                        />
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">
+                          Enrollment number:
+                        </label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="recipient-name"
+                          v-model="enrollmentNumber"
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <label
+                          for="inputPassword"
+                          class="col-sm-2 col-form-label"
+                        >
+                          Password
+                        </label>
+                        <div class="col-sm-10">
+                          <input
+                            type="password"
+                            class="form-control"
+                            id="inputPassword"
+                            v-model="password"
+                          />
+                        </div>
+                      </div>
+                      <div class="mb-3">
+                        <label for="inputPassword" class="col-form-label">
+                          Confirm password
+                        </label>
+                        <div class="col-sm-10">
+                          <input
+                            type="password"
+                            class="form-control"
+                            id="inputPassword"
+                            v-model="confirmedPassword"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="inputPassword" class="col-form-label">
+                          Profile
+                        </label>
+
+                        <select
+                          class="form-select form-select-sm"
+                          aria-label=".form-select-sm example"
+                          v-model="profile"
+                        >
+                          <option
+                            v-for="profile in profiles"
+                            :key="profile.id_profile"
+                            :value="profile.id_profile"
+                          >
+                            {{ profile.name }}
+                          </option>
+                        </select>
+                      </div>
+
+                      <div class="mb-3">
+                        <label for="inputPassword" class="col-form-label">
+                          Modality
+                        </label>
+
+                        <select
+                          class="form-select form-select-sm"
+                          aria-label=".form-select-sm example"
+                          v-model="modality"
+                        >
+                          <option
+                            v-for="modality in modalities"
+                            :key="modality.id_modality"
+                            :value="modality.id_modality"
+                          >
+                            {{ modality.name }}
+                          </option>
+                        </select>
+                      </div>
+                    </form>
                   </div>
+
                   <div class="modal-footer">
                     <button
                       type="button"
@@ -104,14 +235,14 @@
                       type="button"
                       class="btn btn-primary"
                       data-bs-dismiss="modal"
-                      @click="addStudent"
+                      @click="registerStudent()"
                     >
-                      Save changes
+                      Register
                     </button>
                   </div>
                 </div>
               </div>
-            </div> -->
+            </div>
           </div>
         </div>
       </div>
@@ -130,7 +261,19 @@ export default {
   name: 'StudentListAdministratorView',
   data: () => ({
     studentId: -1,
-    id: 0
+    id: 0,
+    name: '',
+    surname: '',
+    email: '',
+    enrollmentNumber: '',
+    password: '',
+    confirmedPassword: '',
+    modality: -1,
+    profile: -1,
+    role: 1,
+    emptyFieldsError: false,
+    confirmedPasswordError: false,
+    pageSaved: false
   }),
   setup() {
     return { sidebarWidth }
@@ -141,54 +284,101 @@ export default {
   },
   methods: {
     ...mapActions(['fetchStudents']),
-    // ...mapActions(['fetchAvailableStudents']),
-    // ...mapActions(['followStudent']),
-    // ...mapActions(['stopFollowStudent']),
-    ...mapActions(['fetchLoggedUser'])
+    ...mapActions(['fetchAvailableStudents']),
+    ...mapActions(['followStudent']),
+    ...mapActions(['stopFollowStudent']),
+    ...mapActions(['fetchLoggedUser']),
+    ...mapActions(['fetchProfiles']),
+    ...mapActions(['fetchModalities']),
+    ...mapActions(['register']),
+    ...mapActions(['removeStudent']),
 
-    // onChangeStudent: function (event) {
-    //   this.studentId = event.target.value
-    // },
-    // addStudent: function () {
-    //   this.followStudent({ id: this.id, advisorId: this.loggedUser.AsiUserId })
-    // },
-    // removeStudent: function (removedId) {
-    //   this.stopFollowStudent({
-    //     id: removedId,
-    //     advisorId: this.loggedUser.AsiUserId
-    //   })
-    // }
+    deleteStudent: function (removedId) {
+      if (confirm('Do you really want to remove?')) {
+        this.removeStudent({
+          id: removedId
+        })
+      }
+      console.log(removedId)
+    },
+
+    registerStudent: function () {
+      console.log(this.name)
+      console.log(this.surname)
+      console.log(this.email)
+      console.log(this.enrollmentNumber)
+      console.log(this.password)
+      console.log(this.confirmedPassword)
+      console.log(this.modality)
+      console.log(this.profile)
+
+      if (
+        this.name !== '' &&
+        this.surname !== '' &&
+        this.email !== '' &&
+        this.enrollmentNumber !== '' &&
+        this.password !== '' &&
+        this.confirmedPassword !== '' &&
+        this.modality !== -1 &&
+        this.profile !== -1
+      ) {
+        this.emptyFieldsError = false
+
+        if (this.password === this.confirmedPassword) {
+          this.confirmedPasswordError = false
+
+          const {
+            name,
+            surname,
+            email,
+            enrollmentNumber,
+            password,
+            modality,
+            role,
+            profile
+          } = this
+          this.register({
+            name,
+            surname,
+            email,
+            enrollmentNumber,
+            password,
+            modality,
+            profile,
+            role
+          })
+        } else {
+          this.confirmedPasswordError = true
+        }
+      } else {
+        this.emptyFieldsError = true
+      }
+    }
   },
 
   computed: {
-    //...mapGetters(['advisorStudents']),
+    ...mapGetters(['modalities']),
+    ...mapGetters(['profiles']),
     ...mapGetters(['students']),
     ...mapGetters(['loggedUser'])
   },
   watch: {
-    // advisorStudents: function () {
-    //   if (this.advisorStudents.length !== 0) {
-    //     console.log(this.advisorStudents.length)
-    //   }
-    // },
-    // availableStudents: function () {
-    //   if (this.availableStudents.length !== 0) {
-    //     console.log(this.availableStudents.length)
-    //   }
-    // },
     loggedUser: function () {
       console.log(this.loggedUser)
+    },
+    students: function () {
+      console.log(this.students)
     }
   },
   created() {
-    // this.fetchAdvisorStudents()
     this.fetchStudents()
     this.fetchLoggedUser()
+    this.fetchProfiles()
+    this.fetchModalities()
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .cardsContainers {
   min-height: 100vh;

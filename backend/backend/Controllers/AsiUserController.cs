@@ -126,8 +126,8 @@ namespace backend.Controllers
         public JsonResult GetStudents()
         {
 
-            string query = @"                          
-                  select * from dbo.asi_user where asi_user.role = 1 OR  asi_user.role = 7
+            string query = @"                                          
+select id_asi_user, name, surname, email, modality, profile, advisor, enrollment_number, role, profile_responsible from dbo.asi_user where asi_user.role = 1 OR  asi_user.role = 7
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -472,7 +472,7 @@ AND (asi_user.role = 1 OR asi_user.role = 7)
                                 AsiUserPassword = sdr["password"].ToString(),
                                 Role = sdr["role"].ToString(),
 
-                           
+
                                 //Profile = Convert.ToInt32(sdr["profile"]),
 
                             }); ; ;
@@ -585,20 +585,9 @@ AND (asi_user.role = 1 OR asi_user.role = 7)
 
             string encryptedPassword = BCrypt.Net.BCrypt.HashPassword(request.AsiUserPassword);
 
-            string query = @"INSERT INTO dbo.asi_user(name, surname, email, password, role ) VALUES ('" + request.AsiUserName + "','" + request.AsiUserSurname + "','" + request.AsiUserEmail + "','" + encryptedPassword + "',"+ request.Role + ");";
+            string query = @"INSERT INTO dbo.asi_user(name, surname, email, enrollment_number, password, role, profile, modality ) VALUES ('" + request.AsiUserName + "','" + request.AsiUserSurname + "','" + request.AsiUserEmail + "','" + request.AsiUserEnrollmentNumber + "','" + encryptedPassword + "',"+ request.Role + "," + request.Profile + "," + request.Modality + ");";
+            query += "select id_asi_user, name, surname, email, modality, profile, advisor, enrollment_number, role, profile_responsible from(SELECT TOP 1 * FROM dbo.asi_user ORDER BY asi_user.id_asi_user DESC) as last_element";
 
-            /*string query = @"";
-            query += "INSERT INTO dbo.asi_user(name, surname, email, password ) VALUES ('" + request.AsiUserName + "','" + request.AsiUserSurname + "','" + request.AsiUserEmail + "','" + encryptedPassword + "');";
-
-            query += "INSERT INTO dbo.user_user_type(asi_user,user_type ) VALUES ";
-            for (int i = 0; i < request.Roles.Length; i++)
-            {
-                query += "((SELECT @@IDENTITY AS ID), " + request.Roles[i] + ")";
-                if (i == request.Roles.Length - 1)
-                    query += ";";
-                else
-                    query += ",";
-            }*/
 
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -614,9 +603,38 @@ AND (asi_user.role = 1 OR asi_user.role = 7)
                     myCon.Close();
                 }
             }
+     
+            return new JsonResult(table);
+        }
+
+        [HttpDelete("api/asiuser/students/{id}")]
+        [Authorize(Roles = "Administrator")]
+        public JsonResult DeleteStudent(int id)
+        {
+
+            string query = @"DELETE FROM dbo.asi_user WHERE asi_user.id_asi_user = @UserId;";
+
+            query += "select id_asi_user, name, surname, email, modality, profile, advisor, enrollment_number, role, profile_responsible from dbo.asi_user where asi_user.role = 1 OR  asi_user.role = 7";
+            
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@UserId", id);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
 
             return new JsonResult(table);
-
         }
 
         /*private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -636,8 +654,8 @@ AND (asi_user.role = 1 OR asi_user.role = 7)
                 return computedHash.SequenceEqual(passwordHash);
             }
         }*/
-        
-   
+
+
         /*private string EncodePasswordToBase64(string password)
         {
             try

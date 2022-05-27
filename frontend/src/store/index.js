@@ -4,6 +4,8 @@ import asi from './modules/asi'
 //import projects from './modules/projects'
 import user from './modules/user'
 import calendarModule from './modules/calendarModule'
+import modality from './modules/modality'
+import profile from './modules/profile'
 
 export default createStore({
   modules: {
@@ -11,6 +13,8 @@ export default createStore({
     asi,
     //projects,
     user,
-    calendarModule
+    calendarModule,
+    profile,
+    modality
   }
 })

@@ -7,6 +7,7 @@
         public string AsiUserSurname { get; set; }
         public string AsiUserEmail { get; set; }
         public string AsiUserPassword { get; set; }
+        public string AsiUserEnrollmentNumber { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public string Token { get; set; }
