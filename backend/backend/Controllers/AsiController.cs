@@ -54,7 +54,7 @@ namespace backend.Controllers
         }
 
         [HttpGet("api/asi")]
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = "Student, StudentAdvisor, ProfileResponsibleStudentAdvisor")]
 
         public JsonResult GetAsi()
         {
@@ -97,7 +97,7 @@ where asi.asi_user = @UserId
 
 
         [HttpGet("api/asi/moduleGroups")]
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = "Student, StudentAdvisor, ProfileResponsibleStudentAdvisor")]
         public JsonResult GetModuleGroups()
         {
             var currentUser = GetCurrentUser();
@@ -132,7 +132,7 @@ where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(create
         }
 
         [HttpPost("api/asi")]
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = "Student, StudentAdvisor, ProfileResponsibleStudentAdvisor")]
         public JsonResult addModules(Asi asi)
         {
 
@@ -206,7 +206,7 @@ where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(create
 
 
         [HttpPost("api/asiTechicalModules")]
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = "Student, StudentAdvisor, ProfileResponsibleStudentAdvisor")]
         public JsonResult addTechnicalModules(Asi asi)
         {
             Console.WriteLine(asi);
@@ -591,8 +591,8 @@ ORDER BY asi_module.id_asi_module asc
 
 
                 [HttpGet("api/asi/ftp")]
-                [Authorize(Roles = "Student")]
-                public JsonResult GetAsiFtp()
+        [Authorize(Roles = "Student, StudentAdvisor, ProfileResponsibleStudentAdvisor")]
+        public JsonResult GetAsiFtp()
                 {
 
                     var currentUser = GetCurrentUser();
@@ -649,8 +649,8 @@ where asi.asi_user = @UserId AND module.module_group = 2*/
 
 
 [HttpGet("api/asi/tsm")]
-                [Authorize(Roles = "Student")]
-                public JsonResult GetAsiTsm()
+        [Authorize(Roles = "Student, StudentAdvisor, ProfileResponsibleStudentAdvisor")]
+        public JsonResult GetAsiTsm()
                 {
                     var currentUser = GetCurrentUser();
 
@@ -699,8 +699,9 @@ ORDER BY asi_module.id_asi_module asc
         where asi.asi_user = @UserId AND module.module_group = 3*/
 
                 [HttpGet("api/asi/cm")]
-                [Authorize(Roles = "Student")]
-                public JsonResult GetCm()
+        [Authorize(Roles = "Student, StudentAdvisor, ProfileResponsibleStudentAdvisor")]
+
+        public JsonResult GetCm()
                 {
                     var currentUser = GetCurrentUser();
 
@@ -750,8 +751,9 @@ ORDER BY asi_module.id_asi_module asc
         where asi.asi_user = @UserId AND module.module_group = 5
  */
                 [HttpGet("api/asi/supplementaryModules")]
-                [Authorize(Roles = "Student")]
-                public JsonResult GetSupplementaryModules()
+        [Authorize(Roles = "Student, StudentAdvisor, ProfileResponsibleStudentAdvisor")]
+
+        public JsonResult GetSupplementaryModules()
                 {
                     var currentUser = GetCurrentUser();
 
@@ -764,7 +766,7 @@ inner join module_group on module.module_group = module_group.id_module_group
 left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join site on module.site = site.id_site
-where asi.asi_user = 43 AND module.module_group = 5
+where asi.asi_user = @UserId AND module.module_group = 5
 GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials
 ORDER BY asi_module.id_asi_module asc
                                    ";
@@ -792,8 +794,9 @@ ORDER BY asi_module.id_asi_module asc
 
 
               [HttpGet("api/asi/masterProject")]
-                [Authorize(Roles = "Student")]
-                public JsonResult GetMasterProject()
+        [Authorize(Roles = "Student,StudentAdvisor,ProfileResponsibleStudentAdvisor")]
+
+        public JsonResult GetMasterProject()
                 {
                     var currentUser = GetCurrentUser();
 

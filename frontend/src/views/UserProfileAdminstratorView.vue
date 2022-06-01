@@ -4,9 +4,9 @@
     <Navbar />
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
-        <h4 class="title">Administrative data</h4>
+        <h4 class="title">User profile</h4>
         <div class="card-body" v-for="user in userData" :key="user.student_id">
-          <div id="cardsContainers" class="container pb-4">
+          <div id="cardsContainers" class="container pt-3 pb-4">
             <div class="card">
               <div class="card-body">
                 <table class="table table-light">
@@ -120,7 +120,6 @@
                         <div style="text-align: left">September 14, 2020</div>
                       </td>
                     </tr>
-
                     <tr v-if="user.advisor_id !== null">
                       <td style="width: 40 %; padding-left: 4%">
                         <div style="text-align: left">Student’s advisor:</div>
@@ -150,7 +149,7 @@ import Sidebar from '../components/sidebar/Sidebar'
 import { sidebarWidth } from '../components/sidebar/state'
 
 export default {
-  name: 'AdministrativeDataView',
+  name: 'UserProfileAdminstratorView',
   props: ['userId'],
   setup() {
     return { sidebarWidth }
@@ -160,20 +159,15 @@ export default {
     Sidebar
   },
   methods: {
-    ...mapActions(['fetchUserData'])
-    //...mapActions(['fetchLoggedUser'])
+    //...mapActions(['fetchUserData'])
+    ...mapActions(['fetchSpecificUserData'])
   },
   computed: {
     ...mapGetters(['userData'])
-    //...mapGetters(['loggedUser'])
   },
   created() {
-    // this.fetchLoggedUser()
-    // console.log(this.loggedUser[0])
-
-    //if (this.loggedUser[0]) {
-    this.fetchUserData()
-    //}
+    //this.fetchUserData()
+    this.fetchSpecificUserData(this.$route.params.userId)
   }
 }
 </script>

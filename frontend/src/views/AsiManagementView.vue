@@ -10,7 +10,7 @@
           <div class="container">
             <div class="row justify-content-md-center">
               <div class="col col-lg-2" style="width: 40%">
-                <h2 id="title" class="title">ASI management</h2>
+                <h4 id="title" class="title">ASI management</h4>
               </div>
               <div class="col-md-auto"></div>
               <div class="col col-lg-2">

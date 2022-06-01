@@ -5,11 +5,11 @@
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
-          <h4 class="container pb-4">Advisor List</h4>
+          <h4 class="container pb-4">Advisor list</h4>
           <div v-if="loggedUser !== undefined && loggedUser !== null">
             <div
-              v-for="student in advisors"
-              :key="student.id_asi_user"
+              v-for="advisor in advisors"
+              :key="advisor.id_asi_user"
               class="pb-2"
             >
               <div class="card">
@@ -17,14 +17,27 @@
                   <div class="container">
                     <div class="row">
                       <div class="col-sm-8">
-                        <router-link
+                        <!-- <router-link
                           style="text-decoration: none"
                           :to="{
                             name: 'StudentView',
-                            params: { studentId: student.id_asi_user }
+                            params: { studentId: advisor.id_asi_user }
                           }"
                         >
-                          <h5>{{ student.name }} {{ student.surname }}</h5>
+                          <h5>{{ advisor.name }} {{ advisor.surname }}</h5>
+                        </router-link> -->
+
+                        <router-link
+                          style="text-decoration: none"
+                          :to="{
+                            name: 'UserProfileAdminstratorView',
+                            params: { userId: advisor.id_asi_user }
+                          }"
+                        >
+                          <h5>
+                            {{ advisor.name }}
+                            {{ advisor.surname }}
+                          </h5>
                         </router-link>
                       </div>
                       <div class="col-sm-4">
@@ -32,7 +45,7 @@
                           id="deleteStudent"
                           type="button"
                           class="btn btn-outline-danger"
-                          @click="removeAdvisor(student.id_asi_user)"
+                          @click="deleteUser(advisor.id_asi_user)"
                         >
                           <i class="fas fa-trash"></i>
                         </button>
@@ -42,75 +55,6 @@
                 </div>
               </div>
             </div>
-
-            <!-- <button
-              type="button"
-              class="btn btn-outline-primary"
-              data-bs-toggle="modal"
-              data-bs-target="#exampleModal"
-            >
-              <i class="fas fa-plus-circle"></i>
-            </button>
-            <div
-              class="modal fade"
-              id="exampleModal"
-              tabindex="-1"
-              aria-labelledby="exampleModalLabel"
-              aria-hidden="true"
-            >
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">
-                      Add advisor
-                    </h5>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-
-                  <div class="modal-body">
-                    <p>Advisor list</p>
-
-                    <select
-                      class="form-select form-select-sm"
-                      aria-label=".form-select-sm example"
-                      v-model="id"
-                    >
-                      <option
-                        v-for="advisor in advisors"
-                        :key="advisor.id_asi_user"
-                        v-bind:value="advisor.id_asi_user"
-                      >
-                        Name:&nbsp;&nbsp;{{ advisor.name }},
-                        Surname:&nbsp;&nbsp;{{ advisor.surname }},
-                        Email:&nbsp;&nbsp;{{ advisor.email }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      data-bs-dismiss="modal"
-                    >
-                      Close
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-primary"
-                      data-bs-dismiss="modal"
-                      @click="addAdvisor"
-                    >
-                      Save changes
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div> -->
           </div>
         </div>
       </div>
@@ -153,20 +97,20 @@ export default {
   methods: {
     ...mapActions(['fetchAdvisors']),
     ...mapActions(['fetchLoggedUser']),
+    ...mapActions(['removeUser']),
 
-    // onChangeStudent: function (event) {
-    //   this.studentId = event.target.value
-    // },
+    deleteUser: function (removedId) {
+      if (confirm('Do you really want to remove?')) {
+        this.removeUser({
+          id: removedId
+        })
+      }
+      console.log(removedId)
+    },
+
     addAdvisor: function () {
       //this.followStudent({ id: this.id, advisorId: this.loggedUser.AsiUserId })
       console.log(this.name)
-    },
-    removeAdvisor: function (removedId) {
-      // this.stopFollowStudent({
-      //   id: removedId,
-      //   advisorId: this.loggedUser.AsiUserId
-      // })
-      console.log(removedId)
     }
   },
 

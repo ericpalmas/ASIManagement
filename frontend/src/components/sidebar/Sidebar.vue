@@ -42,7 +42,11 @@ export default {
     </h1>
     <div v-if="loggedUser !== undefined && loggedUser !== null">
       <SidebarLink
-        v-if="loggedUser.Role === 'Student'"
+        v-if="
+          loggedUser.Role === 'Student' ||
+          loggedUser.Role === 'StudentAdvisor' ||
+          loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
+        "
         to="/AsiManagement"
         icon="fas fa-home"
       >
@@ -50,7 +54,11 @@ export default {
       </SidebarLink>
 
       <SidebarLink
-        v-if="loggedUser.Role === 'Student'"
+        v-if="
+          loggedUser.Role === 'Student' ||
+          loggedUser.Role === 'StudentAdvisor' ||
+          loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
+        "
         to="/AsiTechnicalSpecialization"
         icon="fas fa-home"
       >
@@ -58,7 +66,11 @@ export default {
       </SidebarLink>
 
       <SidebarLink
-        v-if="loggedUser.Role === 'Student'"
+        v-if="
+          loggedUser.Role === 'Student' ||
+          loggedUser.Role === 'StudentAdvisor' ||
+          loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
+        "
         to="/AsiProjects"
         icon="fas fa-columns"
       >

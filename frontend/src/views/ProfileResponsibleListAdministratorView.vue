@@ -17,21 +17,40 @@
                   <div class="container">
                     <div class="row">
                       <div class="col-sm-8">
-                        <h5>
-                          {{ profileResponsible.name }}
-                          {{ profileResponsible.surname }}
-                        </h5>
+                        <!-- <router-link
+                          style="text-decoration: none"
+                          :to="{
+                            name: 'StudentView',
+                            params: { studentId: profileResponsible.id_asi_user }
+                          }"
+                        >
+                          <h5>{{ profileResponsible.name }} {{ profileResponsible.surname }}</h5>
+                        </router-link> -->
+
+                        <!--  -->
+                        <router-link
+                          style="text-decoration: none"
+                          :to="{
+                            name: 'UserProfileAdminstratorView',
+                            params: { userId: profileResponsible.id_asi_user }
+                          }"
+                        >
+                          <h5 style="display: inline">
+                            {{ profileResponsible.name }}
+                            {{ profileResponsible.surname }}
+                          </h5>
+                          &nbsp;&nbsp;
+                          <p style="display: inline">
+                            {{ profileResponsible.profile_responsible_name }}
+                          </p>
+                        </router-link>
                       </div>
                       <div class="col-sm-4">
                         <button
                           id="deleteStudent"
                           type="button"
                           class="btn btn-outline-danger"
-                          @click="
-                            removeProfileResponsible(
-                              profileResponsible.id_asi_user
-                            )
-                          "
+                          @click="deleteUser(profileResponsible.id_asi_user)"
                         >
                           <i class="fas fa-trash"></i>
                         </button>
@@ -41,75 +60,6 @@
                 </div>
               </div>
             </div>
-
-            <!-- <button
-              type="button"
-              class="btn btn-outline-primary"
-              data-bs-toggle="modal"
-              data-bs-target="#exampleModal"
-            >
-              <i class="fas fa-plus-circle"></i>
-            </button>
-            <div
-              class="modal fade"
-              id="exampleModal"
-              tabindex="-1"
-              aria-labelledby="exampleModalLabel"
-              aria-hidden="true"
-            >
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">
-                      Add advisor
-                    </h5>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-
-                  <div class="modal-body">
-                    <p>Advisor list</p>
-
-                    <select
-                      class="form-select form-select-sm"
-                      aria-label=".form-select-sm example"
-                      v-model="id"
-                    >
-                      <option
-                        v-for="advisor in advisors"
-                        :key="advisor.id_asi_user"
-                        v-bind:value="advisor.id_asi_user"
-                      >
-                        Name:&nbsp;&nbsp;{{ advisor.name }},
-                        Surname:&nbsp;&nbsp;{{ advisor.surname }},
-                        Email:&nbsp;&nbsp;{{ advisor.email }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      data-bs-dismiss="modal"
-                    >
-                      Close
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-primary"
-                      data-bs-dismiss="modal"
-                      @click="addAdvisor"
-                    >
-                      Save changes
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div> -->
           </div>
         </div>
       </div>
@@ -152,6 +102,16 @@ export default {
   methods: {
     ...mapActions(['fetchProfilesResponsible']),
     ...mapActions(['fetchLoggedUser']),
+    ...mapActions(['removeUser']),
+
+    deleteUser: function (removedId) {
+      if (confirm('Do you really want to remove?')) {
+        this.removeUser({
+          id: removedId
+        })
+      }
+      console.log(removedId)
+    },
 
     // onChangeStudent: function (event) {
     //   this.studentId = event.target.value
@@ -159,13 +119,6 @@ export default {
     addAdvisor: function () {
       //this.followStudent({ id: this.id, advisorId: this.loggedUser.AsiUserId })
       console.log(this.name)
-    },
-    removeProfileResponsible: function (removedId) {
-      // this.stopFollowStudent({
-      //   id: removedId,
-      //   advisorId: this.loggedUser.AsiUserId
-      // })
-      console.log(removedId)
     }
   },
 

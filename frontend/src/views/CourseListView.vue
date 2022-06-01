@@ -5,7 +5,7 @@
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
-          <h1 class="title">CourseListView</h1>
+          <h4 class="title">Module list</h4>
           <div class="table-responsive">
             <table class="table align-middle">
               <thead>

@@ -5,11 +5,11 @@
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
-          <h4 class="container pb-4">StudentList</h4>
+          <h4 class="container pb-4">Student list</h4>
           <div v-if="loggedUser !== undefined && loggedUser !== null">
             <div
-              v-for="student in studentsByProfile"
-              :key="student.id_asi_user"
+              v-for="profileResponsible in studentsByProfile"
+              :key="profileResponsible.id_asi_user"
               class="pb-2"
             >
               <div class="card">
@@ -17,7 +17,7 @@
                   <div class="container">
                     <div class="row">
                       <div class="col-sm-8">
-                        <router-link
+                        <!-- <router-link
                           style="text-decoration: none"
                           :to="{
                             name: 'StudentResponsibleProfileView',
@@ -32,6 +32,24 @@
                               {{ student.advisor_surname }}
                             </p>
                           </div>
+                        </router-link> -->
+
+                        <router-link
+                          style="text-decoration: none"
+                          :to="{
+                            name: 'UserProfileAdminstratorView',
+                            params: { userId: profileResponsible.id_asi_user }
+                          }"
+                        >
+                          <h5 style="display: inline">
+                            {{ profileResponsible.name }}
+                            {{ profileResponsible.surname }}
+                          </h5>
+                          &nbsp;&nbsp;
+                          <p style="display: inline">
+                            {{ profileResponsible.advisor_name }}
+                            {{ profileResponsible.advisor_surname }}
+                          </p>
                         </router-link>
                       </div>
                       <!-- <div class="col-sm-4">

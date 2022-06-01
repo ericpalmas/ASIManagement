@@ -5,7 +5,7 @@
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
-          <h4 class="container pb-4">Student List</h4>
+          <h4 class="container pb-4">Student list</h4>
           <div
             class="alert alert-danger"
             role="alert"
@@ -42,24 +42,38 @@
                   <div class="container">
                     <div class="row">
                       <div class="col-sm-8">
-                        <label>
-                          <h5>{{ student.name }} {{ student.surname }}</h5>
-                        </label>
-                        <!-- <router-link
+                        <router-link
                           style="text-decoration: none"
                           :to="{
-                            name: 'StudentView',
-                            params: { studentId: student.id_asi_user }
+                            name: 'UserProfileAdminstratorView',
+                            params: { userId: student.id_asi_user }
                           }"
                         >
-                        </router-link> -->
+                          <h5 style="display: inline">
+                            {{ student.name }} {{ student.surname }}
+                          </h5>
+                          &nbsp;&nbsp;
+                          <p style="display: inline">
+                            {{ student.advisor_name }}
+                            {{ student.advisor_surname }}
+                          </p>
+                        </router-link>
                       </div>
+                      <!-- <div class="col-sm-4">
+                        <button
+                          id="deleteStudent"
+                          type="button"
+                          class="btn btn-outline-info"
+                        >
+                          <i class="fas fa-edit"></i>
+                        </button>
+                      </div> -->
                       <div class="col-sm-4">
                         <button
                           id="deleteStudent"
                           type="button"
                           class="btn btn-outline-danger"
-                          @click="deleteStudent(student.id_asi_user)"
+                          @click="deleteUser(student.id_asi_user)"
                         >
                           <i class="fas fa-trash"></i>
                         </button>
@@ -70,7 +84,7 @@
               </div>
             </div>
 
-            <button
+            <!-- <button
               type="button"
               class="btn btn-outline-primary"
               data-bs-toggle="modal"
@@ -242,7 +256,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -290,69 +304,16 @@ export default {
     ...mapActions(['fetchLoggedUser']),
     ...mapActions(['fetchProfiles']),
     ...mapActions(['fetchModalities']),
-    ...mapActions(['register']),
-    ...mapActions(['removeStudent']),
+    //...mapActions(['register']),
+    ...mapActions(['removeUser']),
 
-    deleteStudent: function (removedId) {
+    deleteUser: function (removedId) {
       if (confirm('Do you really want to remove?')) {
-        this.removeStudent({
+        this.removeUser({
           id: removedId
         })
       }
       console.log(removedId)
-    },
-
-    registerStudent: function () {
-      console.log(this.name)
-      console.log(this.surname)
-      console.log(this.email)
-      console.log(this.enrollmentNumber)
-      console.log(this.password)
-      console.log(this.confirmedPassword)
-      console.log(this.modality)
-      console.log(this.profile)
-
-      if (
-        this.name !== '' &&
-        this.surname !== '' &&
-        this.email !== '' &&
-        this.enrollmentNumber !== '' &&
-        this.password !== '' &&
-        this.confirmedPassword !== '' &&
-        this.modality !== -1 &&
-        this.profile !== -1
-      ) {
-        this.emptyFieldsError = false
-
-        if (this.password === this.confirmedPassword) {
-          this.confirmedPasswordError = false
-
-          const {
-            name,
-            surname,
-            email,
-            enrollmentNumber,
-            password,
-            modality,
-            role,
-            profile
-          } = this
-          this.register({
-            name,
-            surname,
-            email,
-            enrollmentNumber,
-            password,
-            modality,
-            profile,
-            role
-          })
-        } else {
-          this.confirmedPasswordError = true
-        }
-      } else {
-        this.emptyFieldsError = true
-      }
     }
   },
 

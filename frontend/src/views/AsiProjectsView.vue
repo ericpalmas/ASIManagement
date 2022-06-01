@@ -5,7 +5,7 @@
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
-          <h1 class="title">AsiProjectView</h1>
+          <h4 class="title">Projects</h4>
 
           <div class="row row-cols-1 row-cols-md-2 g-4">
             <div class="col" v-for="(project, i) in asiProjects" :key="i">
@@ -17,8 +17,8 @@
                     <button
                       class="nav-link active"
                       id="general-info-tab"
+                      :data-bs-target="'#general-info' + i"
                       data-bs-toggle="tab"
-                      data-bs-target="#general-info"
                       type="button"
                       role="tab"
                       aria-controls="general-info"
@@ -33,7 +33,7 @@
                       class="nav-link"
                       id="goals-tab"
                       data-bs-toggle="tab"
-                      data-bs-target="#goals"
+                      :data-bs-target="'#goals' + i"
                       type="button"
                       role="tab"
                       aria-controls="goals"
@@ -48,7 +48,7 @@
                       class="nav-link"
                       id="duties-tab"
                       data-bs-toggle="tab"
-                      data-bs-target="#duties"
+                      :data-bs-target="'#duties' + i"
                       type="button"
                       role="tab"
                       aria-controls="duties"
@@ -63,7 +63,7 @@
                       class="nav-link"
                       id="prerequisite-tab"
                       data-bs-toggle="tab"
-                      data-bs-target="#prerequisite"
+                      :data-bs-target="'#prerequisite' + i"
                       type="button"
                       role="tab"
                       aria-controls="prerequisite"
@@ -78,7 +78,7 @@
                       class="nav-link"
                       id="work-method-tab"
                       data-bs-toggle="tab"
-                      data-bs-target="#work-method"
+                      :data-bs-target="'#work-method' + i"
                       type="button"
                       role="tab"
                       aria-controls="work-method"
@@ -87,12 +87,14 @@
                       Methods
                     </button>
                   </li>
+
+                  <!-- evaluation -->
                   <li class="nav-item" role="presentation">
                     <button
                       class="nav-link"
                       id="evaluation-tab"
                       data-bs-toggle="tab"
-                      data-bs-target="#evaluation"
+                      :data-bs-target="'#evaluation' + i"
                       type="button"
                       role="tab"
                       aria-controls="evaluation"
@@ -108,7 +110,7 @@
                   <!-- General info content -->
                   <div
                     class="tab-pane fade show active"
-                    id="general-info"
+                    v-bind:id="['general-info' + i]"
                     role="tabpanel"
                     aria-labelledby="general-info-tab"
                   >
@@ -163,7 +165,7 @@
                   <!-- Duties content -->
                   <div
                     class="tab-pane fade"
-                    id="duties"
+                    v-bind:id="['duties' + i]"
                     role="tabpanel"
                     aria-labelledby="duties-tab"
                   >
@@ -209,7 +211,7 @@
                   <!-- Learning goals content -->
                   <div
                     class="tab-pane fade"
-                    id="goals"
+                    v-bind:id="['goals' + i]"
                     role="tabpanel"
                     aria-labelledby="goals-tab"
                   >
@@ -251,7 +253,7 @@
                   <!-- Prerequisite content -->
                   <div
                     class="tab-pane fade"
-                    id="prerequisite"
+                    v-bind:id="['prerequisite' + i]"
                     role="tabpanel"
                     aria-labelledby="prerequisite-tab"
                   >
@@ -276,7 +278,7 @@
                   <!-- Work method content -->
                   <div
                     class="tab-pane fade"
-                    id="work-method"
+                    v-bind:id="['work-method' + i]"
                     role="tabpanel"
                     aria-labelledby="work-method-tab"
                   >
@@ -313,7 +315,7 @@
                   <!-- Timeline and evaluation content -->
                   <div
                     class="tab-pane fade"
-                    id="evaluation"
+                    v-bind:id="['evaluation' + i]"
                     role="tabpanel"
                     aria-labelledby="evaluation-tab"
                   >
@@ -372,7 +374,6 @@
                 </div>
               </div>
             </div>
-
             <div
               class="col"
               v-else
@@ -729,24 +730,6 @@
                 </div>
               </div>
             </div>
-
-            <!-- <div
-              v-else
-              class="col"
-              v-for="(project, i) in asiMasterProject"
-              :key="i"
-            >
-              <div class="card">
-                <div class="card-body">
-                  <h5 class="card-title">Master thesis</h5>
-                  <p class="card-text">
-                    This is a longer card with supporting text below as a
-                    natural lead-in to additional content. This content is a
-                    little bit longer.
-                  </p>
-                </div>
-              </div>
-            </div> -->
           </div>
         </div>
       </div>

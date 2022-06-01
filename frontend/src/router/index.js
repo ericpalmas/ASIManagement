@@ -15,6 +15,7 @@ import StudentListResponsibleProfileView from '../views/StudentListResponsiblePr
 import StudentListAdministratorView from '../views/StudentListAdministratorView'
 import AdvisorListAdministratorView from '../views/AdvisorListAdministratorView'
 import ProfileResponsibleListAdministratorView from '../views/ProfileResponsibleListAdministratorView'
+import UserProfileAdminstratorView from '../views/UserProfileAdminstratorView'
 
 const routes = [
   {
@@ -98,6 +99,11 @@ const routes = [
     path: '/UserRegistrationAdministrator',
     name: 'UserRegistrationAdministratorView',
     component: UserRegistrationAdministratorView
+  },
+  {
+    path: '/UserProfileAdminstrator/:userId',
+    name: 'UserProfileAdminstratorView',
+    component: UserProfileAdminstratorView
   }
 ]
 

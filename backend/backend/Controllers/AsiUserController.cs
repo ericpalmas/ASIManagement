@@ -62,7 +62,7 @@ namespace backend.Controllers
         }
 
         [HttpGet("api/asiuser/availableStudents")]
-        [Authorize(Roles = "Advisor, StudentAdvisor")]
+        [Authorize(Roles = "Advisor, StudentAdvisor, ProfileResponsibleStudentAdvisor, ProfileResponsibleAdvisor")]
         public JsonResult GetAvailableStudent()
         {
             var currentUser = GetCurrentUser();
@@ -99,7 +99,7 @@ namespace backend.Controllers
         {
 
             string query = @"                          
-select id_asi_user, name, surname, email, modality, profile, advisor, enrollment_number, role, profile_responsible from dbo.asi_user where asi_user.role = 5 OR  asi_user.role = 7
+select id_asi_user, name, surname, email, modality, profile, advisor, enrollment_number, role, profile_responsible from dbo.asi_user where asi_user.role = 5 OR  asi_user.role = 7 OR  asi_user.role = 9 OR  asi_user.role = 10
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -127,7 +127,9 @@ select id_asi_user, name, surname, email, modality, profile, advisor, enrollment
         {
 
             string query = @"                          
-select id_asi_user, name, surname, email, modality, profile, advisor, enrollment_number, role, profile_responsible from dbo.asi_user where asi_user.role = 8 OR  asi_user.role = 9 OR  asi_user.role = 10
+select id_asi_user, asi_user.name, surname, email, modality, profile, advisor, enrollment_number, role, profile.id_profile as profile_responsible_id,  profile.name as profile_responsible_name from dbo.asi_user 
+left outer join dbo.profile on profile.id_profile = asi_user.profile_responsible
+where asi_user.role = 8 OR  asi_user.role = 9 OR  asi_user.role = 10
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -155,7 +157,9 @@ select id_asi_user, name, surname, email, modality, profile, advisor, enrollment
         {
 
             string query = @"                                          
-select id_asi_user, name, surname, email, modality, profile, advisor, enrollment_number, role, profile_responsible from dbo.asi_user where asi_user.role = 1 OR  asi_user.role = 7
+select asi_user.id_asi_user,  asi_user.name,  asi_user.surname,  asi_user.email,  asi_user.modality,  asi_user.profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname,  asi_user.enrollment_number,  asi_user.role from asi_user
+left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
+where asi_user.role = 1 OR  asi_user.role = 7
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -248,15 +252,16 @@ select id_asi_user, name, surname, email, modality, profile, advisor, enrollment
 
 
         [HttpGet("api/advisorStudents")]
-        [Authorize(Roles = "Advisor, StudentAdvisor")]
+        [Authorize(Roles = "Advisor, StudentAdvisor, ProfileResponsibleStudentAdvisor, ProfileResponsibleAdvisor")]
         public JsonResult GetAdvisorStudents()
         {
             var currentUser = GetCurrentUser();
 
 
             string query = @" 
-                select id_asi_user, name, surname, email, modality, profile, advisor, enrollment_number, role from asi_user
-                where asi_user.advisor = @UserId
+                  select asi_user.id_asi_user,  asi_user.name,  asi_user.surname,  asi_user.email,  asi_user.modality,  asi_user.profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname,  asi_user.enrollment_number,  asi_user.role from asi_user
+                  left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
+                  where asi_user.advisor = @UserId
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -353,15 +358,19 @@ left outer join dbo.asi_user on student.id_advisor = asi_user.id_asi_user
             return new JsonResult(table);
         }
 
-        [HttpGet("api/asiuser/type/{id}")]
-        [Authorize(Roles = "Student")]
-        public JsonResult GetUserType(int id)
+        [HttpGet("api/asiuser/adminData/{id}")]
+        [Authorize(Roles = "Advisor,Student, StudentAdvisor, Administrator,ProfileResponsible,ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor ")]
+        public JsonResult GetSpecificAdministrativeData(int id)
         {
+
+
             string query = @" 
-                            select * from dbo.user_user_type 
-                            inner join asi_user on asi_user.id_asi_user = user_user_type.asi_user
-                            inner join user_type on user_type.id_user_type = user_user_type.user_type
-                            where user_user_type.asi_user = @UserId
+                             WITH student AS (select asi_user.id_asi_user as student_id, asi_user.enrollment_number as student_enrollment_number, asi_user.name as student_name, asi_user.surname as student_surname , advisor as id_advisor, modality.name as modality, profile.name as profile  from dbo.asi_user
+left outer join modality on modality.id_modality = asi_user.modality
+left outer join profile on profile.id_profile = asi_user.profile
+where id_asi_user = @UserId) 
+SELECT  student.student_id , student.student_name, student.student_surname, student.student_enrollment_number as student_enrollment_number, student.modality, student.profile, asi_user.id_asi_user as advisor_id, asi_user.name as advisor_name, asi_user.surname as advisor_surname  FROM  student
+left outer join dbo.asi_user on student.id_advisor = asi_user.id_asi_user
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -374,7 +383,6 @@ left outer join dbo.asi_user on student.id_advisor = asi_user.id_asi_user
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
                     myCommand.Parameters.AddWithValue("@UserId", id);
-
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
@@ -385,9 +393,41 @@ left outer join dbo.asi_user on student.id_advisor = asi_user.id_asi_user
             return new JsonResult(table);
         }
 
- /* select* from dbo.asi_user
-where profile = (select profile from asi_user where asi_user.id_asi_user = @UserId)
-AND(role = 1 OR role = 7) */
+        /*  [HttpGet("api/asiuser/type/{id}")]
+          [Authorize(Roles = "Student")]
+          public JsonResult GetUserType(int id)
+          {
+              string query = @" 
+                              select * from dbo.user_user_type 
+                              inner join asi_user on asi_user.id_asi_user = user_user_type.asi_user
+                              inner join user_type on user_type.id_user_type = user_user_type.user_type
+                              where user_user_type.asi_user = @UserId
+                             ";
+              DataTable table = new DataTable();
+              string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+              SqlDataReader myReader;
+              using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+              {
+                  Console.WriteLine("SQL connection");
+                  Console.WriteLine(myCon);
+                  myCon.Open();
+                  using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                  {
+                      myCommand.Parameters.AddWithValue("@UserId", id);
+
+                      myReader = myCommand.ExecuteReader();
+                      table.Load(myReader);
+                      myReader.Close();
+                      myCon.Close();
+                  }
+              }
+
+              return new JsonResult(table);
+          }*/
+
+        /* select* from dbo.asi_user
+       where profile = (select profile from asi_user where asi_user.id_asi_user = @UserId)
+       AND(role = 1 OR role = 7) */
 
         [HttpGet("api/asiuser/studentsByProfile")]
         [Authorize(Roles = "ProfileResponsible, ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor")]
@@ -613,7 +653,27 @@ AND (asi_user.role = 1 OR asi_user.role = 7)
 
             string encryptedPassword = BCrypt.Net.BCrypt.HashPassword(request.AsiUserPassword);
 
-            string query = @"INSERT INTO dbo.asi_user(name, surname, email, enrollment_number, password, role, profile, modality ) VALUES ('" + request.AsiUserName + "','" + request.AsiUserSurname + "','" + request.AsiUserEmail + "','" + request.AsiUserEnrollmentNumber + "','" + encryptedPassword + "',"+ request.Role + "," + request.Profile + "," + request.Modality + ");";
+            string query = "DECLARE @USER_ID int; DECLARE @STATE_ID int; DECLARE @ASI_ID int;";    
+
+            query += @"INSERT INTO dbo.asi_user(name, surname, email, enrollment_number, password, role, profile, modality ) VALUES ('" + request.AsiUserName + "','" + request.AsiUserSurname + "','" + request.AsiUserEmail + "','" + request.AsiUserEnrollmentNumber + "','" + encryptedPassword + "',"+ request.Role + "," + request.Profile + "," + request.Modality + ");";
+
+           
+            if(request.Role == "1" || request.Role == "7" || request.Role == "10")
+            {
+                query += "SELECT @USER_ID = SCOPE_IDENTITY();";
+
+                query += "INSERT INTO dbo.asi_state(created_at, advisor_approvation, master_responsable_approvation, profile_responsible_approvation, saved_locally) values (GETDATE(),0,0,0,0)";
+
+                query += "SELECT @STATE_ID = SCOPE_IDENTITY();";
+
+                query += "INSERT INTO dbo.asi(created_at, asi_state, asi_user) VALUES (GETDATE(), @STATE_ID, @USER_ID);";
+
+                query += "SELECT @ASI_ID = SCOPE_IDENTITY();";
+
+                query += "INSERT INTO dbo.asi_module_group(asi, module_group) VALUES(@ASI_ID, 1),(@ASI_ID, 2),(@ASI_ID, 3),(@ASI_ID, 4),(@ASI_ID, 5),(@ASI_ID, 6);";
+            }
+            
+
             query += "select id_asi_user, name, surname, email, modality, profile, advisor, enrollment_number, role, profile_responsible from(SELECT TOP 1 * FROM dbo.asi_user ORDER BY asi_user.id_asi_user DESC) as last_element";
 
 
@@ -635,7 +695,7 @@ AND (asi_user.role = 1 OR asi_user.role = 7)
             return new JsonResult(table);
         }
 
-        [HttpDelete("api/asiuser/students/{id}")]
+        /*[HttpDelete("api/asiuser/students/{id}")]
         [Authorize(Roles = "Administrator")]
         public JsonResult DeleteStudent(int id)
         {
@@ -644,6 +704,44 @@ AND (asi_user.role = 1 OR asi_user.role = 7)
 
             query += "select id_asi_user, name, surname, email, modality, profile, advisor, enrollment_number, role, profile_responsible from dbo.asi_user where asi_user.role = 1 OR  asi_user.role = 7";
             
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@UserId", id);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }*/
+
+        [HttpDelete("api/asiuser/{id}")]
+        [Authorize(Roles = "Administrator")]
+        public JsonResult DeleteUser(int id)
+        {
+
+
+            //string query = @"DELETE FROM dbo.asi_user WHERE asi_user.id_asi_user = @UserId;";
+            string query = "DELETE FROM dbo.asi_module WHERE asi_module_group in (select id_asi_module_group from dbo.asi_module_group where asi in(select asi.id_asi from dbo.asi where asi.asi_user = @UserId))";
+
+            query += "DELETE FROM dbo.asi_module_group WHERE asi_module_group.asi in (select asi.id_asi from dbo.asi where asi.asi_user = @UserId);";
+
+            query += "DELETE FROM dbo.asi WHERE asi.asi_user = @UserId;";
+
+            query += "DELETE FROM dbo.asi_user WHERE asi_user.id_asi_user = @UserId;";
+
+
+
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
             SqlDataReader myReader;

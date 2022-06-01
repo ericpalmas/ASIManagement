@@ -4,13 +4,54 @@
     <Navbar />
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
-        <h1 class="title">User registration</h1>
+        <h2 class="title">User registration</h2>
         <div class="card-body">
           <div id="cardsContainers" class="container pt-3 pb-4">
             <div class="card">
               <div class="card-body">
                 <form>
                   <div class="row">
+                    <div
+                      class="alert alert-danger"
+                      role="alert"
+                      v-if="confirmedPasswordError"
+                      :v-bind:confirmedPasswordError="confirmedPasswordError"
+                    >
+                      Password and confirmed password are different
+                    </div>
+                    <div
+                      class="alert alert-danger"
+                      role="alert"
+                      v-if="roleMismatchError"
+                      :v-bind:roleMismatchError="roleMismatchError"
+                    >
+                      A student can't be a profile responsible
+                    </div>
+                    <div
+                      class="alert alert-danger"
+                      role="alert"
+                      v-if="emptyFieldsError"
+                      :v-bind:emptyFieldsError="emptyFieldsError"
+                    >
+                      Empty field
+                    </div>
+                    <div
+                      class="alert alert-danger"
+                      role="alert"
+                      v-if="roleEmptyError"
+                      :v-bind:roleEmptyError="roleEmptyError"
+                    >
+                      Role is not defined
+                    </div>
+                    <div
+                      class="alert alert-success"
+                      role="alert"
+                      v-if="pageSaved"
+                      :v-bind:pageSaved="pageSaved"
+                    >
+                      Page saved correctly
+                    </div>
+
                     <div class="col">
                       <!-- <div class="row g-3 align-items-center">
                         <div class="col-auto">
@@ -27,6 +68,7 @@
                           />
                         </div>
                       </div> -->
+
                       <div class="mb-3 row">
                         <label
                           for="recipient-name"
@@ -196,6 +238,7 @@
                                 type="checkbox"
                                 value=""
                                 id="flexCheckDisabled"
+                                v-model="studentOption"
                               />
                               <label
                                 class="form-check-label"
@@ -204,6 +247,7 @@
                                 Student
                               </label>
                             </div>
+
                             <div v-else>
                               <input
                                 class="form-check-input"
@@ -221,55 +265,118 @@
                             </div>
                           </div>
                           <div class="form-check">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              value=""
-                              id="flexCheckChecked"
-                            />
-                            <label
-                              class="form-check-label"
-                              for="flexCheckChecked"
-                            >
-                              Advisor
-                            </label>
+                            <div v-if="adminOption === false">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value=""
+                                id="flexCheckChecked"
+                                v-model="advisorOption"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="flexCheckChecked"
+                              >
+                                Advisor
+                              </label>
+                            </div>
+                            <div v-else>
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value="false"
+                                id="flexCheckChecked"
+                                disabled
+                              />
+                              <label
+                                class="form-check-label"
+                                for="flexCheckChecked"
+                              >
+                                Advisor
+                              </label>
+                            </div>
                           </div>
                           <div class="form-check">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              value=""
-                              id="flexCheckChecked"
-                            />
-                            <label
-                              class="form-check-label"
-                              for="flexCheckChecked"
-                            >
-                              Profile Responsible
-                            </label>
+                            <div v-if="adminOption === false">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value=""
+                                id="flexCheckChecked"
+                                v-model="profileResponsibleOption"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="flexCheckChecked"
+                              >
+                                Profile Responsible
+                              </label>
+                            </div>
+
+                            <div v-else>
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="flexCheckChecked"
+                                disabled
+                              />
+                              <label
+                                class="form-check-label"
+                                for="flexCheckChecked"
+                              >
+                                Profile Responsible
+                              </label>
+                            </div>
                           </div>
 
                           <div class="form-check">
-                            <input
-                              class="form-check-input"
-                              type="checkbox"
-                              value=""
-                              id="flexCheckChecked"
-                              v-model="adminOption"
-                            />
-                            <label
-                              class="form-check-label"
-                              for="flexCheckChecked"
+                            <div
+                              v-if="
+                                profileResponsibleOption === false &&
+                                studentOption === false &&
+                                advisorOption === false
+                              "
                             >
-                              Administrator
-                            </label>
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value=""
+                                id="flexCheckChecked"
+                                v-model="adminOption"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="flexCheckChecked"
+                              >
+                                Administrator
+                              </label>
+                            </div>
+                            <div v-else>
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value=""
+                                id="flexCheckChecked"
+                                disabled
+                              />
+                              <label
+                                class="form-check-label"
+                                for="flexCheckChecked"
+                              >
+                                Administrator
+                              </label>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </form>
-                <button type="button" class="btn btn-secondary">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  @click="registerStudent()"
+                >
                   Secondary
                 </button>
               </div>
@@ -302,6 +409,8 @@ export default {
     profile: -1,
     role: 1,
     emptyFieldsError: false,
+    roleMismatchError: false,
+    roleEmptyError: false,
     confirmedPasswordError: false,
     pageSaved: false,
     studentOption: false,
@@ -337,6 +446,59 @@ export default {
       console.log(removedId)
     },
 
+    defineRole: function () {
+      if (
+        this.studentOption &&
+        !this.advisorOption &&
+        !this.profileResponsibleOption &&
+        !this.adminOption
+      ) {
+        this.role = 1
+      } else if (
+        !this.studentOption &&
+        this.advisorOption &&
+        !this.profileResponsibleOption &&
+        !this.adminOption
+      ) {
+        this.role = 5
+      } else if (
+        !this.studentOption &&
+        !this.advisorOption &&
+        this.profileResponsibleOption &&
+        !this.adminOption
+      ) {
+        this.role = 8
+      } else if (
+        !this.studentOption &&
+        !this.advisorOption &&
+        !this.profileResponsibleOption &&
+        this.adminOption
+      ) {
+        this.role = 6
+      } else if (
+        this.studentOption &&
+        this.advisorOption &&
+        !this.profileResponsibleOption &&
+        !this.adminOption
+      ) {
+        this.role = 7
+      } else if (
+        this.studentOption &&
+        this.advisorOption &&
+        this.profileResponsibleOption &&
+        !this.adminOption
+      ) {
+        this.role = 10
+      } else if (
+        !this.studentOption &&
+        this.advisorOption &&
+        this.profileResponsibleOption &&
+        !this.adminOption
+      ) {
+        this.role = 9
+      }
+    },
+
     registerStudent: function () {
       console.log(this.name)
       console.log(this.surname)
@@ -347,48 +509,125 @@ export default {
       console.log(this.modality)
       console.log(this.profile)
 
+      console.log('Student: ' + this.studentOption)
+      console.log('Advisor: ' + this.advisorOption)
+      console.log('Responsible: ' + this.profileResponsibleOption)
+      console.log('Admin: ' + this.adminOption)
+
       if (
-        this.name !== '' &&
-        this.surname !== '' &&
-        this.email !== '' &&
-        this.enrollmentNumber !== '' &&
-        this.password !== '' &&
-        this.confirmedPassword !== '' &&
-        this.modality !== -1 &&
-        this.profile !== -1
+        this.studentOption === true &&
+        this.profileResponsibleOption === true &&
+        this.advisorOption === false &&
+        this.adminOption === false
       ) {
-        this.emptyFieldsError = false
-
-        if (this.password === this.confirmedPassword) {
-          this.confirmedPasswordError = false
-
-          const {
-            name,
-            surname,
-            email,
-            enrollmentNumber,
-            password,
-            modality,
-            role,
-            profile
-          } = this
-          this.register({
-            name,
-            surname,
-            email,
-            enrollmentNumber,
-            password,
-            modality,
-            profile,
-            role
-          })
-        } else {
-          this.confirmedPasswordError = true
-        }
+        this.roleMismatchError = true
+        this.pageSaved = false
       } else {
-        this.emptyFieldsError = true
+        this.roleMismatchError = false
+        this.pageSaved = false
+
+        if (
+          this.name !== '' &&
+          this.surname !== '' &&
+          this.email !== '' &&
+          this.enrollmentNumber !== '' &&
+          this.password !== '' &&
+          this.confirmedPassword !== '' &&
+          this.modality !== -1 &&
+          this.profile !== -1
+        ) {
+          this.emptyFieldsError = false
+
+          if (this.password === this.confirmedPassword) {
+            this.confirmedPasswordError = false
+
+            if (
+              !this.studentOption &&
+              !this.advisorOption &&
+              !this.profileResponsibleOption &&
+              !this.adminOption
+            ) {
+              this.roleEmptyError = true
+
+              console.log('errorreeeeeee')
+            } else {
+              this.roleEmptyError = false
+              this.defineRole()
+
+              if (confirm('Do you really want to save?')) {
+                const {
+                  name,
+                  surname,
+                  email,
+                  enrollmentNumber,
+                  password,
+                  modality,
+                  role,
+                  profile
+                } = this
+                this.register({
+                  name,
+                  surname,
+                  email,
+                  enrollmentNumber,
+                  password,
+                  modality,
+                  profile,
+                  role
+                })
+                this.pageSaved = true
+              }
+            }
+          } else {
+            this.confirmedPasswordError = true
+          }
+        } else {
+          this.emptyFieldsError = true
+        }
       }
     }
+
+    // if (
+    //   this.name !== '' &&
+    //   this.surname !== '' &&
+    //   this.email !== '' &&
+    //   this.enrollmentNumber !== '' &&
+    //   this.password !== '' &&
+    //   this.confirmedPassword !== '' &&
+    //   this.modality !== -1 &&
+    //   this.profile !== -1
+    // ) {
+    //   this.emptyFieldsError = false
+
+    //   if (this.password === this.confirmedPassword) {
+    //     this.confirmedPasswordError = false
+
+    //     const {
+    //       name,
+    //       surname,
+    //       email,
+    //       enrollmentNumber,
+    //       password,
+    //       modality,
+    //       role,
+    //       profile
+    //     } = this
+    //     this.register({
+    //       name,
+    //       surname,
+    //       email,
+    //       enrollmentNumber,
+    //       password,
+    //       modality,
+    //       profile,
+    //       role
+    //     })
+    //   } else {
+    //     this.confirmedPasswordError = true
+    //   }
+    // } else {
+    //   this.emptyFieldsError = true
+    // }
   },
 
   computed: {

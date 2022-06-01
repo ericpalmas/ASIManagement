@@ -108,6 +108,16 @@ const actions = {
     commit('setUserData', response.data)
   },
 
+  async fetchSpecificUserData({ commit }, id) {
+    const response = await axios.get(
+      'http://localhost:8732/api/asiuser/adminData/' + id,
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+    commit('setUserData', response.data)
+  },
+
   async fetchUserType({ commit }, id) {
     const response = await axios.get(
       'http://localhost:8732/api/asiuser/type/' + id,
@@ -187,17 +197,25 @@ const actions = {
     commit('setFollowStudent', res)
   },
 
-  async removeStudent({ commit }, { id }) {
-    const response = await axios.delete(
-      'http://localhost:8732/api/asiuser/students/' + id,
-      {
-        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
-      }
-    )
+  // async removeStudent({ commit }, { id }) {
+  //   const response = await axios.delete(
+  //     'http://localhost:8732/api/asiuser/students/' + id,
+  //     {
+  //       headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+  //     }
+  //   )
 
-    console.log(response.data)
+  //   console.log(response.data)
 
-    commit('setRemoveStudent', response.data)
+  //   commit('setRemoveStudent', response.data)
+  // },
+
+  async removeUser({ commit }, { id }) {
+    await axios.delete('http://localhost:8732/api/asiuser/' + id, {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
+
+    commit('setRemoveUser', id)
   },
 
   async stopFollowStudent({ commit }, { id, advisorId }) {
@@ -273,9 +291,17 @@ const mutations = {
 
     //console.log(state.availableStudents)
   },
-  setRemoveStudent(state, students) {
-    state.students = students
+  // setRemoveStudent(state, students) {
+  //   state.students = students
+  // },
+  setRemoveUser(state, id) {
+    state.students = state.students.filter((user) => user.id_asi_user !== id)
+    state.advisors = state.advisors.filter((user) => user.id_asi_user !== id)
+    state.profilesResponsible = state.profilesResponsible.filter(
+      (user) => user.id_asi_user !== id
+    )
   },
+
   setStopFollowStudent(state, res) {
     state.advisorStudents = res.response.filter(
       (student) => student.advisor === res.advisorId
@@ -300,16 +326,6 @@ const mutations = {
       console.log(state, newUser)
 
       state.students.push(newUser)
-      // state.students.push({
-      //   name: newUser.name,
-      //   surname: newUser.surname,
-      //   email: newUser.email,
-      //   enrollment_number: newUser.enrollmentNumber,
-      //   advisor: null,
-      //   profile_responsible: null,
-      //   profile: newUser.profile,
-      //   modality: newUser.modality
-      // })
     }
   }
 }

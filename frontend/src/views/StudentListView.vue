@@ -5,7 +5,7 @@
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
         <div class="card-body">
-          <h4 class="container pb-4">StudentList</h4>
+          <h4 class="container pb-4">Student list</h4>
           <div v-if="loggedUser !== undefined && loggedUser !== null">
             <div
               v-for="student in advisorStudents"
@@ -24,7 +24,14 @@
                             params: { studentId: student.id_asi_user }
                           }"
                         >
-                          <h5>{{ student.name }} {{ student.surname }}</h5>
+                          <h5 style="display: inline">
+                            {{ student.name }} {{ student.surname }}
+                          </h5>
+                          &nbsp;&nbsp;
+                          <p style="display: inline">
+                            {{ student.advisor_name }}
+                            {{ student.advisor_surname }}
+                          </p>
                         </router-link>
                       </div>
                       <!-- <div class="col-sm-4">

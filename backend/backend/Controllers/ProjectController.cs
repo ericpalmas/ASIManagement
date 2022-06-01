@@ -63,7 +63,7 @@ where asi.asi_user = @UserId AND module.module_group = 4*/
 
 [Route("api/asi/projects")]
         [HttpGet]
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = "Student, StudentAdvisor, ProfileResponsibleStudentAdvisor")]
         public JsonResult GetProjects()
         {
             var currentUser = GetCurrentUser();
