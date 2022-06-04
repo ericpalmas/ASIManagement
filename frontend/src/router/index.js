@@ -16,6 +16,7 @@ import StudentListAdministratorView from '../views/StudentListAdministratorView'
 import AdvisorListAdministratorView from '../views/AdvisorListAdministratorView'
 import ProfileResponsibleListAdministratorView from '../views/ProfileResponsibleListAdministratorView'
 import UserProfileAdminstratorView from '../views/UserProfileAdminstratorView'
+import AsiSummaryPreviewView from '../views/AsiSummaryPreviewView'
 
 const routes = [
   {
@@ -104,6 +105,11 @@ const routes = [
     path: '/UserProfileAdminstrator/:userId',
     name: 'UserProfileAdminstratorView',
     component: UserProfileAdminstratorView
+  },
+  {
+    path: '/AsiSummaryPreview',
+    name: 'AsiSummaryPreviewView',
+    component: AsiSummaryPreviewView
   }
 ]
 

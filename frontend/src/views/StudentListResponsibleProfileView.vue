@@ -17,23 +17,6 @@
                   <div class="container">
                     <div class="row">
                       <div class="col-sm-8">
-                        <!-- <router-link
-                          style="text-decoration: none"
-                          :to="{
-                            name: 'StudentResponsibleProfileView',
-                            params: { studentId: student.id_asi_user }
-                          }"
-                        >
-                          <div class="student">
-                            <h5>{{ student.name }} {{ student.surname }}</h5>
-                            &nbsp;&nbsp;
-                            <p>
-                              {{ student.advisor_name }}
-                              {{ student.advisor_surname }}
-                            </p>
-                          </div>
-                        </router-link> -->
-
                         <router-link
                           style="text-decoration: none"
                           :to="{
@@ -52,16 +35,6 @@
                           </p>
                         </router-link>
                       </div>
-                      <!-- <div class="col-sm-4">
-                        <button
-                          id="deleteStudent"
-                          type="button"
-                          class="btn btn-outline-danger"
-                          @click="removeStudent(student.id_asi_user)"
-                        >
-                          <i class="fas fa-trash"></i>
-                        </button>
-                      </div> -->
                     </div>
                   </div>
                 </div>
@@ -71,7 +44,7 @@
         </div>
       </div>
 
-      <div class="card">
+      <div class="card mt-2">
         <div class="card-body">
           <h4 class="container pb-4">Statistics</h4>
           <div v-if="loggedUser !== undefined && loggedUser !== null"></div>
