@@ -62,10 +62,9 @@ namespace backend.Controllers
         }
 
         [HttpGet("api/asiuser/availableStudents")]
-        [Authorize(Roles = "Advisor, StudentAdvisor, ProfileResponsibleStudentAdvisor, ProfileResponsibleAdvisor")]
+        [Authorize(Roles = "Advisor, StudentAdvisor, ProfileResponsibleStudentAdvisor, ProfileResponsibleAdvisor, Administrator")]
         public JsonResult GetAvailableStudent()
         {
-            var currentUser = GetCurrentUser();
 
             string query = @"                          
                  select asi_user.id_asi_user, asi_user.name, asi_user.surname,asi_user.email,asi_user.advisor, user_type.id_user_type,user_type.name as user_type_name from asi_user 
@@ -82,7 +81,6 @@ namespace backend.Controllers
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@UserId", currentUser.AsiUserId);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();
@@ -181,11 +179,11 @@ where asi_user.role = 1 OR  asi_user.role = 7
             return new JsonResult(table);
         }
 
-        [HttpGet("api/asiuser/followStudent/{id}")]
-        [Authorize(Roles = "Advisor, StudentAdvisor")]
-        public JsonResult followStudent(int id)
+        [HttpPost("api/asiuser/followStudent/{id}")]
+        [Authorize(Roles = "Advisor, StudentAdvisor, Administrator")]
+        public JsonResult followStudent(AsiUser advisor, int id)
         {
-            var currentUser = GetCurrentUser();
+            //var currentUser = GetCurrentUser();
 
             string query = @"                          
                        UPDATE asi_user
@@ -204,7 +202,7 @@ where asi_user.role = 1 OR  asi_user.role = 7
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myCommand.Parameters.AddWithValue("@AdvisorId", currentUser.AsiUserId);
+                    myCommand.Parameters.AddWithValue("@AdvisorId", advisor.AsiUserId);
                     myCommand.Parameters.AddWithValue("@StudentId", id);
 
                     myReader = myCommand.ExecuteReader();
@@ -218,7 +216,7 @@ where asi_user.role = 1 OR  asi_user.role = 7
         }
 
         [HttpGet("api/asiuser/stopFollowStudent/{id}")]
-        [Authorize(Roles = "Advisor, StudentAdvisor")]
+        [Authorize(Roles = "Advisor, StudentAdvisor, Administrator")]
         public JsonResult stopFollowStudent(int id)
         {
 
@@ -283,6 +281,39 @@ where asi_user.role = 1 OR  asi_user.role = 7
 
             return new JsonResult(table);
         }
+
+
+        [HttpGet("api/advisorStudents/{id}")]
+        [Authorize(Roles = "Advisor, StudentAdvisor, ProfileResponsibleStudentAdvisor, ProfileResponsibleAdvisor, Administrator")]
+        public JsonResult GetSpecificAdvisorStudents(int id)
+        {
+           
+            string query = @" 
+                  select asi_user.id_asi_user,  asi_user.name,  asi_user.surname,  asi_user.email,  asi_user.modality,  asi_user.profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname,  asi_user.enrollment_number,  asi_user.role from asi_user
+                  left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
+                  where asi_user.advisor = @UserId
+                           ";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@UserId", id);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
 
 
 
