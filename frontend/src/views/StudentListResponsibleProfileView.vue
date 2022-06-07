@@ -20,8 +20,10 @@
                         <router-link
                           style="text-decoration: none"
                           :to="{
-                            name: 'UserProfileAdminstratorView',
-                            params: { userId: profileResponsible.id_asi_user }
+                            name: 'StudentResponsibleProfileView',
+                            params: {
+                              studentId: profileResponsible.id_asi_user
+                            }
                           }"
                         >
                           <h5 style="display: inline">

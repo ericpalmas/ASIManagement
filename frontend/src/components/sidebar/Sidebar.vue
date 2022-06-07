@@ -175,10 +175,7 @@ export default {
       <SidebarLink
         v-if="
           loggedUser.Role === 'Student' ||
-          loggedUser.Role === 'Advisor' ||
           loggedUser.Role === 'StudentAdvisor' ||
-          loggedUser.Role === 'ProfileResponsible' ||
-          loggedUser.Role === 'ProfileResponsibleAdvisor' ||
           loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
         "
         to="/AsiSummaryPreview"

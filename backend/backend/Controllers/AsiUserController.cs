@@ -365,12 +365,12 @@ where asi_user.id_asi_user = @UserId
 
 
             string query = @" 
-                             WITH student AS (select asi_user.id_asi_user as student_id, asi_user.enrollment_number as student_enrollment_number, asi_user.name as student_name, asi_user.surname as student_surname , advisor as id_advisor, modality.name as modality, profile.name as profile  from dbo.asi_user
+select asi_user.id_asi_user as student_id, asi_user.name as student_name,  asi_user.surname as student_surname, asi_user.enrollment_number as student_enrollment_number,  asi_user.email as student_email,  modality.name as modality, profile.name as profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname,  asi_user.enrollment_number,  asi_user.role, profile_resp.name as profile_responsible_id, profile_resp.name as profile_responsible_name , profile_resp.surname as profile_responsible_surname  from asi_user
+left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
 left outer join modality on modality.id_modality = asi_user.modality
 left outer join profile on profile.id_profile = asi_user.profile
-where id_asi_user = @UserId) 
-SELECT  student.student_id , student.student_name, student.student_surname, student.student_enrollment_number as student_enrollment_number, student.modality, student.profile, asi_user.id_asi_user as advisor_id, asi_user.name as advisor_name, asi_user.surname as advisor_surname  FROM  student
-left outer join dbo.asi_user on student.id_advisor = asi_user.id_asi_user
+left outer join asi_user as profile_resp on asi_user.profile = profile_resp.profile_responsible
+where asi_user.id_asi_user = @UserId
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");

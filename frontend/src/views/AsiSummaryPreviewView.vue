@@ -447,16 +447,6 @@ export default {
         180
       )
 
-      // asi modules
-      // autoTable(doc, {
-      //   head: [['Code', 'Name', 'Site', 'Credits', 'Semester']],
-      //   body: [
-      //     ['Code 1', 'course name', 'LU', '3', '5'],
-      //     ['Code 2', 'course name', 'LU', '3', '5'],
-      //     ['Code 3', 'course name', 'LU', '3', '5']
-      //   ]
-      // })
-
       doc.text('Fundamental theoretical principles', 40, 240)
 
       autoTable(doc, {
@@ -482,15 +472,6 @@ export default {
         body: cmModules
       })
 
-      // technical modules
-      // autoTable(doc, {
-      //   head: [['Projects', '', '', '', '']],
-      //   body: [
-      //     ['David', 'david@example.com', 'Sweden'],
-      //     ['Castille', 'castille@example.com', 'Spain']
-      //     // ...
-      //   ]
-      // })
       finalY = doc.lastAutoTable.finalY + 20
       doc.text(40, finalY, 'Projects')
       autoTable(doc, {
@@ -512,55 +493,8 @@ export default {
         startY: finalY + 20,
         body: masterModules
       })
-
-      // doc.save('table.pdf')
-
-      doc.save('a4.pdf')
-
-      // var source = document.getElementById('content').innerHTML
-
-      // var margins = {
-      //   top: 10,
-      //   bottom: 10,
-      //   left: 10,
-      //   width: 595
-      // }
-
-      // doc.html(source, {
-      //   callback: function (doc) {
-      //     doc.save('output.pdf')
-      //   },
-      //   x: 10,
-      //   y: 10
-      // })
+      doc.save('asi.pdf')
     }
-
-    // moduleCredits: function (i) {
-    //   var tot = 0
-    //   if (i === 0) {
-    //     for (const module of this.allFtpAsiModules) {
-    //       const number = parseInt(module.ects)
-    //       if (!isNaN(number)) {
-    //         tot += number
-    //       }
-    //     }
-    //   } else if (i === 1) {
-    //     for (const module of this.allTsmAsiModules) {
-    //       const number = parseInt(module.ects)
-    //       if (!isNaN(number)) {
-    //         tot += number
-    //       }
-    //     }
-    //   } else if (i === 2) {
-    //     for (const module of this.allCmAsiModules) {
-    //       const number = parseInt(module.ects)
-    //       if (!isNaN(number)) {
-    //         tot += number
-    //       }
-    //     }
-    //   }
-    //   return tot
-    // }
   },
 
   computed: {

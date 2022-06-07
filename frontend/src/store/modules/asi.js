@@ -209,6 +209,17 @@ const actions = {
     commit('setAsiModuleGroups', response.data)
   },
 
+  async fetchStudentAsiModuleGroups({ commit }, id) {
+    const response = await axios.get(
+      'http://localhost:8732/api/asi/moduleGroups/' + id,
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+
+    commit('setAsiModuleGroups', response.data)
+  },
+
   async updateAsi({ commit }, { newModules }) {
     console.log(newModules)
     await axios.post(

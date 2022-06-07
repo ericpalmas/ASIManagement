@@ -93,7 +93,40 @@ where asi.asi_user = @UserId
             return new JsonResult(query);
         }
 
+        [HttpGet("api/asi/moduleGroups/{id}")]
+        [Authorize(Roles = "Advisor,StudentAdvisor, ProfileResponsible, ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor")]
 
+        public JsonResult GetStudentModuleGroups(int id)
+        {
+            var currentUser = GetCurrentUser();
+
+            string query = @" 
+select asi_module_group.id_asi_module_group, asi_module_group.asi, asi_module_group.module_group, asi_user.name, asi_user.surname, asi_user.id_asi_user, module_group_rules.min_ects, module_group_rules.max_ects,  module_group_rules.max_modules_number, module_group_rules.min_modules_number  from dbo.asi_module_group
+inner join asi on asi_module_group.asi = asi.id_asi
+inner join asi_user on asi_user.id_asi_user = asi.asi_user
+inner join module_group on asi_module_group.module_group = module_group.id_module_group
+inner join module_group_rules on module_group.module_group_rules = module_group_rules.id_module_group_rules
+where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(created_at) from asi where asi.asi_user = asi_user.id_asi_user) 
+                              ";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@AsiUserId", id);
+
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
 
 
         [HttpGet("api/asi/moduleGroups")]
@@ -351,7 +384,7 @@ where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(create
         {
 
             string query = @" 
-SELECT id_module, code, module.name as module_name, asi_module.id_asi_module,asi_module.module,asi_module.asi_module_state,asi_module.asi_module_group, module.module_group, module.ects, site.name as site, site.initials as site_initials, module_group.initials as module_group_initials,asi_user.id_asi_user as responsible, asi_user.name as responsible_name, asi_user.surname as responsible_surname, STRING_AGG(asi_module_semester.semester,',')  WITHIN GROUP(ORDER BY asi_module_semester.id_asi_module_semester ASC)  AS semester FROM dbo.asi_module
+SELECT id_module, code, module.name as module_name, asi_module.id_asi_module,asi_module.module,asi_module.asi_module_state,asi_module.asi_module_group, module.module_group, module.ects,site.id_site as id_site, site.name as site, site.initials as site_initials, module_group.initials as module_group_initials,asi_user.id_asi_user as responsible, asi_user.name as responsible_name, asi_user.surname as responsible_surname, STRING_AGG(asi_module_semester.semester,',')  WITHIN GROUP(ORDER BY asi_module_semester.id_asi_module_semester ASC)  AS semester FROM dbo.asi_module
 left outer join asi_module_semester on asi_module_semester.asi_module = asi_module.id_asi_module
 inner join module on module.id_module = asi_module.module
 inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
@@ -360,7 +393,7 @@ left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join site on module.site = site.id_site
 where asi.asi_user = @UserId AND module.module_group = 1
-GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials
+GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials, site.id_site
 ORDER BY asi_module.id_asi_module asc
                            ";
             DataTable table = new DataTable();
@@ -390,7 +423,7 @@ ORDER BY asi_module.id_asi_module asc
         {
 
             string query = @" 
-SELECT id_module, code, module.name as module_name, asi_module.id_asi_module,asi_module.module,asi_module.asi_module_state,asi_module.asi_module_group, module.module_group, module.ects, site.name as site, site.initials as site_initials, module_group.initials as module_group_initials,asi_user.id_asi_user as responsible, asi_user.name as responsible_name, asi_user.surname as responsible_surname, STRING_AGG(asi_module_semester.semester,',')  WITHIN GROUP(ORDER BY asi_module_semester.id_asi_module_semester ASC)  AS semester FROM dbo.asi_module
+SELECT id_module, code, module.name as module_name, asi_module.id_asi_module,asi_module.module,asi_module.asi_module_state,asi_module.asi_module_group, module.module_group, module.ects,site.id_site as id_site, site.name as site, site.initials as site_initials, module_group.initials as module_group_initials,asi_user.id_asi_user as responsible, asi_user.name as responsible_name, asi_user.surname as responsible_surname, STRING_AGG(asi_module_semester.semester,',')  WITHIN GROUP(ORDER BY asi_module_semester.id_asi_module_semester ASC)  AS semester FROM dbo.asi_module
 left outer join asi_module_semester on asi_module_semester.asi_module = asi_module.id_asi_module
 inner join module on module.id_module = asi_module.module
 inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
@@ -399,7 +432,7 @@ left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join site on module.site = site.id_site
 where asi.asi_user = @UserId AND module.module_group = 2
-GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials
+GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials, site.id_site
 ORDER BY asi_module.id_asi_module asc
                            ";
             DataTable table = new DataTable();
@@ -429,7 +462,7 @@ ORDER BY asi_module.id_asi_module asc
         {
 
             string query = @" 
-SELECT id_module, code, module.name as module_name, asi_module.id_asi_module,asi_module.module,asi_module.asi_module_state,asi_module.asi_module_group, module.module_group, module.ects, site.name as site, site.initials as site_initials, module_group.initials as module_group_initials,asi_user.id_asi_user as responsible, asi_user.name as responsible_name, asi_user.surname as responsible_surname, STRING_AGG(asi_module_semester.semester,',')  WITHIN GROUP(ORDER BY asi_module_semester.id_asi_module_semester ASC)  AS semester FROM dbo.asi_module
+SELECT id_module, code, module.name as module_name, asi_module.id_asi_module,asi_module.module,asi_module.asi_module_state,asi_module.asi_module_group, module.module_group, module.ects,site.id_site as id_site, site.name as site, site.initials as site_initials, module_group.initials as module_group_initials,asi_user.id_asi_user as responsible, asi_user.name as responsible_name, asi_user.surname as responsible_surname, STRING_AGG(asi_module_semester.semester,',')  WITHIN GROUP(ORDER BY asi_module_semester.id_asi_module_semester ASC)  AS semester FROM dbo.asi_module
 left outer join asi_module_semester on asi_module_semester.asi_module = asi_module.id_asi_module
 inner join module on module.id_module = asi_module.module
 inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
@@ -438,7 +471,7 @@ left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join site on module.site = site.id_site
 where asi.asi_user = @UserId AND module.module_group = 3
-GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials
+GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials, site.id_site
 ORDER BY asi_module.id_asi_module asc
                            ";
             DataTable table = new DataTable();
@@ -468,7 +501,7 @@ ORDER BY asi_module.id_asi_module asc
         {
 
             string query = @" 
-SELECT id_module, code, module.name as module_name, asi_module.id_asi_module,asi_module.module,asi_module.asi_module_state,asi_module.asi_module_group, module.module_group, module.ects, site.name as site, site.initials as site_initials, module_group.initials as module_group_initials,asi_user.id_asi_user as responsible, asi_user.name as responsible_name, asi_user.surname as responsible_surname, STRING_AGG(asi_module_semester.semester,',')  WITHIN GROUP(ORDER BY asi_module_semester.id_asi_module_semester ASC)  AS semester FROM dbo.asi_module
+SELECT id_module, code, module.name as module_name, asi_module.id_asi_module,asi_module.module,asi_module.asi_module_state,asi_module.asi_module_group, module.module_group, module.ects,site.id_site as id_site, site.name as site, site.initials as site_initials, module_group.initials as module_group_initials,asi_user.id_asi_user as responsible, asi_user.name as responsible_name, asi_user.surname as responsible_surname, STRING_AGG(asi_module_semester.semester,',')  WITHIN GROUP(ORDER BY asi_module_semester.id_asi_module_semester ASC)  AS semester FROM dbo.asi_module
 left outer join asi_module_semester on asi_module_semester.asi_module = asi_module.id_asi_module
 inner join module on module.id_module = asi_module.module
 inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
@@ -477,7 +510,7 @@ left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join site on module.site = site.id_site
 where asi.asi_user = @UserId AND module.module_group = 4
-GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials
+GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials, site.id_site
 ORDER BY asi_module.id_asi_module asc
                            ";
             DataTable table = new DataTable();
@@ -507,7 +540,7 @@ ORDER BY asi_module.id_asi_module asc
         {
 
             string query = @" 
-SELECT id_module, code, module.name as module_name, asi_module.id_asi_module,asi_module.module,asi_module.asi_module_state,asi_module.asi_module_group, module.module_group, module.ects, site.name as site, site.initials as site_initials, module_group.initials as module_group_initials,asi_user.id_asi_user as responsible, asi_user.name as responsible_name, asi_user.surname as responsible_surname, STRING_AGG(asi_module_semester.semester,',')  WITHIN GROUP(ORDER BY asi_module_semester.id_asi_module_semester ASC)  AS semester FROM dbo.asi_module
+SELECT id_module, code, module.name as module_name, asi_module.id_asi_module,asi_module.module,asi_module.asi_module_state,asi_module.asi_module_group, module.module_group, module.ects,site.id_site as id_site, site.name as site, site.initials as site_initials, module_group.initials as module_group_initials,asi_user.id_asi_user as responsible, asi_user.name as responsible_name, asi_user.surname as responsible_surname, STRING_AGG(asi_module_semester.semester,',')  WITHIN GROUP(ORDER BY asi_module_semester.id_asi_module_semester ASC)  AS semester FROM dbo.asi_module
 left outer join asi_module_semester on asi_module_semester.asi_module = asi_module.id_asi_module
 inner join module on module.id_module = asi_module.module
 inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
@@ -516,7 +549,7 @@ left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join site on module.site = site.id_site
 where asi.asi_user = @UserId AND module.module_group = 5
-GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials
+GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials, site.id_site
 ORDER BY asi_module.id_asi_module asc
                            ";
             DataTable table = new DataTable();
@@ -546,7 +579,7 @@ ORDER BY asi_module.id_asi_module asc
         {
 
             string query = @" 
-SELECT id_module, code, module.name as module_name, asi_module.id_asi_module,asi_module.module,asi_module.asi_module_state,asi_module.asi_module_group, module.module_group, module.ects, site.name as site, site.initials as site_initials, module_group.initials as module_group_initials,asi_user.id_asi_user as responsible, asi_user.name as responsible_name, asi_user.surname as responsible_surname, STRING_AGG(asi_module_semester.semester,',')  WITHIN GROUP(ORDER BY asi_module_semester.id_asi_module_semester ASC)  AS semester FROM dbo.asi_module
+SELECT id_module, code, module.name as module_name, asi_module.id_asi_module,asi_module.module,asi_module.asi_module_state,asi_module.asi_module_group, module.module_group, module.ects,site.id_site as id_site, site.name as site, site.initials as site_initials, module_group.initials as module_group_initials,asi_user.id_asi_user as responsible, asi_user.name as responsible_name, asi_user.surname as responsible_surname, STRING_AGG(asi_module_semester.semester,',')  WITHIN GROUP(ORDER BY asi_module_semester.id_asi_module_semester ASC)  AS semester FROM dbo.asi_module
 left outer join asi_module_semester on asi_module_semester.asi_module = asi_module.id_asi_module
 inner join module on module.id_module = asi_module.module
 inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
@@ -555,7 +588,7 @@ left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join site on module.site = site.id_site
 where asi.asi_user = @UserId AND module.module_group = 6
-GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials
+GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials, site.id_site
 ORDER BY asi_module.id_asi_module asc
                            ";
             DataTable table = new DataTable();
