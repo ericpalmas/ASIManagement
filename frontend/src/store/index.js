@@ -6,6 +6,7 @@ import user from './modules/user'
 import calendarModule from './modules/calendarModule'
 import modality from './modules/modality'
 import profile from './modules/profile'
+import logs from './modules/log'
 
 export default createStore({
   modules: {
@@ -15,6 +16,7 @@ export default createStore({
     user,
     calendarModule,
     profile,
-    modality
+    modality,
+    logs
   }
 })

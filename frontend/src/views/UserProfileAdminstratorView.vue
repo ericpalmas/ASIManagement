@@ -4,7 +4,9 @@
     <Navbar />
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
-        <h4 class="title">User profile</h4>
+        <h4 class="title" v-if="userData[0] !== null">
+          {{ userData[0].student_name }} {{ userData[0].student_surname }}
+        </h4>
 
         <div class="card-body" v-for="user in userData" :key="user.student_id">
           <div id="cardsContainers" class="container pt-3 pb-4">
@@ -176,6 +178,12 @@
                 class="btn btn-outline-primary"
                 data-bs-toggle="modal"
                 data-bs-target="#exampleModal"
+                v-if="
+                  userData[0].role === 5 ||
+                  userData[0].role === 7 ||
+                  userData[0].role === 9 ||
+                  userData[0].role === 10
+                "
               >
                 <i class="fas fa-plus-circle"></i>
               </button>

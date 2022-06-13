@@ -435,23 +435,28 @@
 //import ASITable from '../components/ASITable.vue'
 import { mapGetters, mapActions } from 'vuex'
 import Navbar from '../components/Navbar.vue'
-
 import Sidebar from '../components/sidebar/Sidebar'
 import { sidebarWidth } from '../components/sidebar/state'
-
 // export default {
 //   components: { Sidebar },
 //   setup() {
 //     return { sidebarWidth }
 //   }
 // }
-
 export default {
   name: 'AsiManagementView',
   data: () => ({
     duplicatesError: false,
     pageSaved: false,
-    options: ['1', '2', '3', '4', '5', '6']
+    options: ['1', '2', '3', '4', '5', '6'],
+
+    // logs: {
+    //   deletedRow: [],
+    //   insertedRow: [],
+    //   updatedRow: []
+    // }
+
+    logs: []
   }),
   setup() {
     return { sidebarWidth }
@@ -461,16 +466,24 @@ export default {
     Sidebar
   },
   methods: {
+    ...mapActions(['fetchOldFtpAsiModules']),
+    ...mapActions(['fetchOldTsmAsiModules']),
+    ...mapActions(['fetchOldCmAsiModules']),
+
     ...mapActions(['fetchFtpModules']),
     ...mapActions(['fetchTsmModules']),
     ...mapActions(['fetchCmModules']),
+
     ...mapActions(['fetchFtpAsiModules']),
     ...mapActions(['fetchTsmAsiModules']),
     ...mapActions(['fetchCmAsiModules']),
+
     ...mapActions(['fetchAsiModuleGroups']),
     ...mapActions(['updateAsi']),
     ...mapActions(['removeProfileResponsibleApprovation']),
     ...mapActions(['removeAdvisorApprovation']),
+    ...mapActions(['sendLogs']),
+
     ...mapActions(['fetchLoggedUser']),
 
     checkDuplicates: function (array) {
@@ -482,13 +495,104 @@ export default {
       })
       return isDuplicate
     },
-    saveAsi: function () {
-      // controllo che non ci siano corsi uguali
-      console.log(this.asiModuleGroups)
-      console.log(this.allCmAsiModules)
-      console.log(this.allTsmAsiModules)
-      console.log(this.allFtpAsiModules)
 
+    // calculateLogs: function (newModules, oldModules) {
+    //   var insertedElement = newModules
+    //     .filter(
+    //       (item1) =>
+    //         !oldModules.some((item2) => item2.id_module === item1.id_module)
+    //     )
+    //     .slice()
+    //   this.logs.insertedRow.push(insertedElement)
+
+    //   var deletedElement = oldModules
+    //     .filter(
+    //       (item1) =>
+    //         !newModules.some((item2) => item2.id_module === item1.id_module)
+    //     )
+    //     .slice()
+
+    //   this.logs.deletedRow.push(deletedElement)
+
+    //   var updateElement = []
+    //   var commonNew = newModules
+    //     .slice()
+    //     .filter((item1) =>
+    //       oldModules.some((item2) => item2.id_module === item1.id_module)
+    //     )
+
+    //   var commonOld = oldModules
+    //     .slice()
+    //     .filter((item1) =>
+    //       newModules.some((item2) => item2.id_module === item1.id_module)
+    //     )
+
+    //   for (var i = 0; i < commonNew.length; i++) {
+    //     if (commonNew[i].semester !== commonOld[i].semester) {
+    //       commonNew[i].old_value = commonOld[i].semester
+    //       commonNew[i].new_value = commonNew[i].semester
+    //       commonNew[i].field = 1
+    //       updateElement.push(commonNew[i])
+    //     }
+    //   }
+
+    //   this.logs.updatedRow.push(updateElement)
+    // },
+
+    calculateLogs: function (newModules, oldModules) {
+      var insertedElement = newModules
+        .filter(
+          (item1) =>
+            !oldModules.some((item2) => item2.id_module === item1.id_module)
+        )
+        .slice()
+
+      for (var j = 0; j < insertedElement.length; j++) {
+        insertedElement[j].action = 1
+      }
+      this.logs.push(insertedElement)
+      //this.logs.insertedRow.push(insertedElement)
+
+      var deletedElement = oldModules
+        .filter(
+          (item1) =>
+            !newModules.some((item2) => item2.id_module === item1.id_module)
+        )
+        .slice()
+
+      for (var k = 0; k < deletedElement.length; k++) {
+        deletedElement[k].action = 2
+      }
+      this.logs.push(deletedElement)
+
+      //this.logs.deletedRow.push(deletedElement)
+
+      var updateElement = []
+      var commonNew = newModules
+        .slice()
+        .filter((item1) =>
+          oldModules.some((item2) => item2.id_module === item1.id_module)
+        )
+
+      var commonOld = oldModules
+        .slice()
+        .filter((item1) =>
+          newModules.some((item2) => item2.id_module === item1.id_module)
+        )
+
+      for (var i = 0; i < commonNew.length; i++) {
+        if (commonNew[i].semester !== commonOld[i].semester) {
+          commonNew[i].old_value = commonOld[i].semester
+          commonNew[i].new_value = commonNew[i].semester
+          commonNew[i].field = 1
+          commonNew[i].action = 3
+          updateElement.push(commonNew[i])
+        }
+      }
+      this.logs.push(updateElement)
+      //this.logs.updatedRow.push(updateElement)
+    },
+    saveAsi: function () {
       var duplicatesCmModules = this.checkDuplicates(this.allCmAsiModules)
       var duplicatesTsmModules = this.checkDuplicates(this.allTsmAsiModules)
       var duplicatesFtpModules = this.checkDuplicates(this.allFtpAsiModules)
@@ -499,25 +603,39 @@ export default {
       } else {
         this.duplicatesError = false
         this.pageSaved = false
-
         if (confirm('Do you really want to save?')) {
+          // this.logs.deletedRow = []
+          // this.logs.insertedRow = []
+          // this.logs.updatedRow = []
+
+          this.logs = []
+
+          this.calculateLogs(this.allFtpAsiModules, this.oldFtpAsiModules)
+          this.calculateLogs(this.allTsmAsiModules, this.oldTsmAsiModules)
+          this.calculateLogs(this.allCmAsiModules, this.oldCmAsiModules)
+
           var newModules = {
-            asiModuleGroups: this.asiModuleGroups,
-            allFtpAsiModules: this.allFtpAsiModules,
-            allTsmAsiModules: this.allTsmAsiModules,
-            allCmAsiModules: this.allCmAsiModules
+            asiModuleGroups: JSON.parse(JSON.stringify(this.asiModuleGroups)),
+            allFtpAsiModules: JSON.parse(JSON.stringify(this.allFtpAsiModules)),
+            allTsmAsiModules: JSON.parse(JSON.stringify(this.allTsmAsiModules)),
+            allCmAsiModules: JSON.parse(JSON.stringify(this.allCmAsiModules))
           }
+
+          var logs = this.logs.reduce(
+            (a, e) => (Array.isArray(e) ? a.concat(e) : a.concat([e])),
+            []
+          )
           this.updateAsi({
             newModules
           })
+          this.sendLogs({ logs })
+
           this.pageSaved = true
-          console.log(this.loggedUser.AsiUserId)
           this.removeProfileResponsibleApprovation(this.loggedUser.AsiUserId)
           this.removeAdvisorApprovation(this.loggedUser.AsiUserId)
         }
       }
     },
-
     moduleCredits: function (i) {
       var tot = 0
       if (i === 0) {
@@ -544,9 +662,9 @@ export default {
       }
       return tot
     },
-
     onChangeSemester(event, i, k) {
-      const newSemester = parseInt(event.target.value)
+      //const newSemester = parseInt(event.target.value)
+      const newSemester = event.target.value
       if (i === 0) {
         this.allFtpAsiModules[k].semester = newSemester
       } else if (i === 1) {
@@ -555,7 +673,6 @@ export default {
         this.allCmAsiModules[k].semester = newSemester
       }
     },
-
     onChangeModule(event, i, k) {
       if (i === 0) {
         ;(this.allFtpAsiModules[k].id_module =
@@ -622,15 +739,17 @@ export default {
             this.allCmModules[event.target.selectedIndex].site_initials)
       }
     },
-
     deleteRow(i, k) {
       if (confirm('Do you really want to delete?')) {
-        if (i === 0) this.allFtpAsiModules.splice(k, 1)
-        else if (i === 1) this.allTsmAsiModules.splice(k, 1)
-        else if (i === 2) this.allCmAsiModules.splice(k, 1)
+        if (i === 0) {
+          this.allFtpAsiModules.splice(k, 1)
+        } else if (i === 1) {
+          this.allTsmAsiModules.splice(k, 1)
+        } else if (i === 2) {
+          this.allCmAsiModules.splice(k, 1)
+        }
       }
     },
-
     addNewRow(i) {
       if (i === 0) {
         this.allFtpAsiModules.push({
@@ -672,6 +791,10 @@ export default {
           site_initials: this.allCmModules[0].site_initials
         })
       }
+
+      // console.log(this.oldFtpAsiModules)
+      // console.log(this.oldTsmAsiModules)
+      // console.log(this.oldCmAsiModules)
     }
   },
   computed: {
@@ -681,12 +804,15 @@ export default {
     ...mapGetters(['allFtpAsiModules']),
     ...mapGetters(['allTsmAsiModules']),
     ...mapGetters(['allCmAsiModules']),
+
+    ...mapGetters(['oldFtpAsiModules']),
+    ...mapGetters(['oldTsmAsiModules']),
+    ...mapGetters(['oldCmAsiModules']),
+
     ...mapGetters(['asiModuleGroups']),
     ...mapGetters(['loggedUser']),
-
     totalCredits: function () {
       var tot = 0
-
       for (const module of this.allFtpAsiModules) {
         const number = parseInt(module.ects)
         if (!isNaN(number)) {
@@ -707,7 +833,6 @@ export default {
       }
       return tot
     },
-
     semesterNumberCourses: function () {
       var semesterCourses = [
         { semester: 1, n_courses: 0, credits: 0 },
@@ -717,44 +842,36 @@ export default {
         { semester: 5, n_courses: 0, credits: 0 },
         { semester: 6, n_courses: 0, credits: 0 }
       ]
-
       for (const module of this.allFtpAsiModules) {
         const semester = parseInt(module.semester) - 1
-
         if (!isNaN(semester)) {
           const courseCredits = parseInt(module.ects)
-
           semesterCourses[semester].n_courses =
             semesterCourses[semester].n_courses + 1
           semesterCourses[semester].credits =
             semesterCourses[semester].credits + courseCredits
         }
       }
-
       for (const module of this.allTsmAsiModules) {
         const semester = parseInt(module.semester) - 1
         if (!isNaN(semester)) {
           const courseCredits = parseInt(module.ects)
-
           semesterCourses[semester].n_courses =
             semesterCourses[semester].n_courses + 1
           semesterCourses[semester].credits =
             semesterCourses[semester].credits + courseCredits
         }
       }
-
       for (const module of this.allCmAsiModules) {
         const semester = parseInt(module.semester) - 1
         if (!isNaN(semester)) {
           const courseCredits = parseInt(module.ects)
-
           semesterCourses[semester].n_courses =
             semesterCourses[semester].n_courses + 1
           semesterCourses[semester].credits =
             semesterCourses[semester].credits + courseCredits
         }
       }
-
       return semesterCourses
     }
   },
@@ -774,16 +891,44 @@ export default {
         console.log(this.allCmModules.length)
       }
     }
+
+    // allFtpAsiModules: function () {
+    //   console.log(this.allFtpAsiModules.length)
+    // },
+    // allTsmAsiModules: function () {
+    //   console.log(this.allTsmAsiModules.length)
+    // },
+    // allCmAsiModules: function () {
+    //   console.log(this.allCmAsiModules.length)
+    // },
+
+    // oldFtpAsiModules: function () {
+    //   console.log(this.oldFtpAsiModules)
+    // },
+    // oldTsmAsiModules: function () {
+    //   console.log(this.oldTsmAsiModules)
+    // },
+    // oldCmAsiModules: function () {
+    //   console.log(this.oldCmAsiModules)
+    // }
   },
   created() {
     this.fetchFtpModules()
     this.fetchTsmModules()
     this.fetchCmModules()
+
     this.fetchFtpAsiModules()
     this.fetchTsmAsiModules()
     this.fetchCmAsiModules()
     this.fetchAsiModuleGroups()
+
+    this.fetchOldFtpAsiModules()
+    this.fetchOldTsmAsiModules()
+    this.fetchOldCmAsiModules()
   }
+  // mounted() {
+  //   console.log('Mount')
+  // }
 }
 </script>
 
@@ -798,14 +943,12 @@ export default {
   text-align: center;
   align-content: center;
 }
-
 .asiManagement {
   text-align: center;
 }
 .title {
   padding: 2%;
 }
-
 /* #title {
   float: left;
   overflow: hidden;

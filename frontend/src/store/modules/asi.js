@@ -4,13 +4,23 @@ const state = {
   asi: [],
   asiState: {},
   asiStudentState: {},
+  asiModuleGroups: [],
+
   ftpAsiModules: [],
   tsmAsiModules: [],
   cmAsiModules: [],
+
+  oldFtpAsiModules: [],
+  oldTsmAsiModules: [],
+  oldCmAsiModules: [],
+
   asiSupplementaryModules: [],
   projects: [],
   asiMasterProject: [],
-  asiModuleGroups: []
+
+  oldAsiSupplementaryModules: [],
+  oldProjects: [],
+  oldAsiMasterProject: []
 }
 
 const getters = {
@@ -18,9 +28,19 @@ const getters = {
   allFtpAsiModules: (state) => state.ftpAsiModules,
   allTsmAsiModules: (state) => state.tsmAsiModules,
   allCmAsiModules: (state) => state.cmAsiModules,
+
+  oldFtpAsiModules: (state) => state.oldFtpAsiModules,
+  oldTsmAsiModules: (state) => state.oldTsmAsiModules,
+  oldCmAsiModules: (state) => state.oldCmAsiModules,
+
   allSupplementaryModulesAsiModules: (state) => state.asiSupplementaryModules,
   asiProjects: (state) => state.projects,
   asiMasterProject: (state) => state.asiMasterProject,
+
+  oldAsiSupplementaryModules: (state) => state.oldAsiSupplementaryModules,
+  oldProjects: (state) => state.oldProjects,
+  oldAsiMasterProject: (state) => state.oldAsiMasterProject,
+
   asiModuleGroups: (state) => state.asiModuleGroups,
   asiState: (state) => state.asiState,
   asiStudentState: (state) => state.asiStudentState
@@ -28,8 +48,6 @@ const getters = {
 
 const actions = {
   async removeProfileResponsibleApprovation({ commit }, id) {
-    console.log(id)
-
     await axios.post(
       'http://localhost:8732/api/asi/removeProfileResponsibleApprovation/' + id,
       {},
@@ -41,7 +59,6 @@ const actions = {
   },
 
   async removeAdvisorApprovation({ commit }, id) {
-    console.log(id)
     await axios.post(
       'http://localhost:8732/api/asi/removeAdvisorApprovation/' + id,
       {},
@@ -76,8 +93,6 @@ const actions = {
       headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
     })
 
-    console.log(response.data[0])
-
     commit('setAsiState', response.data[0])
   },
 
@@ -88,7 +103,6 @@ const actions = {
         headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
       }
     )
-    console.log(response.data[0])
 
     commit('setAsiStudentState', response.data[0])
   },
@@ -171,6 +185,29 @@ const actions = {
 
     commit('setCmAsiModules', response.data)
   },
+
+  async fetchOldFtpAsiModules({ commit }) {
+    const response = await axios.get('http://localhost:8732/api/asi/ftp', {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
+
+    commit('setOldFtpAsiModules', response.data)
+  },
+  async fetchOldTsmAsiModules({ commit }) {
+    const response = await axios.get('http://localhost:8732/api/asi/tsm', {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
+
+    commit('setOldTsmAsiModules', response.data)
+  },
+  async fetchOldCmAsiModules({ commit }) {
+    const response = await axios.get('http://localhost:8732/api/asi/cm', {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
+
+    commit('setOldCmAsiModules', response.data)
+  },
+
   async fetchAsiSupplementaryModules({ commit }) {
     const response = await axios.get(
       'http://localhost:8732/api/asi/supplementaryModules',
@@ -198,6 +235,33 @@ const actions = {
     commit('setAsiMasterProject', response.data)
   },
 
+  async fetchOldAsiSupplementaryModules({ commit }) {
+    const response = await axios.get(
+      'http://localhost:8732/api/asi/supplementaryModules',
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+    commit('setOldAsiSupplementaryModules', response.data)
+  },
+  async fetchOldProjects({ commit }) {
+    const response = await axios.get('http://localhost:8732/api/asi/projects', {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
+
+    commit('setOldProjects', response.data)
+  },
+  async fetchOldAsiMasterProject({ commit }) {
+    const response = await axios.get(
+      'http://localhost:8732/api/asi/masterProject',
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+
+    commit('setOldAsiMasterProject', response.data)
+  },
+
   async fetchAsiModuleGroups({ commit }) {
     const response = await axios.get(
       'http://localhost:8732/api/asi/moduleGroups',
@@ -221,7 +285,6 @@ const actions = {
   },
 
   async updateAsi({ commit }, { newModules }) {
-    console.log(newModules)
     await axios.post(
       'http://localhost:8732/api/asi',
       {
@@ -234,8 +297,28 @@ const actions = {
         headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
       }
     )
+
     commit('updateAsi', newModules)
   },
+
+  async sendLogs(_, { logs }) {
+    await axios.post(
+      'http://localhost:8732/api/logs',
+      {
+        logs
+      },
+
+      {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }
+    )
+  },
+
+  // async updateOldModules(_, { newModules }) {
+  //   console.log(newModules)
+  // },
 
   async updateTechnicalAsi({ commit }, { newModules }) {
     console.log(newModules)
@@ -261,11 +344,26 @@ const mutations = {
   setTsmAsiModules: (state, tsmAsiModules) =>
     (state.tsmAsiModules = tsmAsiModules),
   setCmAsiModules: (state, cmAsiModules) => (state.cmAsiModules = cmAsiModules),
+
+  setOldFtpAsiModules: (state, oldFtpAsiModules) =>
+    (state.oldFtpAsiModules = oldFtpAsiModules),
+  setOldTsmAsiModules: (state, oldTsmAsiModules) =>
+    (state.oldTsmAsiModules = oldTsmAsiModules),
+  setOldCmAsiModules: (state, oldCmAsiModules) =>
+    (state.oldCmAsiModules = oldCmAsiModules),
+
   setAsiSupplementaryModules: (state, asiSupplementaryModules) =>
     (state.asiSupplementaryModules = asiSupplementaryModules),
   setProjects: (state, projects) => (state.projects = projects),
   setAsiMasterProject: (state, asiMasterProject) =>
     (state.asiMasterProject = asiMasterProject),
+
+  setOldAsiSupplementaryModules: (state, oldAsiSupplementaryModules) =>
+    (state.oldAsiSupplementaryModules = oldAsiSupplementaryModules),
+  setOldProjects: (state, oldProjects) => (state.oldProjects = oldProjects),
+  setOldAsiMasterProject: (state, oldAsiMasterProject) =>
+    (state.oldAsiMasterProject = oldAsiMasterProject),
+
   setAsiModuleGroups: (state, asiModuleGroups) =>
     (state.asiModuleGroups = asiModuleGroups),
 
@@ -288,15 +386,42 @@ const mutations = {
   },
 
   updateAsi: (state, newModules) => {
-    ;(state.ftpAsiModules = newModules.allFtpAsiModules),
-      (state.cmAsiModules = newModules.allCmAsiModules),
-      (state.tsmAsiModules = newModules.allTsmAsiModules)
+    ;(state.ftpAsiModules = JSON.parse(
+      JSON.stringify(newModules.allFtpAsiModules)
+    )),
+      (state.tsmAsiModules = JSON.parse(
+        JSON.stringify(newModules.allTsmAsiModules)
+      )),
+      (state.cmAsiModules = JSON.parse(
+        JSON.stringify(newModules.allCmAsiModules)
+      )),
+      (state.oldFtpAsiModules = JSON.parse(
+        JSON.stringify(newModules.allFtpAsiModules)
+      )),
+      (state.oldTsmAsiModules = JSON.parse(
+        JSON.stringify(newModules.allTsmAsiModules)
+      )),
+      (state.oldCmAsiModules = JSON.parse(
+        JSON.stringify(newModules.allCmAsiModules)
+      )),
+      console.log(state)
   },
   updateTechnicalAsi: (state, newModules) => {
-    ;(state.projects = newModules.asiProjects),
-      (state.asiSupplementaryModules =
-        newModules.allSupplementaryModulesAsiModules),
-      (state.asiMasterProject = newModules.asiMasterProject)
+    ;(state.projects = JSON.parse(JSON.stringify(newModules.asiProjects))),
+      (state.asiSupplementaryModules = JSON.parse(
+        JSON.stringify(newModules.allSupplementaryModulesAsiModules)
+      )),
+      (state.asiMasterProject = JSON.parse(
+        JSON.stringify(newModules.asiMasterProject)
+      )),
+      (state.oldProjects = JSON.parse(JSON.stringify(newModules.asiProjects))),
+      (state.oldAsiSupplementaryModules = JSON.parse(
+        JSON.stringify(newModules.allSupplementaryModulesAsiModules)
+      )),
+      (state.oldAsiMasterProject = JSON.parse(
+        JSON.stringify(newModules.asiMasterProject)
+      )),
+      console.log(state)
   }
 }
 

@@ -7,10 +7,17 @@
         <div class="card-body">
           <div class="container">
             <div class="row justify-content-md-center">
-              <div class="col col-lg-2" style="width: 40%">
-                <h4 id="title" class="title">Student list</h4>
+              <div
+                v-if="userData[0] !== null"
+                class="col col-lg-2"
+                style="width: 40%"
+              >
+                <h4 id="title" class="title">
+                  {{ userData[0].student_name }}
+                  {{ userData[0].student_surname }}
+                </h4>
               </div>
-              <div class="col-md-auto">
+              <div class="col-md-auto" v-if="asiStudentState !== null">
                 <div id="approvation">
                   <div v-if="asiStudentState.profile_responsible_approvation">
                     <button type="button" class="btn btn-success">
@@ -26,7 +33,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col col-lg-2">
+              <div class="col col-lg-2" v-if="asiStudentState !== null">
                 <div id="approvation">
                   <div
                     v-if="

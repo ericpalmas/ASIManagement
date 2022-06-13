@@ -78,15 +78,7 @@
                 <td colspan="1">ECTS</td>
                 <td colspan="1">Tutor</td>
                 <td colspan="1">Semester</td>
-                <td colspan="1">
-                  <!-- <button
-                    type="button"
-                    class="btn btn-outline-secondary"
-                    @click="saveAsi"
-                  >
-                    <i class="fas fa-save"></i>
-                  </button> -->
-                </td>
+                <td colspan="1"></td>
               </tr>
             </thead>
             <!-- asiProjects -->
@@ -489,25 +481,31 @@ export default {
     Sidebar
   },
   data: () => ({
-    // firstProjectValues: [],
-    // secondProjectValues: [],
-    // masterProjectValues: [],
-    // firstProjectEnabledValues: [],
-    // secondProjectEnabledValues: [],
-    // masterProjectEnabledValues: [],
     values: [],
     options: ['1', '2', '3', '4', '5', '6'],
     notContiguousError: false,
     duplicatesError: false,
     emptyField: false,
-    pageSaved: false
+    pageSaved: false,
 
-    //checkedCategories: []
+    // logs: {
+    //   deletedRow: [],
+    //   insertedRow: [],
+    //   updatedRow: []
+    // }
+
+    logs: []
   }),
+
   methods: {
+    ...mapActions(['fetchOldProjects']),
+    ...mapActions(['fetchOldAsiSupplementaryModules']),
+    ...mapActions(['fetchOldAsiMasterProject']),
+
     ...mapActions(['fetchProjects']),
     ...mapActions(['fetchSupplementaryModules']),
     ...mapActions(['fetchAsiSupplementaryModules']),
+
     ...mapActions(['fetchAsiMasterProject']),
     ...mapActions(['fetchAsiModuleGroups']),
     ...mapActions(['fetchAdvisors']),
@@ -515,15 +513,11 @@ export default {
     ...mapActions(['removeProfileResponsibleApprovation']),
     ...mapActions(['removeAdvisorApprovation']),
     ...mapActions(['fetchLoggedUser']),
-    // hideAlert() {
-    //   // This was for me to test the click even - PREFER AUTO HIDE AFTER A FEW SECONDS
-    //   document.querySelector('.alert').style.display = 'none'
-    // },
+    ...mapActions(['sendLogs']),
 
     checkContiguous: function (stringSemester) {
       var array = stringSemester.split(',')
       var sortedArray = array.map((i) => Number(i)).sort()
-      console.log(sortedArray)
       var error = false
       for (var i = 0; i < sortedArray.length; i++) {
         if (i !== 0) {
@@ -551,11 +545,160 @@ export default {
       }
       return emptyField
     },
-    saveAsi: function () {
-      console.log(this.asiProjects)
-      console.log(this.allSupplementaryModulesAsiModules)
-      console.log(this.asiMasterProject)
 
+    calculateProjectLogs: function (newModules, oldModules) {
+      var insertedElement = newModules
+        .filter(
+          (item1) =>
+            !oldModules.some(
+              (item2) =>
+                item2.code === item1.code || item2.id_module === item1.id_module
+            )
+        )
+        .slice()
+
+      for (var k = 0; k < insertedElement.length; k++) {
+        insertedElement[k].action = 1
+      }
+      this.logs.push(insertedElement)
+      //this.logs.insertedRow.push(insertedElement)
+
+      var deletedElement = oldModules
+        .filter(
+          (item1) =>
+            !newModules.some(
+              (item2) =>
+                item2.code === item1.code || item2.id_module === item1.id_module
+            )
+        )
+
+        .slice()
+
+      for (var j = 0; j < deletedElement.length; j++) {
+        deletedElement[j].action = 2
+      }
+      this.logs.push(deletedElement)
+      //this.logs.deletedRow.push(deletedElement)
+
+      var updateElement = []
+      var commonNew = newModules
+        .slice()
+        .filter((item1) =>
+          oldModules.some(
+            (item2) =>
+              item2.code === item1.code || item2.id_module === item1.id_module
+          )
+        )
+
+      var commonOld = oldModules
+        .slice()
+        .filter((item1) =>
+          newModules.some(
+            (item2) =>
+              item2.code === item1.code || item2.id_module === item1.id_module
+          )
+        )
+
+      for (var i = 0; i < commonNew.length; i++) {
+        if (commonNew[i].semester !== commonOld[i].semester) {
+          commonNew[i].old_value = commonOld[i].semester
+          commonNew[i].new_value = commonNew[i].semester
+          commonNew[i].field = 1
+          commonNew[i].action = 3
+          updateElement.push(commonNew[i])
+        }
+        if (commonNew[i].ects !== commonOld[i].ects) {
+          commonNew[i].old_value = commonOld[i].ects
+          commonNew[i].new_value = commonNew[i].ects
+          commonNew[i].field = 2
+          commonNew[i].action = 3
+
+          updateElement.push(commonNew[i])
+        }
+        if (commonNew[i].responsible !== commonOld[i].responsible) {
+          commonNew[i].old_value = commonOld[i].responsible
+          commonNew[i].new_value = commonNew[i].responsible
+          commonNew[i].field = 3
+          commonNew[i].action = 3
+
+          updateElement.push(commonNew[i])
+        }
+
+        if (commonNew[i].code !== commonOld[i].code) {
+          commonNew[i].old_value = commonOld[i].code
+          commonNew[i].new_value = commonNew[i].code
+          commonNew[i].field = 4
+          commonNew[i].action = 3
+
+          updateElement.push(commonNew[i])
+        }
+        if (commonNew[i].module_name !== commonOld[i].module_name) {
+          commonNew[i].old_value = commonOld[i].module_name
+          commonNew[i].new_value = commonNew[i].module_name
+          commonNew[i].field = 5
+          commonNew[i].action = 3
+          updateElement.push(commonNew[i])
+        }
+      }
+      this.logs.push(updateElement)
+      //this.logs.updatedRow.push(updateElement)
+    },
+
+    calculateLogs: function (newModules, oldModules) {
+      var insertedElement = newModules
+        .filter(
+          (item1) =>
+            !oldModules.some((item2) => item2.id_module === item1.id_module)
+        )
+        .slice()
+
+      for (var j = 0; j < insertedElement.length; j++) {
+        insertedElement[j].action = 1
+      }
+      this.logs.push(insertedElement)
+      //this.logs.insertedRow.push(insertedElement)
+
+      var deletedElement = oldModules
+        .filter(
+          (item1) =>
+            !newModules.some((item2) => item2.id_module === item1.id_module)
+        )
+        .slice()
+
+      for (var k = 0; k < deletedElement.length; k++) {
+        deletedElement[k].action = 2
+      }
+      this.logs.push(deletedElement)
+
+      //this.logs.deletedRow.push(deletedElement)
+
+      var updateElement = []
+      var commonNew = newModules
+        .slice()
+        .filter((item1) =>
+          oldModules.some((item2) => item2.id_module === item1.id_module)
+        )
+
+      var commonOld = oldModules
+        .slice()
+        .filter((item1) =>
+          newModules.some((item2) => item2.id_module === item1.id_module)
+        )
+
+      for (var i = 0; i < commonNew.length; i++) {
+        if (commonNew[i].semester !== commonOld[i].semester) {
+          commonNew[i].old_value = commonOld[i].semester
+          commonNew[i].new_value = commonNew[i].semester
+          commonNew[i].field = 1
+          commonNew[i].action = 3
+          updateElement.push(commonNew[i])
+        }
+      }
+      this.logs.push(updateElement)
+      //this.logs.updatedRow.push(updateElement)
+    },
+
+    saveAsi: function () {
       var firstProjectControl = false
       var secondProjectControl = false
       var masterProjectControl = false
@@ -590,18 +733,46 @@ export default {
         this.pageSaved = false
       } else {
         if (confirm('Do you really want to save?')) {
+          console.log('VECCHI')
+          console.log(this.oldProjects)
+          console.log(this.oldAsiSupplementaryModules)
+          console.log(this.oldAsiMasterProject)
+
+          console.log('NUOVI')
+          console.log(this.asiProjects)
+          console.log(this.allSupplementaryModulesAsiModules)
+          console.log(this.asiMasterProject)
+
+          // this.logs.deletedRow = []
+          // this.logs.insertedRow = []
+          // this.logs.updatedRow = []
+
+          this.logs = []
+
+          this.calculateProjectLogs(this.asiProjects, this.oldProjects)
+          this.calculateLogs(
+            this.allSupplementaryModulesAsiModules,
+            this.oldAsiSupplementaryModules
+          )
+          this.calculateProjectLogs(
+            this.asiMasterProject,
+            this.oldAsiMasterProject
+          )
+
           this.notContiguousError = false
           this.emptyField = false
           this.duplicatesError = false
           this.pageSaved = false
 
           var newModules = {
-            asiModuleGroups: this.asiModuleGroups,
-            asiProjects: this.asiProjects,
-            allSupplementaryModulesAsiModules:
-              this.allSupplementaryModulesAsiModules,
-            asiMasterProject: this.asiMasterProject
+            asiModuleGroups: JSON.parse(JSON.stringify(this.asiModuleGroups)),
+            asiProjects: JSON.parse(JSON.stringify(this.asiProjects)),
+            allSupplementaryModulesAsiModules: JSON.parse(
+              JSON.stringify(this.allSupplementaryModulesAsiModules)
+            ),
+            asiMasterProject: JSON.parse(JSON.stringify(this.asiMasterProject))
           }
+
           if (newModules.asiProjects[0] !== undefined) {
             newModules.asiProjects[0].firstProjectValues =
               this.asiProjects[0].semester.split(',')
@@ -615,15 +786,16 @@ export default {
               this.asiMasterProject[0].semester.split(',')
           }
 
-          console.log(newModules)
-
+          var logs = this.logs.reduce(
+            (a, e) => (Array.isArray(e) ? a.concat(e) : a.concat([e])),
+            []
+          )
           this.updateTechnicalAsi({
             newModules
           })
+          this.sendLogs({ logs })
 
           this.pageSaved = true
-
-          console.log(this.loggedUser.AsiUserId)
           this.removeProfileResponsibleApprovation(this.loggedUser.AsiUserId)
           this.removeAdvisorApprovation(this.loggedUser.AsiUserId)
         }
@@ -652,14 +824,14 @@ export default {
           e,
           option
         )
-        console.log(this.asiProjects[k].semester)
+        //console.log(this.asiProjects[k].semester)
       } else if (i === 2) {
         this.asiMasterProject[k].semester = this.splitAndJoin(
           this.asiMasterProject[k].semester,
           e,
           option
         )
-        console.log(this.asiMasterProject[k].semester)
+        //console.log(this.asiMasterProject[k].semester)
       }
     },
 
@@ -726,8 +898,10 @@ export default {
       }
     },
     onChangeSemester(event, i, k) {
-      const newSemester = parseInt(event.target.value)
-      //console.log(event.target.value, i, k)
+      //const newSemester = parseInt(event.target.value)
+      const newSemester = event.target.value
+
+      //console.log(event.target.value)
       if (i === 0) {
         this.asiProjects[k].semester = newSemester
       } else if (i === 1) {
@@ -803,35 +977,49 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['advisors']),
     ...mapGetters(['asiProjects']),
-    ...mapGetters(['allSupplementaryModules']),
     ...mapGetters(['allSupplementaryModulesAsiModules']),
     ...mapGetters(['asiMasterProject']),
+
+    ...mapGetters(['oldProjects']),
+    ...mapGetters(['oldAsiSupplementaryModules']),
+    ...mapGetters(['oldAsiMasterProject']),
+
+    ...mapGetters(['advisors']),
+    ...mapGetters(['allSupplementaryModules']),
     ...mapGetters(['asiModuleGroups']),
     ...mapGetters(['loggedUser'])
   },
   watch: {
-    asiProjects: function () {
-      if (this.asiProjects.length !== 0) {
-        console.log(this.asiProjects)
-      }
-    },
-    allSupplementaryModulesAsiModules: function () {
-      if (this.allSupplementaryModulesAsiModules.length !== 0) {
-        console.log(this.allSupplementaryModulesAsiModules)
-      }
-    },
-    asiMasterProject: function () {
-      if (this.asiMasterProject.length !== 0) {
-        console.log(this.asiMasterProject)
-      }
-    }
+    // asiProjects: function () {
+    //   if (this.asiProjects.length !== 0) {
+    //     console.log(this.asiProjects)
+    //   }
+    // },
+    // allSupplementaryModulesAsiModules: function () {
+    //   if (this.allSupplementaryModulesAsiModules.length !== 0) {
+    //     console.log(this.allSupplementaryModulesAsiModules)
+    //   }
+    // },
+    // asiMasterProject: function () {
+    //   if (this.asiMasterProject.length !== 0) {
+    //     console.log(this.asiMasterProject)
+    //   }
+    // }
   },
   created() {
+    //     ...mapActions(['fetchOldProjects']),
+    // ...mapActions(['fetchOldAsiSupplementaryModules']),
+    // ...mapActions(['fetchOldAsiMasterProject']),
+
+    this.fetchOldProjects()
+    this.fetchOldAsiSupplementaryModules()
+    this.fetchOldAsiMasterProject()
+
     this.fetchProjects()
     this.fetchSupplementaryModules()
     this.fetchAsiSupplementaryModules()
+
     this.fetchAsiMasterProject()
     this.fetchAsiModuleGroups()
     this.fetchAdvisors()

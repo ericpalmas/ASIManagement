@@ -7,8 +7,15 @@
         <div class="card-body">
           <div class="container">
             <div class="row justify-content-md-center">
-              <div class="col col-lg-2" style="width: 40%">
-                <h4 id="title" class="title">Student informations</h4>
+              <div
+                v-if="userData[0] !== null"
+                class="col col-lg-2"
+                style="width: 40%"
+              >
+                <h4 id="title" class="title">
+                  {{ userData[0].student_name }} 
+                  {{ userData[0].student_surname }}
+                </h4>
               </div>
               <div class="col-md-auto">
                 <div id="approvation">
