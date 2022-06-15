@@ -17,7 +17,7 @@
                         <th scope="col"></th>
                         <th scope="col">Action</th>
                         <th scope="col">Code</th>
-                        <th scope="col">Module name</th>
+                        <th scope="col">Module</th>
 
                         <th scope="col">Semester</th>
                         <th scope="col">Ects</th>
@@ -25,8 +25,8 @@
                         <th scope="col">Advisor</th>
 
                         <th scope="col">Field</th>
-                        <th scope="col">Old value</th>
-                        <th scope="col">New value</th>
+                        <th scope="col">Old</th>
+                        <th scope="col">New</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -61,20 +61,17 @@
                         <td v-if="log.id_action === 3 && log.id_field !== null">
                           {{ log.field_name }}
                         </td>
-                        <td v-else>/</td>
+                        <td v-else></td>
 
                         <td v-if="log.id_action === 3 && log.id_field !== null">
                           {{ log.old_value }}
                         </td>
-                        <td v-else>/</td>
+                        <td v-else></td>
 
                         <td v-if="log.id_action === 3 && log.id_field !== null">
                           {{ log.new_value }}
                         </td>
-                        <td v-else>/</td>
-                        <!-- <td>/</td>
-                        <td>/</td>
-                        <td>/</td> -->
+                        <td v-else></td>
                       </tr>
                     </tbody>
                   </table>
@@ -107,15 +104,6 @@ export default {
   },
   methods: {
     ...mapActions(['fetchLogs'])
-
-    // deleteUser: function (removedId) {
-    //   if (confirm('Do you really want to remove?')) {
-    //     this.removeUser({
-    //       id: removedId
-    //     })
-    //   }
-    //   console.log(removedId)
-    // }
   },
 
   computed: {

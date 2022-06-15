@@ -396,11 +396,12 @@ where asi_user.id_asi_user = @UserId
 
 
             string query = @" 
-select asi_user.id_asi_user as student_id, asi_user.name as student_name,  asi_user.surname as student_surname, asi_user.enrollment_number as student_enrollment_number,  asi_user.email as student_email,  modality.name as modality, profile.name as profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname,  asi_user.enrollment_number,  asi_user.role, profile_resp.name as profile_responsible_id, profile_resp.name as profile_responsible_name , profile_resp.surname as profile_responsible_surname  from asi_user
+select asi_user.id_asi_user as student_id, asi_user.name as student_name,  asi_user.surname as student_surname, asi_user.enrollment_number as student_enrollment_number,  asi_user.email as student_email,  modality.name as modality, modality.id_modality as id_modality, profile.name as profile, profile.id_profile as id_profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname, asi_user.role, user_type.name as role_name, profile_resp.name as profile_responsible_id, profile_resp.name as profile_responsible_name , profile_resp.surname as profile_responsible_surname  from asi_user
 left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
 left outer join modality on modality.id_modality = asi_user.modality
 left outer join profile on profile.id_profile = asi_user.profile
 left outer join asi_user as profile_resp on asi_user.profile = profile_resp.profile_responsible
+left outer join user_type on user_type.id_user_type = asi_user.role
 where asi_user.id_asi_user = @UserId
                            ";
             DataTable table = new DataTable();
@@ -723,6 +724,57 @@ AND (asi_user.role = 1 OR asi_user.role = 7)
                 }
             }
      
+            return new JsonResult(table);
+        }
+
+        [HttpPost("api/asiuser/update")]
+        public JsonResult UpdateUser(AsiUser request)
+        {
+
+            /*string encryptedPassword = BCrypt.Net.BCrypt.HashPassword(request.AsiUserPassword);
+
+            string query = "DECLARE @USER_ID int; DECLARE @STATE_ID int; DECLARE @ASI_ID int;";
+
+            query += @"INSERT INTO dbo.asi_user(name, surname, email, enrollment_number, password, role, profile, modality ) VALUES ('" + request.AsiUserName + "','" + request.AsiUserSurname + "','" + request.AsiUserEmail + "','" + request.AsiUserEnrollmentNumber + "','" + encryptedPassword + "'," + request.Role + "," + request.Profile + "," + request.Modality + ");";
+
+
+            if (request.Role == "1" || request.Role == "7" || request.Role == "10")
+            {
+                query += "SELECT @USER_ID = SCOPE_IDENTITY();";
+
+                query += "INSERT INTO dbo.asi_state(created_at, advisor_approvation, master_responsable_approvation, profile_responsible_approvation, saved_locally) values (GETDATE(),0,0,0,0)";
+
+                query += "SELECT @STATE_ID = SCOPE_IDENTITY();";
+
+                query += "INSERT INTO dbo.asi(created_at, asi_state, asi_user) VALUES (GETDATE(), @STATE_ID, @USER_ID);";
+
+                query += "SELECT @ASI_ID = SCOPE_IDENTITY();";
+
+                query += "INSERT INTO dbo.asi_module_group(asi, module_group) VALUES(@ASI_ID, 1),(@ASI_ID, 2),(@ASI_ID, 3),(@ASI_ID, 4),(@ASI_ID, 5),(@ASI_ID, 6);";
+            }*/
+
+            string query = @"";
+
+            query += "UPDATE dbo.asi_user SET asi_user.name = '" + request.AsiUserName + "',asi_user.surname = '" + request.AsiUserSurname + "',asi_user.email = '" + request.AsiUserEmail + "', asi_user.enrollment_number = '" + request.AsiUserEnrollmentNumber + "',asi_user.modality = " + request.Modality + ",asi_user.profile = "+ request.Profile + ",asi_user.advisor = "+ request.Advisor + ",asi_user.role = "+ request.Role + " WHERE asi_user.id_asi_user = " + request.AsiUserId + ";";
+
+            query += "select * from dbo.asi_user";
+
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
             return new JsonResult(table);
         }
 

@@ -4,7 +4,7 @@
     <Navbar />
     <div id="cardsContainers" class="container pt-3">
       <div class="card">
-        <h4 class="title">Administrative data</h4>
+        <!-- <h4 class="title">Administrative data</h4> -->
         <div class="card-body" v-for="user in userData" :key="user.student_id">
           <div id="cardsContainers" class="container pb-4">
             <div class="card">

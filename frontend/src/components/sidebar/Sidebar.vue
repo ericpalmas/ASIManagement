@@ -60,11 +60,10 @@ export default {
           loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
         "
         to="/AsiTechnicalSpecialization"
-        icon="fas fa-home"
+        icon="fas fas fa-archive"
       >
         Technical
       </SidebarLink>
-
       <SidebarLink
         v-if="
           loggedUser.Role === 'Student' ||
@@ -87,7 +86,7 @@ export default {
           loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
         "
         to="/AsiAdminData"
-        icon="fas fa-chart-bar"
+        icon="fas fa-user"
       >
         Profile
       </SidebarLink>
@@ -101,26 +100,11 @@ export default {
           loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
         "
         to="/AsiCourseList"
-        icon="fas fa-users"
+        icon="fas fa-book"
       >
         Courses
       </SidebarLink>
-      <SidebarLink
-        v-if="
-          loggedUser.Role === 'Student' ||
-          loggedUser.Role === 'Advisor' ||
-          loggedUser.Role === 'Administrator' ||
-          loggedUser.Role === 'StudentAdvisor' ||
-          loggedUser.Role === 'ProfileResponsible' ||
-          loggedUser.Role === 'ProfileResponsibleAdvisor' ||
-          loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
-        "
-        to="/AsiInformation"
-        icon="fas fa-image"
-      >
-        Informations
-      </SidebarLink>
-
+      <!-- <font-awesome-icon icon="fa-solid fa-book-copy" /> -->
       <SidebarLink
         v-if="loggedUser.Role === 'Advisor'"
         to="/StudentList"
@@ -168,7 +152,7 @@ export default {
       <SidebarLink
         v-if="loggedUser.Role === 'Administrator'"
         to="/UserRegistrationAdministrator"
-        icon="fas fa-users"
+        icon="fas fa-user-plus"
       >
         Add user
       </SidebarLink>
@@ -182,6 +166,28 @@ export default {
         icon="fas fa-users"
       >
         Preview
+      </SidebarLink>
+      <SidebarLink
+        v-if="loggedUser.Role === 'Administrator'"
+        to="/LogsAdministrator"
+        icon="fas fa-chart-bar"
+      >
+        Logs
+      </SidebarLink>
+      <SidebarLink
+        v-if="
+          loggedUser.Role === 'Student' ||
+          loggedUser.Role === 'Advisor' ||
+          loggedUser.Role === 'Administrator' ||
+          loggedUser.Role === 'StudentAdvisor' ||
+          loggedUser.Role === 'ProfileResponsible' ||
+          loggedUser.Role === 'ProfileResponsibleAdvisor' ||
+          loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
+        "
+        to="/AsiInformation"
+        icon="fas fa-question"
+      >
+        Informations
       </SidebarLink>
     </div>
 

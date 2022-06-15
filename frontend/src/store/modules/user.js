@@ -161,22 +161,72 @@ const actions = {
     }
   },
 
+  async updateUser(
+    { commit },
+    {
+      id,
+      name,
+      surname,
+      email,
+      enrollmentNumber,
+      password,
+      profile,
+      modality,
+      role,
+      advisor
+    }
+  ) {
+    await axios.post('http://localhost:8732/api/asiuser/update', {
+      AsiUserId: id,
+      AsiUserName: name,
+      AsiUserSurname: surname,
+      AsiUserEmail: email,
+      AsiUserEnrollmentNumber: enrollmentNumber,
+      AsiUserPassword: password,
+      Profile: profile,
+      Modality: modality,
+      Role: role,
+      Advisor: advisor
+    })
+
+    var newUser = {
+      id,
+      name,
+      surname,
+      email,
+      enrollmentNumber,
+      password,
+      profile,
+      modality,
+      role,
+      advisor
+    }
+
+    //if (response.status == 200) {
+    commit('userUpdateSuccess', newUser)
+    //}
+  },
+
   async register(
     { commit },
-    { name, surname, email, password, profile, modality, role }
+    {
+      name,
+      surname,
+      email,
+      enrollmentNumber,
+      password,
+      profile,
+      modality,
+      role
+    }
   ) {
-    //commit('registrationRequest', { username })
-
-    //let result = loginService.login(username, password)
-
-    console.log(name, surname, email, password, profile, modality, role)
-
     const response = await axios.post(
       'http://localhost:8732/api/asiuser/register',
       {
         AsiUserName: name,
         AsiUserSurname: surname,
         AsiUserEmail: email,
+        AsiUserEnrollmentNumber: enrollmentNumber,
         AsiUserPassword: password,
         Profile: profile,
         Modality: modality,
@@ -320,6 +370,23 @@ const mutations = {
 
       state.students.push(newUser)
     }
+  },
+
+  userUpdateSuccess(state, newUser) {
+    console.log(newUser)
+    // const index = state.userData.findIndex(
+    //   (item) => item.student_id === newUser.id
+    // )
+    console.log(state.userData[0])
+
+    state.userData[0].student_name = newUser.name
+    state.userData[0].student_surname = newUser.surname
+    state.userData[0].student_email = newUser.email
+    state.userData[0].student_enrollment_number = newUser.enrollmentNumber
+    state.userData[0].id_modality = newUser.modality
+    state.userData[0].id_profile = newUser.profile
+    state.userData[0].advisor_id = newUser.advisor
+    state.userData[0].role = newUser.role
   }
 }
 

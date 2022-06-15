@@ -312,7 +312,7 @@
           <div id="cardsContainers" class="container pt-3 pb-4">
             <div class="card">
               <div class="card-body">
-                <h1>Module group credits</h1>
+                <h4>Module group credits</h4>
 
                 <table class="table table-light">
                   <thead>
@@ -401,7 +401,7 @@
           <div id="cardsContainers" class="container pt-3 pb-4">
             <div class="card">
               <div class="card-body">
-                <h1>Course semester balancing</h1>
+                <h4>Course semester balancing</h4>
 
                 <table class="table table-light">
                   <thead>
