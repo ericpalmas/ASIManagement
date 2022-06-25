@@ -15,6 +15,25 @@ const actions = {
     })
 
     commit('setLogs', response.data)
+  },
+
+  async fetchAdvisorLogs({ commit }) {
+    const response = await axios.get('http://localhost:8732/api/advisorlogs', {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
+
+    commit('setLogs', response.data)
+  },
+
+  async fetchProfileResponsibleLogs({ commit }) {
+    const response = await axios.get(
+      'http://localhost:8732/api/profileresponsiblelogs',
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+
+    commit('setLogs', response.data)
   }
 }
 

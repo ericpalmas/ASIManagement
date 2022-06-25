@@ -13,7 +13,7 @@
                 style="width: 40%"
               >
                 <h4 id="title" class="title">
-                  {{ userData[0].student_name }} 
+                  {{ userData[0].student_name }}
                   {{ userData[0].student_surname }}
                 </h4>
               </div>
@@ -535,6 +535,7 @@ export default {
     minMasterError: false,
     totalCreditsError: false,
     totalTechnicalCreditsError: false
+    //logs: []
   }),
   setup() {
     return { sidebarWidth }
@@ -555,6 +556,7 @@ export default {
     ...mapActions(['removeAdvisorApprovation']),
     ...mapActions(['fetchStudentAsiModuleGroups']),
     ...mapActions(['fetchSpecificUserData']),
+    ...mapActions(['sendAdvisorLogs']),
 
     arrayOfObjectToArrayOfstrings: function (array) {
       var result = []
@@ -777,14 +779,27 @@ export default {
           this.numberProjectError ||
           this.totalTechnicalCreditsError
         ) {
-          if (confirm('Project and master thesis not defined, continue?')) {
-            if (confirm('Do you really want to approve?')) {
+          var logs = []
+          if (confirm('Do you really want to approve?')) {
+            if (confirm('Project and master thesis not defined, continue?')) {
               this.advisorApprovation(this.$route.params.studentId)
+
+              logs.push({
+                AsiUser: this.$route.params.studentId,
+                action: 4
+              })
+              this.sendAdvisorLogs({ logs })
             }
           }
         } else {
           if (confirm('Do you really want to approve?')) {
             this.advisorApprovation(this.$route.params.studentId)
+
+            logs.push({
+              AsiUser: this.$route.params.studentId,
+              action: 4
+            })
+            this.sendAdvisorLogs({ logs })
           }
         }
       }
@@ -793,6 +808,12 @@ export default {
     removeAsiApprovation: function () {
       if (confirm('Do you really want to remove approvation?')) {
         this.removeAdvisorApprovation(this.$route.params.studentId)
+        var logs = []
+        logs.push({
+          AsiUser: this.$route.params.studentId,
+          action: 5
+        })
+        this.sendLogs({ logs })
       }
     },
 

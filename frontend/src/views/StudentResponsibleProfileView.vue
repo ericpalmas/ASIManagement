@@ -563,6 +563,7 @@ export default {
     ...mapActions(['removeProfileResponsibleApprovation']),
     ...mapActions(['fetchStudentAsiModuleGroups']),
     ...mapActions(['fetchSpecificUserData']),
+    ...mapActions(['sendProfileResponsibleLogs']),
 
     arrayOfObjectToArrayOfstrings: function (array) {
       var result = []
@@ -795,14 +796,26 @@ export default {
           this.numberProjectError ||
           this.totalTechnicalCreditsError
         ) {
-          if (confirm('Project and master thesis not defined, continue?')) {
-            if (confirm('Do you really want to approve?')) {
+          var logs = []
+
+          if (confirm('Do you really want to approve?')) {
+            if (confirm('Project and master thesis not defined, continue?')) {
               this.profileResponsibleApprovation(this.$route.params.studentId)
+              logs.push({
+                AsiUser: this.$route.params.studentId,
+                action: 4
+              })
+              this.sendProfileResponsibleLogs({ logs })
             }
           }
         } else {
           if (confirm('Do you really want to approve?')) {
             this.profileResponsibleApprovation(this.$route.params.studentId)
+            logs.push({
+              AsiUser: this.$route.params.studentId,
+              action: 4
+            })
+            this.sendProfileResponsibleLogs({ logs })
           }
         }
       }
@@ -815,6 +828,13 @@ export default {
     removeAsiApprovation: function () {
       if (confirm('Do you really want to remove approvation?')) {
         this.removeProfileResponsibleApprovation(this.$route.params.studentId)
+
+        var logs = []
+        logs.push({
+          AsiUser: this.$route.params.studentId,
+          action: 5
+        })
+        this.sendProfileResponsibleLogs({ logs })
       }
     },
 

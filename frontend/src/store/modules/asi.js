@@ -302,6 +302,7 @@ const actions = {
   },
 
   async sendLogs(_, { logs }) {
+    console.log(logs)
     await axios.post(
       'http://localhost:8732/api/logs',
       {
@@ -316,9 +317,37 @@ const actions = {
     )
   },
 
-  // async updateOldModules(_, { newModules }) {
-  //   console.log(newModules)
-  // },
+  async sendAdvisorLogs(_, { logs }) {
+    console.log(logs)
+    await axios.post(
+      'http://localhost:8732/api/advisorlogs',
+      {
+        logs
+      },
+
+      {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }
+    )
+  },
+
+  async sendProfileResponsibleLogs(_, { logs }) {
+    console.log(logs)
+    await axios.post(
+      'http://localhost:8732/api/profileresponsiblelogs',
+      {
+        logs
+      },
+
+      {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }
+    )
+  },
 
   async updateTechnicalAsi({ commit }, { newModules }) {
     console.log(newModules)

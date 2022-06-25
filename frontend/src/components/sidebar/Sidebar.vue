@@ -160,6 +160,7 @@ export default {
         v-if="
           loggedUser.Role === 'Student' ||
           loggedUser.Role === 'StudentAdvisor' ||
+          loggedUser.Role === 'ProfileResponsibleAdvisor' ||
           loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
         "
         to="/AsiSummaryPreview"
@@ -173,6 +174,30 @@ export default {
         icon="fas fa-chart-bar"
       >
         Logs
+      </SidebarLink>
+      <SidebarLink
+        v-if="
+          loggedUser.Role === 'Advisor' ||
+          loggedUser.Role === 'StudentAdvisor' ||
+          loggedUser.Role === 'ProfileResponsibleAdvisor' ||
+          loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
+        "
+        to="/LogsAdvisor"
+        icon="fas fa-chart-bar"
+      >
+        Logs
+      </SidebarLink>
+
+      <SidebarLink
+        v-if="
+          loggedUser.Role === 'ProfileResponsible' ||
+          loggedUser.Role === 'ProfileResponsibleAdvisor' ||
+          loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
+        "
+        to="/LogsProfileResponsible"
+        icon="fas fa-chart-bar"
+      >
+        Profile logs
       </SidebarLink>
       <SidebarLink
         v-if="

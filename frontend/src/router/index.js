@@ -7,7 +7,7 @@ import AsiProjectsView from '../views/AsiProjectsView.vue'
 import AsiTechnicalSpecializationManagementView from '../views/AsiTechnicalSpecializationManagementView.vue'
 import LoginView from '../views/LoginView'
 import UserRegistrationAdministratorView from '../views/UserRegistrationAdministratorView'
-import SelectUserTypeView from '../views/SelectUserTypeView'
+//import SelectUserTypeView from '../views/SelectUserTypeView'
 import StudentListView from '../views/StudentListView'
 import StudentView from '../views/StudentView'
 import StudentResponsibleProfileView from '../views/StudentResponsibleProfileView'
@@ -18,6 +18,8 @@ import ProfileResponsibleListAdministratorView from '../views/ProfileResponsible
 import UserProfileAdminstratorView from '../views/UserProfileAdminstratorView'
 import AsiSummaryPreviewView from '../views/AsiSummaryPreviewView'
 import LogsAdministratorView from '../views/LogsAdministratorView'
+import LogsAdvisorView from '../views/LogsAdvisorView'
+import LogsProfileResponsibleView from '../views/LogsProfileResponsibleView'
 
 const routes = [
   {
@@ -57,11 +59,11 @@ const routes = [
     name: 'LoginView',
     component: LoginView
   },
-  {
-    path: '/selectType',
-    name: 'SelectUserType',
-    component: SelectUserTypeView
-  },
+  // {
+  //   path: '/selectType',
+  //   name: 'SelectUserType',
+  //   component: SelectUserTypeView
+  // },
   {
     path: '/StudentList',
     name: 'StudentListView',
@@ -116,6 +118,16 @@ const routes = [
     path: '/LogsAdministrator',
     name: 'LogsAdministratorView',
     component: LogsAdministratorView
+  },
+  {
+    path: '/LogsAdvisor',
+    name: 'LogsAdvisorView',
+    component: LogsAdvisorView
+  },
+  {
+    path: '/LogsProfileResponsible',
+    name: 'LogsProfileResponsibleView',
+    component: LogsProfileResponsibleView
   }
 ]
 
