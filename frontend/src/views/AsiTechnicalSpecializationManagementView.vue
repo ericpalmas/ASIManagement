@@ -52,6 +52,16 @@
           >
             Empty field
           </div>
+
+          <div
+            class="alert alert-danger"
+            role="alert"
+            v-if="emptySemester"
+            :v-bind:emptySemester="emptySemester"
+          >
+            No semester selected
+          </div>
+
           <div
             class="alert alert-success"
             role="alert"
@@ -487,13 +497,7 @@ export default {
     duplicatesError: false,
     emptyField: false,
     pageSaved: false,
-
-    // logs: {
-    //   deletedRow: [],
-    //   insertedRow: [],
-    //   updatedRow: []
-    // }
-
+    emptySemester: false,
     logs: []
   }),
 
@@ -763,6 +767,7 @@ export default {
           this.emptyField = false
           this.duplicatesError = false
           this.pageSaved = false
+          this.emptySemester = false
 
           var newModules = {
             asiModuleGroups: JSON.parse(JSON.stringify(this.asiModuleGroups)),
@@ -776,14 +781,21 @@ export default {
           if (newModules.asiProjects[0] !== undefined) {
             newModules.asiProjects[0].firstProjectValues =
               this.asiProjects[0].semester.split(',')
+
+            console.log(newModules.asiProjects[0].firstProjectValues)
           }
           if (newModules.asiProjects[1] !== undefined) {
             newModules.asiProjects[1].secondProjectValues =
               this.asiProjects[1].semester.split(',')
+
+            console.log(newModules.asiProjects[1].secondProjectValues)
           }
           if (newModules.asiMasterProject[0] !== undefined) {
             newModules.asiMasterProject[0].masterProjectValues =
               this.asiMasterProject[0].semester.split(',')
+
+            console.log(newModules.asiMasterProject[0].masterProjectValues)
+            console.log('CONTROLLARE CHE I SEMEStri SIANO VUOTI')
           }
 
           var logs = this.logs.reduce(
