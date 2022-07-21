@@ -472,9 +472,12 @@ select asi_user.id_asi_user, asi_user.name , asi_user.surname, asi_user.email, a
 , adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname
 from dbo.asi_user
 left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
-where asi_user.profile = (select profile_responsible from asi_user where asi_user.id_asi_user = @UserId)
-AND (asi_user.role = 1 OR asi_user.role = 7)
+where asi_user.profile = (select profile_responsible from asi_user where asi_user.id_asi_user = @UserId )
+AND asi_user.role = 1 
                            ";
+
+            Console.WriteLine(currentUser.AsiUserId);
+
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
             SqlDataReader myReader;

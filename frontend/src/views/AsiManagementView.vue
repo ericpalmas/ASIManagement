@@ -628,6 +628,7 @@ export default {
           this.updateAsi({
             newModules
           })
+          //console.log(logs)
           this.sendLogs({ logs })
 
           this.pageSaved = true

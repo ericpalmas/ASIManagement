@@ -584,68 +584,72 @@ export default {
       this.logs.push(deletedElement)
       //this.logs.deletedRow.push(deletedElement)
 
+      console.log(oldModules)
+      console.log(newModules)
+
       var updateElement = []
-      var commonNew = newModules
-        .slice()
-        .filter((item1) =>
-          oldModules.some(
-            (item2) =>
-              item2.code === item1.code || item2.id_module === item1.id_module
-          )
-        )
 
-      var commonOld = oldModules
-        .slice()
-        .filter((item1) =>
-          newModules.some(
-            (item2) =>
-              item2.code === item1.code || item2.id_module === item1.id_module
-          )
-        )
+      for (var i = 0; i < newModules.length; i++) {
+        for (var u = 0; u < oldModules.length; u++) {
+          if (oldModules[u].id_module == newModules[i].id_module) {
 
-      for (var i = 0; i < commonNew.length; i++) {
-        if (commonNew[i].semester !== commonOld[i].semester) {
-          commonNew[i].old_value = commonOld[i].semester
-          commonNew[i].new_value = commonNew[i].semester
-          commonNew[i].field = 1
-          commonNew[i].action = 3
-          updateElement.push(commonNew[i])
-        }
-        if (commonNew[i].ects !== commonOld[i].ects) {
-          commonNew[i].old_value = commonOld[i].ects
-          commonNew[i].new_value = commonNew[i].ects
-          commonNew[i].field = 2
-          commonNew[i].action = 3
+            if (newModules[i].semester !== oldModules[u].semester) {
 
-          updateElement.push(commonNew[i])
-        }
-        if (commonNew[i].responsible !== commonOld[i].responsible) {
-          commonNew[i].old_value = commonOld[i].responsible
-          commonNew[i].new_value = commonNew[i].responsible
-          commonNew[i].field = 3
-          commonNew[i].action = 3
+              const update = {...newModules[i]}   
+              update.old_value = oldModules[u].semester
+              update.new_value = newModules[i].semester
+              update.field = 1
+              update.action = 3
+              updateElement.push(update)          
+            }
 
-          updateElement.push(commonNew[i])
-        }
+            if (newModules[i].ects !== oldModules[u].ects) {
+        
 
-        if (commonNew[i].code !== commonOld[i].code) {
-          commonNew[i].old_value = commonOld[i].code
-          commonNew[i].new_value = commonNew[i].code
-          commonNew[i].field = 4
-          commonNew[i].action = 3
+              const update = {...newModules[i]}   
+              update.old_value = oldModules[u].ects
+              update.new_value = newModules[i].ects
+              update.field = 2
+              update.action = 3
+              updateElement.push(update)          
+            }
+            if (newModules[i].responsible !== oldModules[u].responsible) {
+     
+              const update = {...newModules[i]}   
+              update.old_value = oldModules[u].responsible
+              update.new_value = newModules[i].responsible
+              update.field = 3
+              update.action = 3
+              updateElement.push(update)          
 
-          updateElement.push(commonNew[i])
-        }
-        if (commonNew[i].module_name !== commonOld[i].module_name) {
-          commonNew[i].old_value = commonOld[i].module_name
-          commonNew[i].new_value = commonNew[i].module_name
-          commonNew[i].field = 5
-          commonNew[i].action = 3
-          updateElement.push(commonNew[i])
+            }
+
+            if (newModules[i].code !== oldModules[u].code) {
+                     
+              const update = {...newModules[i]}   
+              update.old_value = oldModules[u].code
+              update.new_value = newModules[i].code
+              update.field = 4
+              update.action = 3
+              updateElement.push(update)          
+
+            }
+            if (newModules[i].module_name !== oldModules[u].module_name) {
+                       
+              const update = {...newModules[i]}   
+              update.old_value = oldModules[u].module_name
+              update.new_value = newModules[i].module_name
+              update.field = 5
+              update.action = 3
+              updateElement.push(update)
+
+            }
+            
+          }
         }
       }
+
       this.logs.push(updateElement)
-      //this.logs.updatedRow.push(updateElement)
     },
 
     calculateLogs: function (newModules, oldModules) {
@@ -660,7 +664,6 @@ export default {
         insertedElement[j].action = 1
       }
       this.logs.push(insertedElement)
-      //this.logs.insertedRow.push(insertedElement)
 
       var deletedElement = oldModules
         .filter(
@@ -782,13 +785,13 @@ export default {
             newModules.asiProjects[0].firstProjectValues =
               this.asiProjects[0].semester.split(',')
 
-            console.log(newModules.asiProjects[0].firstProjectValues)
+            //console.log(newModules.asiProjects[0].firstProjectValues)
           }
           if (newModules.asiProjects[1] !== undefined) {
             newModules.asiProjects[1].secondProjectValues =
               this.asiProjects[1].semester.split(',')
 
-            console.log(newModules.asiProjects[1].secondProjectValues)
+            //console.log(newModules.asiProjects[1].secondProjectValues)
           }
           if (newModules.asiMasterProject[0] !== undefined) {
             newModules.asiMasterProject[0].masterProjectValues =
@@ -806,6 +809,8 @@ export default {
             newModules
           })
           this.sendLogs({ logs })
+
+          //this.sendLogs({ logs })
 
           this.pageSaved = true
           this.removeProfileResponsibleApprovation(this.loggedUser.AsiUserId)

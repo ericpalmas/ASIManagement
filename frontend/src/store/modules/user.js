@@ -48,7 +48,7 @@ const actions = {
       {
         headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
       }
-    )
+    ) 
     commit('setStudentsByProfile', response.data)
   },
   async fetchAdvisors({ commit }) {

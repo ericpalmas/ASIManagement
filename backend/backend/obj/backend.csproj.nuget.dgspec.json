@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\39366\\Desktop\\Master\\individualProjects\\Project2-ISAManegement\\ASIManagement\\backend\\backend\\backend.csproj": {}
+    "C:\\Users\\Hp\\Desktop\\Master\\individualProjects\\Project2-ISAManegement\\ASIManagement\\backend\\backend\\backend.csproj": {}
   },
   "projects": {
-    "C:\\Users\\39366\\Desktop\\Master\\individualProjects\\Project2-ISAManegement\\ASIManagement\\backend\\backend\\backend.csproj": {
+    "C:\\Users\\Hp\\Desktop\\Master\\individualProjects\\Project2-ISAManegement\\ASIManagement\\backend\\backend\\backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\39366\\Desktop\\Master\\individualProjects\\Project2-ISAManegement\\ASIManagement\\backend\\backend\\backend.csproj",
+        "projectUniqueName": "C:\\Users\\Hp\\Desktop\\Master\\individualProjects\\Project2-ISAManegement\\ASIManagement\\backend\\backend\\backend.csproj",
         "projectName": "backend",
-        "projectPath": "C:\\Users\\39366\\Desktop\\Master\\individualProjects\\Project2-ISAManegement\\ASIManagement\\backend\\backend\\backend.csproj",
-        "packagesPath": "C:\\Users\\39366\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\39366\\Desktop\\Master\\individualProjects\\Project2-ISAManegement\\ASIManagement\\backend\\backend\\obj\\",
+        "projectPath": "C:\\Users\\Hp\\Desktop\\Master\\individualProjects\\Project2-ISAManegement\\ASIManagement\\backend\\backend\\backend.csproj",
+        "packagesPath": "C:\\Users\\Hp\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Hp\\Desktop\\Master\\individualProjects\\Project2-ISAManegement\\ASIManagement\\backend\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\39366\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Hp\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -95,7 +95,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.302\\RuntimeIdentifierGraph.json"
         }
       }
     }
