@@ -173,7 +173,9 @@ const actions = {
       profile,
       modality,
       role,
-      advisor
+      advisor,
+      advisor_name,
+      advisor_surname
     }
   ) {
     await axios.post('http://localhost:8732/api/asiuser/update', {
@@ -187,6 +189,8 @@ const actions = {
       Modality: modality,
       Role: role,
       Advisor: advisor
+    }, {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
     })
 
     var newUser = {
@@ -199,7 +203,9 @@ const actions = {
       profile,
       modality,
       role,
-      advisor
+      advisor, 
+      advisor_name,
+      advisor_surname
     }
 
     //if (response.status == 200) {
@@ -386,6 +392,9 @@ const mutations = {
     state.userData[0].id_modality = newUser.modality
     state.userData[0].id_profile = newUser.profile
     state.userData[0].advisor_id = newUser.advisor
+    state.userData[0].advisor_name = newUser.advisor_name
+    state.userData[0].advisor_surname = newUser.advisor_surname
+
     state.userData[0].role = newUser.role
   }
 }

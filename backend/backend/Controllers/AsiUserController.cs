@@ -731,6 +731,8 @@ AND asi_user.role = 1
         }
 
         [HttpPost("api/asiuser/update")]
+        [Authorize(Roles = "Administrator")]
+
         public JsonResult UpdateUser(AsiUser request)
         {
 
@@ -758,7 +760,10 @@ AND asi_user.role = 1
 
             string query = @"";
 
-            query += "UPDATE dbo.asi_user SET asi_user.name = '" + request.AsiUserName + "',asi_user.surname = '" + request.AsiUserSurname + "',asi_user.email = '" + request.AsiUserEmail + "', asi_user.enrollment_number = '" + request.AsiUserEnrollmentNumber + "',asi_user.modality = " + request.Modality + ",asi_user.profile = "+ request.Profile + ",asi_user.advisor = "+ request.Advisor + ",asi_user.role = "+ request.Role + " WHERE asi_user.id_asi_user = " + request.AsiUserId + ";";
+            if(request.Advisor != -1)
+             query += "UPDATE dbo.asi_user SET asi_user.name = '" + request.AsiUserName + "',asi_user.surname = '" + request.AsiUserSurname + "',asi_user.email = '" + request.AsiUserEmail + "', asi_user.enrollment_number = '" + request.AsiUserEnrollmentNumber + "',asi_user.modality = " + request.Modality + ",asi_user.profile = "+ request.Profile + ",asi_user.advisor = "+ request.Advisor + ",asi_user.role = "+ request.Role + " WHERE asi_user.id_asi_user = " + request.AsiUserId + ";";
+            else
+             query += "UPDATE dbo.asi_user SET asi_user.name = '" + request.AsiUserName + "',asi_user.surname = '" + request.AsiUserSurname + "',asi_user.email = '" + request.AsiUserEmail + "', asi_user.enrollment_number = '" + request.AsiUserEnrollmentNumber + "',asi_user.modality = " + request.Modality + ",asi_user.profile = " + request.Profile +  ",asi_user.role = " + request.Role + " WHERE asi_user.id_asi_user = " + request.AsiUserId + ";";
 
             query += "select * from dbo.asi_user";
 

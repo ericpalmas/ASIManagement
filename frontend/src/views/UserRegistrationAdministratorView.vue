@@ -7,51 +7,61 @@
         <h2 class="title">User registration</h2>
         <div class="card-body">
           <div id="cardsContainers" class="container pt-3 pb-4">
+            <div id="errors">
+              <div
+                class="alert alert-danger"
+                role="alert"
+                v-if="confirmedPasswordError"
+                :v-bind:confirmedPasswordError="confirmedPasswordError"
+              >
+                Password and confirmed password are different
+              </div>
+              <div
+                class="alert alert-danger"
+                role="alert"
+                v-if="roleMismatchError"
+                :v-bind:roleMismatchError="roleMismatchError"
+              >
+                A student can't be a profile responsible
+              </div>
+              <div
+                class="alert alert-danger"
+                role="alert"
+                v-if="emptyFieldsError"
+                :v-bind:emptyFieldsError="emptyFieldsError"
+              >
+                Empty field
+              </div>
+              <div
+                class="alert alert-danger"
+                role="alert"
+                v-if="roleEmptyError"
+                :v-bind:roleEmptyError="roleEmptyError"
+              >
+                Role is not defined
+              </div>
+              <div
+                class="alert alert-danger"
+                role="alert"
+                v-if="emailWrongFormatError"
+                :v-bind:emailWrongFormatError="emailWrongFormatError"
+              >
+                Formato email scorretto
+              </div>
+              <div
+                class="alert alert-success"
+                role="alert"
+                v-if="pageSaved"
+                :v-bind:pageSaved="pageSaved"
+              >
+                Page saved correctly
+              </div>
+            </div>
+
             <div class="card">
               <div class="card-body">
                 <form>
                   <div class="row">
-                    <div
-                      class="alert alert-danger"
-                      role="alert"
-                      v-if="confirmedPasswordError"
-                      :v-bind:confirmedPasswordError="confirmedPasswordError"
-                    >
-                      Password and confirmed password are different
-                    </div>
-                    <div
-                      class="alert alert-danger"
-                      role="alert"
-                      v-if="roleMismatchError"
-                      :v-bind:roleMismatchError="roleMismatchError"
-                    >
-                      A student can't be a profile responsible
-                    </div>
-                    <div
-                      class="alert alert-danger"
-                      role="alert"
-                      v-if="emptyFieldsError"
-                      :v-bind:emptyFieldsError="emptyFieldsError"
-                    >
-                      Empty field
-                    </div>
-                    <div
-                      class="alert alert-danger"
-                      role="alert"
-                      v-if="roleEmptyError"
-                      :v-bind:roleEmptyError="roleEmptyError"
-                    >
-                      Role is not defined
-                    </div>
-                    <div
-                      class="alert alert-success"
-                      role="alert"
-                      v-if="pageSaved"
-                      :v-bind:pageSaved="pageSaved"
-                    >
-                      Page saved correctly
-                    </div>
-
                     <div class="col">
                       <!-- <div class="row g-3 align-items-center">
                         <div class="col-auto">
@@ -232,6 +242,45 @@
                         </label>
                         <div class="col-sm-7">
                           <div class="form-check">
+                            <div
+                              v-if="
+                                profileResponsibleOption === false &&
+                                adminOption === false &&
+                                advisorOption === false
+                              "
+                            >
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value=""
+                                id="flexCheckDisabled"
+                                v-model="studentOption"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="flexCheckDefault"
+                              >
+                                Student
+                              </label>
+                            </div>
+                            <div v-else>
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value=""
+                                id="flexCheckDisabled"
+                                disabled
+                              />
+                              <label
+                                class="form-check-label"
+                                for="flexCheckDefault"
+                              >
+                                Student
+                              </label>
+                            </div>
+                          </div>
+
+                          <!-- <div class="form-check">
                             <div v-if="adminOption === false">
                               <input
                                 class="form-check-input"
@@ -263,9 +312,14 @@
                                 Student
                               </label>
                             </div>
-                          </div>
+                          </div> -->
+
                           <div class="form-check">
-                            <div v-if="adminOption === false">
+                            <div
+                              v-if="
+                                adminOption === false && studentOption === false
+                              "
+                            >
                               <input
                                 class="form-check-input"
                                 type="checkbox"
@@ -297,7 +351,11 @@
                             </div>
                           </div>
                           <div class="form-check">
-                            <div v-if="adminOption === false">
+                            <div
+                              v-if="
+                                adminOption === false && studentOption === false
+                              "
+                            >
                               <input
                                 class="form-check-input"
                                 type="checkbox"
@@ -374,10 +432,10 @@
                 </form>
                 <button
                   type="button"
-                  class="btn btn-secondary"
+                  class="btn btn-secondary "
                   @click="registerStudent()"
                 >
-                  Secondary
+                  Register
                 </button>
               </div>
             </div>
@@ -412,6 +470,7 @@ export default {
     roleMismatchError: false,
     roleEmptyError: false,
     confirmedPasswordError: false,
+    emailWrongFormatError: false,
     pageSaved: false,
     studentOption: false,
     advisorOption: false,
@@ -475,21 +534,24 @@ export default {
         this.adminOption
       ) {
         this.role = 6
-      } else if (
-        this.studentOption &&
-        this.advisorOption &&
-        !this.profileResponsibleOption &&
-        !this.adminOption
-      ) {
-        this.role = 7
-      } else if (
-        this.studentOption &&
-        this.advisorOption &&
-        this.profileResponsibleOption &&
-        !this.adminOption
-      ) {
-        this.role = 10
-      } else if (
+      }
+      // else if (
+      //   this.studentOption &&
+      //   this.advisorOption &&
+      //   !this.profileResponsibleOption &&
+      //   !this.adminOption
+      // ) {
+      //   this.role = 7
+      // }
+      //  else if (
+      //   this.studentOption &&
+      //   this.advisorOption &&
+      //   this.profileResponsibleOption &&
+      //   !this.adminOption
+      // ) {
+      //   this.role = 10
+      // }
+      else if (
         !this.studentOption &&
         this.advisorOption &&
         this.profileResponsibleOption &&
@@ -554,28 +616,40 @@ export default {
               this.roleEmptyError = false
               this.defineRole()
 
-              if (confirm('Do you really want to save?')) {
-                const {
-                  name,
-                  surname,
-                  email,
-                  enrollmentNumber,
-                  password,
-                  modality,
-                  role,
-                  profile
-                } = this
-                this.register({
-                  name,
-                  surname,
-                  email,
-                  enrollmentNumber,
-                  password,
-                  modality,
-                  profile,
-                  role
-                })
-                this.pageSaved = true
+              const validateEmail = (email) => {
+                return String(email)
+                  .toLowerCase()
+                  .match(
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                  )
+              }
+              if (!validateEmail(this.email)) {
+                this.emailWrongFormatError = true
+              } else {
+                this.emailWrongFormatError = false
+                if (confirm('Do you really want to save?')) {
+                  const {
+                    name,
+                    surname,
+                    email,
+                    enrollmentNumber,
+                    password,
+                    modality,
+                    role,
+                    profile
+                  } = this
+                  this.register({
+                    name,
+                    surname,
+                    email,
+                    enrollmentNumber,
+                    password,
+                    modality,
+                    profile,
+                    role
+                  })
+                  this.pageSaved = true
+                }
               }
             }
           } else {

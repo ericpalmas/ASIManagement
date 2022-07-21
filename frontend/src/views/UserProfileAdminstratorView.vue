@@ -22,6 +22,8 @@
             >
               Password and confirmed password are different
             </div> -->
+              <div id="errors" class="pt-3 px-4">
+
             <div
               class="alert alert-danger"
               role="alert"
@@ -47,6 +49,16 @@
               Role is not defined
             </div>
             <div
+              class="alert alert-danger"
+              role="alert"
+              v-if="emailWrongFormatError"
+              :v-bind:emailWrongFormatError="emailWrongFormatError"
+            >
+              Formato email scorretto 
+            </div>
+
+            
+            <div
               class="alert alert-success"
               role="alert"
               v-if="pageSaved"
@@ -54,6 +66,9 @@
             >
               Page saved correctly
             </div>
+
+              </div> 
+       
             <div class="col-md-auto"></div>
             <div class="col col-lg-2">
               <button
@@ -264,51 +279,7 @@
                         </div>
                       </td>
                     </tr>
-                    <!-- <tr>
-                      <td style="width: 40 %; padding-left: 4%">
-                        <div style="text-align: left">Istitute:</div>
-                      </td>
-                      <td style="width: 40 %; padding-left: 4%">
-                        <div style="text-align: left">ISIN</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="width: 40 %; padding-left: 4%">
-                        <div style="text-align: left">Istitute director:</div>
-                      </td>
-                      <td style="width: 40 %; padding-left: 4%">
-                        <div style="text-align: left">Prof. Tiziano Leidi</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="width: 40 %; padding-left: 4%">
-                        <div style="text-align: left">Research areas</div>
-                      </td>
-                      <td style="width: 40 %; padding-left: 4%">
-                        <div style="text-align: left">
-                          Xxx (e.g. Bioelectronics)
-                        </div>
-                      </td>
-                    </tr> 
-                    <tr>
-                      <td style="width: 40 %; padding-left: 4%">
-                        <div style="text-align: left">Awarded degree:</div>
-                      </td>
-                      <td style="width: 40 %; padding-left: 4%">
-                        <div style="text-align: left">
-                          Master of Science in Engineering with specialty in
-                          Computer Engineering
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="width: 40 %; padding-left: 4%">
-                        <div style="text-align: left">Start of program:</div>
-                      </td>
-                      <td style="width: 40 %; padding-left: 4%">
-                        <div style="text-align: left">September 14, 2020</div>
-                      </td>
-                    </tr>-->
+                
                     <tr v-if="user.advisor_id !== null">
                       <td style="width: 40 %; padding-left: 4%">
                         <div style="text-align: left">Student’s advisor:</div>
@@ -318,7 +289,7 @@
                           {{ user.advisor_name }} {{ user.advisor_surname }}
                         </div> -->
                         <div
-                          v-if="!edit"
+                          v-if="!edit && user.advisor_id !== null"
                           style="text-align: left"
                           id="studentAdvisor"
                         >
@@ -329,7 +300,7 @@
                             style="width: 40%"
                             class="form-select form-select-sm"
                             aria-label=".form-select-sm example"
-                            @change="onChangeAdvisor($event)"
+                            @change="onChangeAdvisor($event, advisor)"
                           >
                             <option
                               v-for="advisor in advisors"
@@ -499,7 +470,9 @@
                         </div>
                         <div v-else class="col-sm-7">
                           <div class="form-check">
-                            <div v-if="adminOption === false">
+                            <div v-if=" profileResponsibleOption === false &&
+                                adminOption === false &&
+                                advisorOption === false">
                               <input
                                 class="form-check-input"
                                 type="checkbox"
@@ -532,7 +505,7 @@
                             </div>
                           </div>
                           <div class="form-check">
-                            <div v-if="adminOption === false">
+                            <div v-if="adminOption === false && studentOption === false">
                               <input
                                 class="form-check-input"
                                 type="checkbox"
@@ -564,7 +537,7 @@
                             </div>
                           </div>
                           <div class="form-check">
-                            <div v-if="adminOption === false">
+                            <div v-if="adminOption === false && studentOption === false">
                               <input
                                 class="form-check-input"
                                 type="checkbox"
@@ -797,6 +770,7 @@ export default {
     roleMismatchError: false,
     roleEmptyError: false,
     confirmedPasswordError: false,
+    emailWrongFormatError: false,
     pageSaved: false,
     studentOption: false,
     advisorOption: false,
@@ -840,12 +814,12 @@ export default {
       this.advisor = e.target.value
     },
     updateUserProfile: function () {
-      console.log('SURNAME: ' + this.userData[0].student_surname)
-      console.log('NAME: ' + this.userData[0].student_name)
-      console.log('EMAIL: ' + this.userData[0].student_email)
-      console.log(
-        'ENROLLMENT NUMBER: ' + this.userData[0].student_enrollment_number
-      )
+      // console.log('SURNAME: ' + this.userData[0].student_surname)
+      // console.log('NAME: ' + this.userData[0].student_name)
+      // console.log('EMAIL: ' + this.userData[0].student_email)
+      // console.log(
+      //   'ENROLLMENT NUMBER: ' + this.userData[0].student_enrollment_number
+      // )
 
       if (
         this.studentOption &&
@@ -911,12 +885,15 @@ export default {
         this.profile !== -1 ? this.profile : this.userData[0].id_profile
       var newAdvisor =
         this.advisor !== -1 ? this.advisor : this.userData[0].advisor_id
+      if(this.userData[0].advisor_id === null){
+        newAdvisor = -1
+      }
       var newRole = this.role !== -1 ? this.role : this.userData[0].role
 
-      console.log('MODALITY: ' + newModality)
-      console.log('PROFILE: ' + newProfile)
-      console.log('ADVISOR: ' + newAdvisor)
-      console.log('ROLE: ' + newRole)
+      // console.log('MODALITY: ' + newModality)
+      // console.log('PROFILE: ' + newProfile)
+      // console.log('ADVISOR: ' + newAdvisor)
+      // console.log('ROLE: ' + newRole)
 
       if (
         this.studentOption === true &&
@@ -954,20 +931,36 @@ export default {
             this.roleEmptyError = true
           } else {
             this.roleEmptyError = false
-            //this.defineRole()
 
-            if (confirm('Do you really want to save?')) {
-              // const {
-              //   name,
-              //   surname,
-              //   email,
-              //   enrollmentNumber,
-              //   password,
-              //   modality,
-              //   role,
-              //   profile
-              // } = this
 
+            const validateEmail = (email) => {
+              return String(email)
+                    .toLowerCase()
+                    .match(
+                       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                );
+             };
+             if(!validateEmail(this.userData[0].student_email)){
+                this.emailWrongFormatError = true
+
+             } else {
+                this.emailWrongFormatError = false
+  if (confirm('Do you really want to save?')) {
+              
+              console.log({
+                id: this.$route.params.userId,
+                name: this.userData[0].student_name,
+                surname: this.userData[0].student_surname,
+                email: this.userData[0].student_email,
+                enrollmentNumber: this.userData[0].student_enrollment_number,
+                modality: newModality,
+                profile: newProfile,
+                role: newRole,
+                advisor: newAdvisor,
+                advisor_name: newAdvisor != -1 ? this.advisors.find(x => x.id_asi_user === parseInt(newAdvisor)).name : "",
+                advisor_surname: newAdvisor != -1 ? this.advisors.find(x => x.id_asi_user === parseInt(newAdvisor)).surname : "",
+              })
+ 
               this.updateUser({
                 id: this.$route.params.userId,
                 name: this.userData[0].student_name,
@@ -977,11 +970,19 @@ export default {
                 //   password,
                 modality: newModality,
                 profile: newProfile,
-                role: newRole,
-                advisor: newAdvisor
+                role: newRole,    
+                advisor: newAdvisor,
+                advisor_name: newAdvisor != -1 ? this.advisors.find(x => x.id_asi_user === parseInt(newAdvisor)).name : "",
+                advisor_surname: newAdvisor != -1 ? this.advisors.find(x => x.id_asi_user === parseInt(newAdvisor)).surname : "",
               })
+
+           
               this.edit = !this.edit
             }
+
+             }
+
+          
           }
           // } else {
           //   this.confirmedPasswordError = true
