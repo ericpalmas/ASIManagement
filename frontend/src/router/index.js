@@ -20,6 +20,9 @@ import AsiSummaryPreviewView from '../views/AsiSummaryPreviewView'
 import LogsAdministratorView from '../views/LogsAdministratorView'
 import LogsAdvisorView from '../views/LogsAdvisorView'
 import LogsProfileResponsibleView from '../views/LogsProfileResponsibleView'
+import ModuleListAdministratorView from '../views/ModuleListAdministratorView'
+import TutorListAdministratorView from '../views/TutorListAdministratorView'
+
 
 const routes = [
   {
@@ -128,6 +131,16 @@ const routes = [
     path: '/LogsProfileResponsible',
     name: 'LogsProfileResponsibleView',
     component: LogsProfileResponsibleView
+  },
+  {
+    path: '/ModuleListAdministrator',
+    name: 'ModuleListAdministratorView',
+    component: ModuleListAdministratorView
+  },
+  {
+    path: '/TutorListAdministrator',
+    name: 'TutorListAdministratorView',
+    component: TutorListAdministratorView
   }
 ]
 

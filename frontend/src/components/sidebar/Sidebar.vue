@@ -151,11 +151,30 @@ export default {
 
       <SidebarLink
         v-if="loggedUser.Role === 'Administrator'"
+        to="/TutorListAdministrator"
+        icon="fas fa-users"
+      >
+        Tutors
+      </SidebarLink>
+
+      <SidebarLink
+        v-if="loggedUser.Role === 'Administrator'"
+        to="/ModuleListAdministrator"
+        icon="fas fa-users"
+      >
+        Modules
+      </SidebarLink>
+
+      <SidebarLink
+        v-if="loggedUser.Role === 'Administrator'"
         to="/UserRegistrationAdministrator"
         icon="fas fa-user-plus"
       >
         Add user
       </SidebarLink>
+
+
+
       <SidebarLink
         v-if="
           loggedUser.Role === 'Student' ||

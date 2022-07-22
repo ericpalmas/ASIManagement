@@ -109,7 +109,7 @@
                     <tr v-if="user.student_surname !== null">
                       <td style="width: 40 %; padding-left: 4%">
                         <div style="text-align: left">
-                          Student’s family name(s):
+                          Surname
                         </div>
                       </td>
                       <td style="width: 40 %; padding-left: 4%">
@@ -133,7 +133,7 @@
                     <tr v-if="user.student_name !== null">
                       <td style="width: 40 %; padding-left: 4%">
                         <div style="text-align: left">
-                          Student’s given name(s):
+                          Name:
                         </div>
                       </td>
                       <td style="width: 40 %; padding-left: 4%">

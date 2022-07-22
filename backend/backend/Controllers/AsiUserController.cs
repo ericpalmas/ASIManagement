@@ -179,6 +179,33 @@ select id_asi_user, name, surname, email, modality, profile, advisor, enrollment
             return new JsonResult(table);
         }
 
+        [HttpGet("api/asiuser/tutors")]
+        [Authorize(Roles = "Advisor, StudentAdvisor, Student, Administrator")]
+        public JsonResult GetTutors()
+        {
+
+            string query = @"                          
+                  select id_asi_user, name, surname, email, modality, profile, advisor, enrollment_number, role, expired, profile_responsible from dbo.asi_user where (asi_user.role = 11 OR  asi_user.role = 12) AND asi_user.expired is null";
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
         [HttpPost("api/asiuser/followStudent/{id}")]
         [Authorize(Roles = "Advisor, StudentAdvisor, Administrator")]
         public JsonResult followStudent(AsiUser advisor, int id)
