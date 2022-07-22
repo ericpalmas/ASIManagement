@@ -38,8 +38,7 @@ namespace backend.Controllers
         public JsonResult Get()
         {
             string query = @" 
-                            select id_asi_user, name, surname, email, role from 
-                            dbo.asi_user
+                        select id_asi_user, name, surname, email, role  from  dbo.asi_user where expired is null
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -67,9 +66,10 @@ namespace backend.Controllers
         {
 
             string query = @"                          
-                 select asi_user.id_asi_user, asi_user.name, asi_user.surname,asi_user.email,asi_user.advisor, user_type.id_user_type,user_type.name as user_type_name from asi_user 
-                 inner join user_type on asi_user.role = user_type.id_user_type
-                 where (asi_user.advisor is NULL) AND user_type.id_user_type = 1
+                  select asi_user.id_asi_user, asi_user.name, asi_user.surname,asi_user.email,asi_user.advisor, asi_user.expired, 
+                  user_type.id_user_type,user_type.name as user_type_name from asi_user 
+                  inner join user_type on asi_user.role = user_type.id_user_type
+                  where (asi_user.advisor is NULL AND asi_user.expired is null) AND user_type.id_user_type = 1 
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -97,7 +97,7 @@ namespace backend.Controllers
         {
 
             string query = @"                          
-select id_asi_user, name, surname, email, modality, profile, advisor, enrollment_number, role, profile_responsible from dbo.asi_user where asi_user.role = 5 OR  asi_user.role = 7 OR  asi_user.role = 9 OR  asi_user.role = 10
+select id_asi_user, name, surname, email, modality, profile, advisor, enrollment_number, role, expired, profile_responsible from dbo.asi_user where (asi_user.role = 5 OR  asi_user.role = 7 OR  asi_user.role = 9 OR  asi_user.role = 10) AND asi_user.expired is null
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -125,9 +125,9 @@ select id_asi_user, name, surname, email, modality, profile, advisor, enrollment
         {
 
             string query = @"                          
-select id_asi_user, asi_user.name, surname, email, modality, profile, advisor, enrollment_number, role, profile.id_profile as profile_responsible_id,  profile.name as profile_responsible_name from dbo.asi_user 
-left outer join dbo.profile on profile.id_profile = asi_user.profile_responsible
-where asi_user.role = 8 OR  asi_user.role = 9 OR  asi_user.role = 10
+              select id_asi_user, asi_user.name, surname, email, modality, profile, advisor, enrollment_number, role, asi_user.expired, profile.id_profile as profile_responsible_id,  profile.name as profile_responsible_name from dbo.asi_user 
+              left outer join dbo.profile on profile.id_profile = asi_user.profile_responsible
+              where (asi_user.role = 8 OR  asi_user.role = 9 OR  asi_user.role = 10) AND asi_user.expired is null
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -155,9 +155,9 @@ where asi_user.role = 8 OR  asi_user.role = 9 OR  asi_user.role = 10
         {
 
             string query = @"                                          
-select asi_user.id_asi_user,  asi_user.name,  asi_user.surname,  asi_user.email,  asi_user.modality,  asi_user.profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname,  asi_user.enrollment_number,  asi_user.role from asi_user
-left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
-where asi_user.role = 1 OR  asi_user.role = 7
+              select asi_user.id_asi_user,  asi_user.name,  asi_user.surname,  asi_user.email,  asi_user.modality,  asi_user.profile, asi_user.expired, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname,  asi_user.enrollment_number,  asi_user.role from asi_user
+              left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
+              where (asi_user.role = 1 OR  asi_user.role = 7) AND asi_user.expired is null
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -189,9 +189,10 @@ where asi_user.role = 1 OR  asi_user.role = 7
                        UPDATE asi_user
                        SET  asi_user.advisor = @AdvisorId
                        WHERE asi_user.id_asi_user = @StudentId;
-                       select asi_user.id_asi_user, asi_user.name, asi_user.surname,asi_user.email,asi_user.advisor, user_type.id_user_type,user_type.name as user_type_name from asi_user 
+                       select asi_user.id_asi_user, asi_user.name, asi_user.surname,asi_user.email,asi_user.advisor, asi_user.expired, user_type.id_user_type,user_type.name as user_type_name from asi_user 
                        inner join user_type on asi_user.role = user_type.id_user_type
-";
+		               where asi_user.expired is null";
+
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
             SqlDataReader myReader;
@@ -224,9 +225,10 @@ where asi_user.role = 1 OR  asi_user.role = 7
                        UPDATE asi_user
                        SET  asi_user.advisor = null
                        WHERE asi_user.id_asi_user = @StudentId;
-                       select asi_user.id_asi_user, asi_user.name, asi_user.surname,asi_user.email,asi_user.advisor, user_type.id_user_type,user_type.name as user_type_name from asi_user 
+                       select asi_user.id_asi_user, asi_user.name, asi_user.surname,asi_user.email,asi_user.advisor, asi_user.expired, user_type.id_user_type,user_type.name as user_type_name from asi_user 
                        inner join user_type on asi_user.role = user_type.id_user_type
-                           ";
+	                   where asi_user.expired is null";
+
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
             SqlDataReader myReader;
@@ -257,9 +259,9 @@ where asi_user.role = 1 OR  asi_user.role = 7
 
 
             string query = @" 
-                  select asi_user.id_asi_user,  asi_user.name,  asi_user.surname,  asi_user.email,  asi_user.modality,  asi_user.profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname,  asi_user.enrollment_number,  asi_user.role from asi_user
-                  left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
-                  where asi_user.advisor = @UserId
+              select asi_user.id_asi_user,  asi_user.name,  asi_user.surname,  asi_user.email, asi_user.expired,  asi_user.modality,  asi_user.profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname,  asi_user.enrollment_number,  asi_user.role from asi_user
+              left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
+              where asi_user.advisor = @UserId AND asi_user.expired is null
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -289,10 +291,10 @@ where asi_user.role = 1 OR  asi_user.role = 7
         {
            
             string query = @" 
-                  select asi_user.id_asi_user,  asi_user.name,  asi_user.surname,  asi_user.email,  asi_user.modality,  asi_user.profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname,  asi_user.enrollment_number,  asi_user.role from asi_user
+                  select asi_user.id_asi_user,  asi_user.name,  asi_user.surname,  asi_user.email,asi_user.expired,  asi_user.modality,  asi_user.profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname,  asi_user.enrollment_number,  asi_user.role from asi_user
                   left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
-                  where asi_user.advisor = @UserId
-                           ";
+                  where asi_user.advisor = @UserId AND asi_user.expired is null";
+
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
             SqlDataReader myReader;
@@ -315,44 +317,6 @@ where asi_user.role = 1 OR  asi_user.role = 7
         }
 
 
-
-
-        //mettere un controllo nel caso lo studente non abbia un advisor nella query
-        /*[HttpGet("api/asiuser/{id}")]
-        [Authorize(Roles = "Student")]
-        public JsonResult GetAdministrativeData(int id)
-        {
-
-
-            string query = @" 
-                            WITH student AS (select asi_user.id_asi_user as student_id, asi_user.enrollment_number as student_enrollment_number, asi_user.name as student_name, asi_user.surname as student_surname , advisor as id_advisor, modality.name as modality, profile.name as profile  from dbo.asi_user
-                            inner join modality on modality.id_modality = asi_user.modality
-                            inner join profile on profile.id_profile = asi_user.profile
-                            where id_asi_user = @UserId) 
-                            SELECT  student.student_id , student.student_name, student.student_surname, student.student_enrollment_number as student_enrollment_number, student.modality, student.profile, asi_user.id_asi_user as advisor_id, asi_user.name as advisor_name, asi_user.surname as advisor_surname  FROM  student
-                            left outer join dbo.asi_user on student.id_advisor = asi_user.id_asi_user
-                           ";
-            DataTable table = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
-            SqlDataReader myReader;
-            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-            {
-                Console.WriteLine("SQL connection");
-                Console.WriteLine(myCon);
-                myCon.Open();
-                using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                {
-                    myCommand.Parameters.AddWithValue("@UserId", id);
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
-                }
-            }
-
-            return new JsonResult(table);
-        }*/
-
         [HttpGet("api/asiuser/adminData")]
         [Authorize(Roles = "Advisor,Student, StudentAdvisor, Administrator,ProfileResponsible,ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor ")]
         public JsonResult GetAdministrativeData()
@@ -361,12 +325,12 @@ where asi_user.role = 1 OR  asi_user.role = 7
 
 
             string query = @" 
-select asi_user.id_asi_user as student_id, asi_user.name as student_name,  asi_user.surname as student_surname, asi_user.enrollment_number as student_enrollment_number,  asi_user.email as student_email,  modality.name as modality, profile.name as profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname,  asi_user.enrollment_number,  asi_user.role, profile_resp.name as profile_responsible_id, profile_resp.name as profile_responsible_name , profile_resp.surname as profile_responsible_surname  from asi_user
-left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
-left outer join modality on modality.id_modality = asi_user.modality
-left outer join profile on profile.id_profile = asi_user.profile
-left outer join asi_user as profile_resp on asi_user.profile = profile_resp.profile_responsible
-where asi_user.id_asi_user = @UserId
+               select asi_user.id_asi_user as student_id, asi_user.name as student_name,  asi_user.surname as student_surname, asi_user.enrollment_number as student_enrollment_number,  asi_user.email as student_email,asi_user.expired,  modality.name as modality, profile.name as profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname,  asi_user.enrollment_number,  asi_user.role, profile_resp.name as profile_responsible_id, profile_resp.name as profile_responsible_name , profile_resp.surname as profile_responsible_surname  from asi_user
+               left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
+               left outer join modality on modality.id_modality = asi_user.modality
+               left outer join profile on profile.id_profile = asi_user.profile
+               left outer join asi_user as profile_resp on asi_user.profile = profile_resp.profile_responsible
+               where asi_user.id_asi_user = @UserId AND asi_user.expired is null
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -396,13 +360,13 @@ where asi_user.id_asi_user = @UserId
 
 
             string query = @" 
-select asi_user.id_asi_user as student_id, asi_user.name as student_name,  asi_user.surname as student_surname, asi_user.enrollment_number as student_enrollment_number,  asi_user.email as student_email,  modality.name as modality, modality.id_modality as id_modality, profile.name as profile, profile.id_profile as id_profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname, asi_user.role, user_type.name as role_name, profile_resp.name as profile_responsible_id, profile_resp.name as profile_responsible_name , profile_resp.surname as profile_responsible_surname  from asi_user
-left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
-left outer join modality on modality.id_modality = asi_user.modality
-left outer join profile on profile.id_profile = asi_user.profile
-left outer join asi_user as profile_resp on asi_user.profile = profile_resp.profile_responsible
-left outer join user_type on user_type.id_user_type = asi_user.role
-where asi_user.id_asi_user = @UserId
+              select asi_user.id_asi_user as student_id, asi_user.name as student_name,  asi_user.surname as student_surname, asi_user.enrollment_number as student_enrollment_number, asi_user.expired,  asi_user.email as student_email,  modality.name as modality, modality.id_modality as id_modality, profile.name as profile, profile.id_profile as id_profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname, asi_user.role, user_type.name as role_name, profile_resp.name as profile_responsible_id, profile_resp.name as profile_responsible_name , profile_resp.surname as profile_responsible_surname  from asi_user
+              left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
+              left outer join modality on modality.id_modality = asi_user.modality
+              left outer join profile on profile.id_profile = asi_user.profile
+              left outer join asi_user as profile_resp on asi_user.profile = profile_resp.profile_responsible
+              left outer join user_type on user_type.id_user_type = asi_user.role
+              where asi_user.id_asi_user = @UserId AND asi_user.expired is null
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -425,41 +389,7 @@ where asi_user.id_asi_user = @UserId
             return new JsonResult(table);
         }
 
-        /*  [HttpGet("api/asiuser/type/{id}")]
-          [Authorize(Roles = "Student")]
-          public JsonResult GetUserType(int id)
-          {
-              string query = @" 
-                              select * from dbo.user_user_type 
-                              inner join asi_user on asi_user.id_asi_user = user_user_type.asi_user
-                              inner join user_type on user_type.id_user_type = user_user_type.user_type
-                              where user_user_type.asi_user = @UserId
-                             ";
-              DataTable table = new DataTable();
-              string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
-              SqlDataReader myReader;
-              using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-              {
-                  Console.WriteLine("SQL connection");
-                  Console.WriteLine(myCon);
-                  myCon.Open();
-                  using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                  {
-                      myCommand.Parameters.AddWithValue("@UserId", id);
-
-                      myReader = myCommand.ExecuteReader();
-                      table.Load(myReader);
-                      myReader.Close();
-                      myCon.Close();
-                  }
-              }
-
-              return new JsonResult(table);
-          }*/
-
-        /* select* from dbo.asi_user
-       where profile = (select profile from asi_user where asi_user.id_asi_user = @UserId)
-       AND(role = 1 OR role = 7) */
+   
 
         [HttpGet("api/asiuser/studentsByProfile")]
         [Authorize(Roles = "ProfileResponsible, ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor")]
@@ -468,13 +398,12 @@ where asi_user.id_asi_user = @UserId
             var currentUser = GetCurrentUser();
 
             string query = @"                    
-select asi_user.id_asi_user, asi_user.name , asi_user.surname, asi_user.email, asi_user.modality, asi_user.profile, asi_user.enrollment_number, asi_user.role, asi_user.profile_responsible 
-, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname
-from dbo.asi_user
-left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
-where asi_user.profile = (select profile_responsible from asi_user where asi_user.id_asi_user = @UserId )
-AND asi_user.role = 1 
-                           ";
+              select asi_user.id_asi_user, asi_user.name , asi_user.surname, asi_user.email, asi_user.modality, asi_user.profile, asi_user.enrollment_number, asi_user.role, asi_user.profile_responsible 
+              , adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname
+              from dbo.asi_user
+              left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
+              where asi_user.profile = (select profile_responsible from asi_user where asi_user.id_asi_user = @UserId )
+              AND asi_user.role = 1 AND asi_user.expired is null";
 
             Console.WriteLine(currentUser.AsiUserId);
 
@@ -505,14 +434,9 @@ AND asi_user.role = 1
         {
             var user = Authenticate(userLogin);
 
-
-
             if (user != null)
             {
                 var token = Generate(user);
-                //user.Token = token;
-
-                //return new JsonResult("Token");
 
                 JsonResult userFound = new JsonResult( new { Token = token, Message = "User found", AsiUserId = user.AsiUserId, AsiUserName = user.AsiUserName, AsiUserSurname = user.AsiUserSurname, AsiUserEmail = user.AsiUserEmail, Role = user.Role });
                 userFound.StatusCode = 200;
@@ -520,7 +444,6 @@ AND asi_user.role = 1
 
             }
 
-            //return NotFound("User not found");
             JsonResult userNotFound = new JsonResult(new { Message = "User not found" });
             userNotFound.StatusCode = 404;
             return userNotFound;
@@ -538,8 +461,6 @@ AND asi_user.role = 1
                 new Claim(ClaimTypes.Surname, user.AsiUserSurname),
                 new Claim(ClaimTypes.Email, user.AsiUserEmail),
                 new Claim(ClaimTypes.Role, user.Role),
-                //new Claim(ClaimTypes.Actor, user.Profile.ToString()),
-
             };
 
             var token = new JwtSecurityToken(_configuration["Jwt:Issuer"],
@@ -574,10 +495,6 @@ AND asi_user.role = 1
                                 AsiUserEmail = sdr["email"].ToString(),
                                 AsiUserPassword = sdr["password"].ToString(),
                                 Role = sdr["role"].ToString(),
-
-
-                                //Profile = Convert.ToInt32(sdr["profile"]),
-
                             }); ; ;
                         }
                     }
@@ -598,7 +515,7 @@ AND asi_user.role = 1
         }
 
 
-        [HttpGet("api/asiuser/admins")]
+        /*[HttpGet("api/asiuser/admins")]
         [Authorize(Roles = "Administrator")]
         public IActionResult AdminsEndpoint()
         {
@@ -634,6 +551,13 @@ AND asi_user.role = 1
 
             return Ok($"Hi {currentUser.AsiUserName} {currentUser.AsiUserSurname}, you are an {currentUser.Role}, Email: {currentUser.AsiUserEmail}, Id:  {currentUser.AsiUserId} ");
         }
+        
+        [HttpGet("api/asiuser/Public")]
+        public IActionResult Public()
+        {
+            return Ok("Hi, you're on public property");
+        }
+         */
 
         [HttpGet("api/asiuser/current")]
         [Authorize(Roles = "Advisor,Student, StudentAdvisor, Administrator,ProfileResponsible,ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor ")]
@@ -655,12 +579,7 @@ AND asi_user.role = 1
             }
         }
 
-        [HttpGet("api/asiuser/Public")]
-        public IActionResult Public()
-        {
-            return Ok("Hi, you're on public property");
-        }
-
+    
         private AsiUser GetCurrentUser()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -736,7 +655,9 @@ AND asi_user.role = 1
         public JsonResult UpdateUser(AsiUser request)
         {
 
-            /*string encryptedPassword = BCrypt.Net.BCrypt.HashPassword(request.AsiUserPassword);
+            /* capire se devo poter modificare anche la password degli utenti
+             * 
+             * string encryptedPassword = BCrypt.Net.BCrypt.HashPassword(request.AsiUserPassword);
 
             string query = "DECLARE @USER_ID int; DECLARE @STATE_ID int; DECLARE @ASI_ID int;";
 
@@ -765,7 +686,7 @@ AND asi_user.role = 1
             else
              query += "UPDATE dbo.asi_user SET asi_user.name = '" + request.AsiUserName + "',asi_user.surname = '" + request.AsiUserSurname + "',asi_user.email = '" + request.AsiUserEmail + "', asi_user.enrollment_number = '" + request.AsiUserEnrollmentNumber + "',asi_user.modality = " + request.Modality + ",asi_user.profile = " + request.Profile +  ",asi_user.role = " + request.Role + " WHERE asi_user.id_asi_user = " + request.AsiUserId + ";";
 
-            query += "select * from dbo.asi_user";
+            query += "select * from dbo.asi_user where expired is null;";
 
 
             DataTable table = new DataTable();
@@ -786,51 +707,29 @@ AND asi_user.role = 1
             return new JsonResult(table);
         }
 
-        /*[HttpDelete("api/asiuser/students/{id}")]
-        [Authorize(Roles = "Administrator")]
-        public JsonResult DeleteStudent(int id)
-        {
-
-            string query = @"DELETE FROM dbo.asi_user WHERE asi_user.id_asi_user = @UserId;";
-
-            query += "select id_asi_user, name, surname, email, modality, profile, advisor, enrollment_number, role, profile_responsible from dbo.asi_user where asi_user.role = 1 OR  asi_user.role = 7";
-            
-            DataTable table = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
-            SqlDataReader myReader;
-            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-            {
-                Console.WriteLine("SQL connection");
-                Console.WriteLine(myCon);
-                myCon.Open();
-                using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                {
-                    myCommand.Parameters.AddWithValue("@UserId", id);
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
-                }
-            }
-
-            return new JsonResult(table);
-        }*/
+    
 
         [HttpDelete("api/asiuser/{id}")]
         [Authorize(Roles = "Administrator")]
         public JsonResult DeleteUser(int id)
         {
 
-
-            //string query = @"DELETE FROM dbo.asi_user WHERE asi_user.id_asi_user = @UserId;";
-            string query = "DELETE FROM dbo.asi_module WHERE asi_module_group in (select id_asi_module_group from dbo.asi_module_group where asi in(select asi.id_asi from dbo.asi where asi.asi_user = @UserId))";
+            /*string query = "DELETE FROM dbo.asi_module WHERE asi_module_group in (select id_asi_module_group from dbo.asi_module_group where asi in(select asi.id_asi from dbo.asi where asi.asi_user = @UserId))";
 
             query += "DELETE FROM dbo.asi_module_group WHERE asi_module_group.asi in (select asi.id_asi from dbo.asi where asi.asi_user = @UserId);";
 
             query += "DELETE FROM dbo.asi WHERE asi.asi_user = @UserId;";
 
-            query += "DELETE FROM dbo.asi_user WHERE asi_user.id_asi_user = @UserId;";
+            query += "DELETE FROM dbo.asi_user WHERE asi_user.id_asi_user = @UserId;";*/
 
+            string query = "UPDATE dbo.asi_module SET expired = GETDATE() WHERE asi_module_group in (select id_asi_module_group from dbo.asi_module_group where asi in(select asi.id_asi from dbo.asi where asi.asi_user = @UserId));";
+
+            query += "UPDATE dbo.asi_module_group SET expired = GETDATE() WHERE asi_module_group.asi in (select asi.id_asi from dbo.asi where asi.asi_user = @UserId);";
+
+            query += "UPDATE dbo.asi SET expired = GETDATE() WHERE asi.asi_user = @UserId;";
+
+            query += "UPDATE dbo.asi_user SET expired = GETDATE() WHERE asi_user.id_asi_user = @UserId;";
+            
 
 
             DataTable table = new DataTable();
@@ -854,57 +753,5 @@ AND asi_user.role = 1
             return new JsonResult(table);
         }
 
-        /*private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
-
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512(passwordSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(passwordHash);
-            }
-        }*/
-
-
-        /*private string EncodePasswordToBase64(string password)
-        {
-            try
-            {
-                byte[] encData_byte = new byte[password.Length];
-                encData_byte = System.Text.Encoding.UTF8.GetBytes(password);
-                string encodedData = Convert.ToBase64String(encData_byte);
-                return encodedData;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error in base64Encode" + ex.Message);
-            }
-        }
-        private string DecodeFrom64(string encodedData)
-        {
-            System.Text.UTF8Encoding encoder = new System.Text.UTF8Encoding();
-            System.Text.Decoder utf8Decode = encoder.GetDecoder();
-            byte[] todecode_byte = Convert.FromBase64String(encodedData);
-            int charCount = utf8Decode.GetCharCount(todecode_byte, 0, todecode_byte.Length);
-            char[] decoded_char = new char[charCount];
-            utf8Decode.GetChars(todecode_byte, 0, todecode_byte.Length, decoded_char, 0);
-            string result = new String(decoded_char);
-            return result;
-        }*/
-
-
-
     }
-
-
-
-
-
 }

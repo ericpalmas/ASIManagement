@@ -26,7 +26,8 @@ namespace backend.Controllers
         [Authorize(Roles = "Student, StudentAdvisor, ProfileResponsibleStudentAdvisor")]
         public JsonResult GetModuleYears()
         {
-            string query = @"select distinct(start_year), end_year from calendar_module;";
+            string query = @"select distinct(start_year), end_year from calendar_module where calendar_module.expired is null;";
+
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
             SqlDataReader myReader;

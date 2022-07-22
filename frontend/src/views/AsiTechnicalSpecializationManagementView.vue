@@ -592,59 +592,48 @@ export default {
       for (var i = 0; i < newModules.length; i++) {
         for (var u = 0; u < oldModules.length; u++) {
           if (oldModules[u].id_module == newModules[i].id_module) {
-
             if (newModules[i].semester !== oldModules[u].semester) {
-
-              const update = {...newModules[i]}   
+              const update = { ...newModules[i] }
               update.old_value = oldModules[u].semester
               update.new_value = newModules[i].semester
               update.field = 1
               update.action = 3
-              updateElement.push(update)          
+              updateElement.push(update)
             }
 
             if (newModules[i].ects !== oldModules[u].ects) {
-        
-
-              const update = {...newModules[i]}   
+              const update = { ...newModules[i] }
               update.old_value = oldModules[u].ects
               update.new_value = newModules[i].ects
               update.field = 2
               update.action = 3
-              updateElement.push(update)          
+              updateElement.push(update)
             }
             if (newModules[i].responsible !== oldModules[u].responsible) {
-     
-              const update = {...newModules[i]}   
+              const update = { ...newModules[i] }
               update.old_value = oldModules[u].responsible
               update.new_value = newModules[i].responsible
               update.field = 3
               update.action = 3
-              updateElement.push(update)          
-
+              updateElement.push(update)
             }
 
             if (newModules[i].code !== oldModules[u].code) {
-                     
-              const update = {...newModules[i]}   
+              const update = { ...newModules[i] }
               update.old_value = oldModules[u].code
               update.new_value = newModules[i].code
               update.field = 4
               update.action = 3
-              updateElement.push(update)          
-
+              updateElement.push(update)
             }
             if (newModules[i].module_name !== oldModules[u].module_name) {
-                       
-              const update = {...newModules[i]}   
+              const update = { ...newModules[i] }
               update.old_value = oldModules[u].module_name
               update.new_value = newModules[i].module_name
               update.field = 5
               update.action = 3
               updateElement.push(update)
-
             }
-            
           }
         }
       }
@@ -739,82 +728,83 @@ export default {
         this.emptyField = true
         this.pageSaved = false
       } else {
-        if (confirm('Do you really want to save?')) {
-          console.log('VECCHI')
-          console.log(this.oldProjects)
-          console.log(this.oldAsiSupplementaryModules)
-          console.log(this.oldAsiMasterProject)
+        var errProjectSemester = this.asiProjects.filter(
+          (elem) => elem.semester === ''
+        )
+        var masterProjectSemester = this.asiMasterProject.filter(
+          (elem) => elem.semester === ''
+        )
+        console.log(errProjectSemester)
 
-          console.log('NUOVI')
-          console.log(this.asiProjects)
-          console.log(this.allSupplementaryModulesAsiModules)
-          console.log(this.asiMasterProject)
-
-          // this.logs.deletedRow = []
-          // this.logs.insertedRow = []
-          // this.logs.updatedRow = []
-
-          this.logs = []
-
-          this.calculateProjectLogs(this.asiProjects, this.oldProjects)
-          this.calculateLogs(
-            this.allSupplementaryModulesAsiModules,
-            this.oldAsiSupplementaryModules
-          )
-          this.calculateProjectLogs(
-            this.asiMasterProject,
-            this.oldAsiMasterProject
-          )
-
-          this.notContiguousError = false
-          this.emptyField = false
-          this.duplicatesError = false
-          this.pageSaved = false
+        if (errProjectSemester.length > 0 || masterProjectSemester.length > 0) 
+          this.emptySemester = true
+        else {
           this.emptySemester = false
 
-          var newModules = {
-            asiModuleGroups: JSON.parse(JSON.stringify(this.asiModuleGroups)),
-            asiProjects: JSON.parse(JSON.stringify(this.asiProjects)),
-            allSupplementaryModulesAsiModules: JSON.parse(
-              JSON.stringify(this.allSupplementaryModulesAsiModules)
-            ),
-            asiMasterProject: JSON.parse(JSON.stringify(this.asiMasterProject))
+          if (confirm('Do you really want to save?')) {
+           
+
+            this.logs = []
+
+            this.calculateProjectLogs(this.asiProjects, this.oldProjects)
+            this.calculateLogs(
+              this.allSupplementaryModulesAsiModules,
+              this.oldAsiSupplementaryModules
+            )
+            this.calculateProjectLogs(
+              this.asiMasterProject,
+              this.oldAsiMasterProject
+            )
+
+            this.notContiguousError = false
+            this.emptyField = false
+            this.duplicatesError = false
+            this.pageSaved = false
+            this.emptySemester = false
+
+            var newModules = {
+              asiModuleGroups: JSON.parse(JSON.stringify(this.asiModuleGroups)),
+              asiProjects: JSON.parse(JSON.stringify(this.asiProjects)),
+              allSupplementaryModulesAsiModules: JSON.parse(
+                JSON.stringify(this.allSupplementaryModulesAsiModules)
+              ),
+              asiMasterProject: JSON.parse(
+                JSON.stringify(this.asiMasterProject)
+              )
+            }
+
+            if (newModules.asiProjects[0] !== undefined) {
+              newModules.asiProjects[0].firstProjectValues =
+                this.asiProjects[0].semester.split(',')
+            }
+            if (newModules.asiProjects[1] !== undefined) {
+              newModules.asiProjects[1].secondProjectValues =
+                this.asiProjects[1].semester.split(',')
+
+            }
+            if (newModules.asiMasterProject[0] !== undefined) {
+              newModules.asiMasterProject[0].masterProjectValues =
+                this.asiMasterProject[0].semester.split(',')
+
+              console.log(newModules.asiMasterProject[0].masterProjectValues)
+              console.log('CONTROLLARE CHE I SEMEStri SIANO VUOTI')
+            }
+
+            var logs = this.logs.reduce(
+              (a, e) => (Array.isArray(e) ? a.concat(e) : a.concat([e])),
+              []
+            )
+
+            this.updateTechnicalAsi({
+              newModules
+            })
+            this.sendLogs({ logs })
+
+            console.log(logs)
+            this.pageSaved = true
+            this.removeProfileResponsibleApprovation(this.loggedUser.AsiUserId)
+            this.removeAdvisorApprovation(this.loggedUser.AsiUserId)
           }
-
-          if (newModules.asiProjects[0] !== undefined) {
-            newModules.asiProjects[0].firstProjectValues =
-              this.asiProjects[0].semester.split(',')
-
-            //console.log(newModules.asiProjects[0].firstProjectValues)
-          }
-          if (newModules.asiProjects[1] !== undefined) {
-            newModules.asiProjects[1].secondProjectValues =
-              this.asiProjects[1].semester.split(',')
-
-            //console.log(newModules.asiProjects[1].secondProjectValues)
-          }
-          if (newModules.asiMasterProject[0] !== undefined) {
-            newModules.asiMasterProject[0].masterProjectValues =
-              this.asiMasterProject[0].semester.split(',')
-
-            console.log(newModules.asiMasterProject[0].masterProjectValues)
-            console.log('CONTROLLARE CHE I SEMEStri SIANO VUOTI')
-          }
-
-          var logs = this.logs.reduce(
-            (a, e) => (Array.isArray(e) ? a.concat(e) : a.concat([e])),
-            []
-          )
-          this.updateTechnicalAsi({
-            newModules
-          })
-          this.sendLogs({ logs })
-
-          //this.sendLogs({ logs })
-
-          this.pageSaved = true
-          this.removeProfileResponsibleApprovation(this.loggedUser.AsiUserId)
-          this.removeAdvisorApprovation(this.loggedUser.AsiUserId)
         }
       }
     },

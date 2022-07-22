@@ -76,7 +76,7 @@ inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id
 inner join module_group on module.module_group = module_group.id_module_group
 left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
-where asi.asi_user =  @UserId AND module.module_group = 4
+where asi.asi_user =  @UserId AND module.module_group = 4 AND asi_module.expired is null
 GROUP BY asi_module.id_asi_module,asi_module.module,asi_module.asi_module_state,asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects,module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user
 ORDER BY asi_module.id_asi_module asc
                            ";

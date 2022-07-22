@@ -62,16 +62,16 @@ namespace backend.Controllers
             var currentUser = GetCurrentUser();
 
             string query = @" 
-                             select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
-from dbo.module
-inner join asi_module on module.id_module = asi_module.module
-inner join asi_user on module.responsible = asi_user.id_asi_user
-inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
-inner join asi on asi.id_asi = asi_module_group.asi
-inner join module_group on module.module_group = module_group.id_module_group
-inner join site on module.site = site.id_site
-where asi.asi_user = @UserId
-                           ";
+              select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state, asi.expired,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
+              from dbo.module
+              inner join asi_module on module.id_module = asi_module.module
+              inner join asi_user on module.responsible = asi_user.id_asi_user
+              inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
+              inner join asi on asi.id_asi = asi_module_group.asi
+              inner join module_group on module.module_group = module_group.id_module_group
+              inner join site on module.site = site.id_site
+              where asi.asi_user = @UserId AND asi.expired is null";
+
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
             SqlDataReader myReader;
@@ -106,7 +106,7 @@ inner join asi on asi_module_group.asi = asi.id_asi
 inner join asi_user on asi_user.id_asi_user = asi.asi_user
 inner join module_group on asi_module_group.module_group = module_group.id_module_group
 inner join module_group_rules on module_group.module_group_rules = module_group_rules.id_module_group_rules
-where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(created_at) from asi where asi.asi_user = asi_user.id_asi_user) 
+where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(created_at) from asi where asi.asi_user = asi_user.id_asi_user) AND asi_module_group.expired is null
                               ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -138,12 +138,11 @@ where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(create
 
 
             string query = @" 
-
-select asi_module_group.id_asi_module_group, asi_module_group.asi, asi_module_group.module_group, asi_user.name, asi_user.surname, asi_user.id_asi_user from dbo.asi_module_group
-inner join asi on asi_module_group.asi = asi.id_asi
-inner join asi_user on asi_user.id_asi_user = asi.asi_user
-where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(created_at) from asi where asi.asi_user = asi_user.id_asi_user)  
-                              ";
+              select asi_module_group.id_asi_module_group, asi_module_group.asi, asi_module_group.module_group, asi_user.name, asi_user.surname, asi_user.id_asi_user from dbo.asi_module_group
+              inner join asi on asi_module_group.asi = asi.id_asi
+              inner join asi_user on asi_user.id_asi_user = asi.asi_user
+              where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(created_at) from asi where asi.asi_user = asi_user.id_asi_user) AND asi_module_group.expired is null";
+         
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
             SqlDataReader myReader;
@@ -192,7 +191,10 @@ where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(create
             }
 
             string query = @"";
-            query += "delete from dbo.asi_module where asi_module.asi_module_group in (" + ftpAsiModuleGroupId + "," + tsmAsiModuleGroupId + "," + cmAsiModuleGroupId + ");";
+            //query += "delete from dbo.asi_module where asi_module.asi_module_group in (" + ftpAsiModuleGroupId + "," + tsmAsiModuleGroupId + "," + cmAsiModuleGroupId + ");";
+
+            query += "UPDATE dbo.asi_module SET expired = GETDATE() where asi_module.asi_module_group in (" + ftpAsiModuleGroupId + "," + tsmAsiModuleGroupId + "," + cmAsiModuleGroupId + ");";
+
 
             // cm asi modules
             for (int i = 0; i < asi.cmAsiModules.Length; i++)
@@ -270,7 +272,9 @@ where asi_user.id_asi_user = @AsiUserId AND asi.created_at = ( select max(create
             }
 
             string query = @"";
-            query += "delete from dbo.asi_module where asi_module.asi_module_group in (" + projectModuleGroupId + "," + supplementaryModuleGroupId + "," + masterModuleGroupId + ");";
+            //query += "delete from dbo.asi_module where asi_module.asi_module_group in (" + projectModuleGroupId + "," + supplementaryModuleGroupId + "," + masterModuleGroupId + ");";
+
+            query += "UPDATE dbo.asi_module SET expired = GETDATE() where asi_module.asi_module_group in (" + projectModuleGroupId + "," + supplementaryModuleGroupId + "," + masterModuleGroupId + ");";
 
 
             // progetti nuovi
@@ -392,7 +396,7 @@ inner join module_group on module.module_group = module_group.id_module_group
 left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join site on module.site = site.id_site
-where asi.asi_user = @UserId AND module.module_group = 1
+where asi.asi_user = @UserId AND module.module_group = 1 AND asi_module.expired is null
 GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials, site.id_site
 ORDER BY asi_module.id_asi_module asc
                            ";
@@ -431,7 +435,7 @@ inner join module_group on module.module_group = module_group.id_module_group
 left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join site on module.site = site.id_site
-where asi.asi_user = @UserId AND module.module_group = 2
+where asi.asi_user = @UserId AND module.module_group = 2 AND asi_module.expired is null
 GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials, site.id_site
 ORDER BY asi_module.id_asi_module asc
                            ";
@@ -470,7 +474,7 @@ inner join module_group on module.module_group = module_group.id_module_group
 left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join site on module.site = site.id_site
-where asi.asi_user = @UserId AND module.module_group = 3
+where asi.asi_user = @UserId AND module.module_group = 3 AND asi_module.expired is null
 GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials, site.id_site
 ORDER BY asi_module.id_asi_module asc
                            ";
@@ -509,7 +513,7 @@ inner join module_group on module.module_group = module_group.id_module_group
 left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join site on module.site = site.id_site
-where asi.asi_user = @UserId AND module.module_group = 4
+where asi.asi_user = @UserId AND module.module_group = 4 AND asi_module.expired is null
 GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials, site.id_site
 ORDER BY asi_module.id_asi_module asc
                            ";
@@ -548,7 +552,7 @@ inner join module_group on module.module_group = module_group.id_module_group
 left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join site on module.site = site.id_site
-where asi.asi_user = @UserId AND module.module_group = 5
+where asi.asi_user = @UserId AND module.module_group = 5 AND asi_module.expired is null
 GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials, site.id_site
 ORDER BY asi_module.id_asi_module asc
                            ";
@@ -587,7 +591,7 @@ inner join module_group on module.module_group = module_group.id_module_group
 left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join site on module.site = site.id_site
-where asi.asi_user = @UserId AND module.module_group = 6
+where asi.asi_user = @UserId AND module.module_group = 6 AND asi_module.expired is null
 GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials, site.id_site
 ORDER BY asi_module.id_asi_module asc
                            ";
@@ -612,18 +616,8 @@ ORDER BY asi_module.id_asi_module asc
             return new JsonResult(table);
         }
 
-        /*                             select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
-        from dbo.module
-        inner join asi_module on module.id_module = asi_module.module
-        inner join asi_user on module.responsible = asi_user.id_asi_user
-        inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
-        inner join asi on asi.id_asi = asi_module_group.asi
-        inner join module_group on module.module_group = module_group.id_module_group
-        inner join site on module.site = site.id_site
-        where asi.asi_user = @UserId AND module.module_group = 1*/
 
-
-                [HttpGet("api/asi/ftp")]
+        [HttpGet("api/asi/ftp")]
         [Authorize(Roles = "Student, StudentAdvisor, ProfileResponsibleStudentAdvisor")]
         public JsonResult GetAsiFtp()
                 {
@@ -639,7 +633,7 @@ inner join module_group on module.module_group = module_group.id_module_group
 left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join site on module.site = site.id_site
-where asi.asi_user = @UserId AND module.module_group = 1
+where asi.asi_user = @UserId AND module.module_group = 1 AND asi_module.expired is null
 GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials
 ORDER BY asi_module.id_asi_module asc
                                    ";
@@ -664,24 +658,10 @@ ORDER BY asi_module.id_asi_module asc
                     return new JsonResult(table);
                 }
 
-       /* select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state, id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester, asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
-from dbo.module
-inner join asi_module on module.id_module = asi_module.module
-
-inner join asi_user on module.responsible = asi_user.id_asi_user
-
-inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
-
-inner join asi on asi.id_asi = asi_module_group.asi
-
-inner join module_group on module.module_group = module_group.id_module_group
-
-inner join site on module.site = site.id_site
-
-where asi.asi_user = @UserId AND module.module_group = 2*/
 
 
-[HttpGet("api/asi/tsm")]
+
+        [HttpGet("api/asi/tsm")]
         [Authorize(Roles = "Student, StudentAdvisor, ProfileResponsibleStudentAdvisor")]
         public JsonResult GetAsiTsm()
                 {
@@ -696,7 +676,7 @@ inner join module_group on module.module_group = module_group.id_module_group
 left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join site on module.site = site.id_site
-where asi.asi_user = @UserId AND module.module_group = 2
+where asi.asi_user = @UserId AND module.module_group = 2 AND asi_module.expired is null
 GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials
 ORDER BY asi_module.id_asi_module asc
                                    ";
@@ -747,7 +727,7 @@ inner join module_group on module.module_group = module_group.id_module_group
 left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join site on module.site = site.id_site
-where asi.asi_user = @UserId AND module.module_group = 3
+where asi.asi_user = @UserId AND module.module_group = 3 AND asi_module.expired is null
 GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials
 ORDER BY asi_module.id_asi_module asc
                                    ";
@@ -799,7 +779,7 @@ inner join module_group on module.module_group = module_group.id_module_group
 left outer join asi_user on module.responsible = asi_user.id_asi_user
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join site on module.site = site.id_site
-where asi.asi_user = @UserId AND module.module_group = 5
+where asi.asi_user = @UserId AND module.module_group = 5 AND asi_module.expired is null
 GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user, site.name, site.initials
 ORDER BY asi_module.id_asi_module asc
                                    ";
@@ -841,7 +821,7 @@ ORDER BY asi_module.id_asi_module asc
         inner join module_group on module.module_group = module_group.id_module_group
         left outer join asi_user on module.responsible = asi_user.id_asi_user
         inner join asi on asi.id_asi = asi_module_group.asi
-        where asi.asi_user = @UserId AND module.module_group = 6
+        where asi.asi_user = @UserId AND module.module_group = 6 AND asi_module.expired is null
         GROUP BY asi_module.id_asi_module, asi_module.module, asi_module.asi_module_state, asi_module.asi_module_group, id_module, code, module.name, module.module_group, module.ects, module_group.initials, asi_user.name, asi_user.surname, asi_user.id_asi_user
         ORDER BY asi_module.id_asi_module asc
                                    ";
@@ -876,7 +856,7 @@ ORDER BY asi_module.id_asi_module asc
             string query = @" 
                   select * from asi 
                   inner join asi_state on asi_state.id_asi_state = asi.asi_state
-                  where asi.asi_user = @UserId
+                  where asi.asi_user = @UserId AND asi.expired is null
                                    ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -909,7 +889,7 @@ ORDER BY asi_module.id_asi_module asc
             string query = @" 
                   select * from asi 
                   inner join asi_state on asi_state.id_asi_state = asi.asi_state
-                  where asi.asi_user = @UserId
+                  where asi.asi_user = @UserId AND asi.expired is null
                                    ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -1054,112 +1034,5 @@ WHERE asi_state.id_asi_state in (select asi.asi_state from asi where asi.asi_use
             return new JsonResult(table);
         }
 
-        /* [HttpGet("api/advisorStudents/{id}/ftp")]
-         [Authorize(Roles = "Advisor, StudentAdvisor")]
-         public JsonResult GetAdvisorStudentFtp(int id)
-         {
-             string query = @" 
-                 select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
- from dbo.module
- inner join asi_module on module.id_module = asi_module.module
- inner join asi_user on module.responsible = asi_user.id_asi_user
- inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
- inner join asi on asi.id_asi = asi_module_group.asi
- inner join module_group on module.module_group = module_group.id_module_group
- inner join site on module.site = site.id_site
- where asi.asi_user = @UserId AND module.module_group = 1
-                            ";
-             DataTable table = new DataTable();
-             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
-             SqlDataReader myReader;
-             using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-             {
-                 Console.WriteLine("SQL connection");
-                 Console.WriteLine(myCon);
-                 myCon.Open();
-                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                 {
-                     myCommand.Parameters.AddWithValue("@UserId", id);
-                     myReader = myCommand.ExecuteReader();
-                     table.Load(myReader);
-                     myReader.Close();
-                     myCon.Close();
-                 }
-             }
-
-             return new JsonResult(table);
-         }*/
-
-        /*  [HttpGet("api/advisorStudents/{id}/tsm")]
-          [Authorize(Roles = "Advisor, StudentAdvisor")]
-          public JsonResult GetAdvisorStudentTsm(int id)
-          {
-              string query = @" 
-                  select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
-  from dbo.module
-  inner join asi_module on module.id_module = asi_module.module
-  inner join asi_user on module.responsible = asi_user.id_asi_user
-  inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
-  inner join asi on asi.id_asi = asi_module_group.asi
-  inner join module_group on module.module_group = module_group.id_module_group
-  inner join site on module.site = site.id_site
-  where asi.asi_user = @UserId AND module.module_group = 2
-                             ";
-              DataTable table = new DataTable();
-              string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
-              SqlDataReader myReader;
-              using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-              {
-                  Console.WriteLine("SQL connection");
-                  Console.WriteLine(myCon);
-                  myCon.Open();
-                  using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                  {
-                      myCommand.Parameters.AddWithValue("@UserId", id);
-                      myReader = myCommand.ExecuteReader();
-                      table.Load(myReader);
-                      myReader.Close();
-                      myCon.Close();
-                  }
-              }
-
-              return new JsonResult(table);
-          }*/
-
-        /* [HttpGet("api/advisorStudents/{id}/cm")]
-         [Authorize(Roles = "Advisor, StudentAdvisor")]
-         public JsonResult GetAdvisorStudentCm(int id)
-         {
-             string query = @" 
-                 select asi_module.id_asi_module, asi_module.asi_module_group, asi_module.asi_module_state,  id_module, code, module.name as module_name, module_group.initials as module_group_initials, module_group.id_module_group as module_group_id, ects, semester,  asi_user.name as responsible_name, asi_user.surname as responsible_surname  , site.name as site, site.initials as site_initials
- from dbo.module
- inner join asi_module on module.id_module = asi_module.module
- inner join asi_user on module.responsible = asi_user.id_asi_user
- inner join asi_module_group on asi_module.asi_module_group = asi_module_group.id_asi_module_group
- inner join asi on asi.id_asi = asi_module_group.asi
- inner join module_group on module.module_group = module_group.id_module_group
- inner join site on module.site = site.id_site
- where asi.asi_user = @UserId AND module.module_group = 3
-                            ";
-             DataTable table = new DataTable();
-             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
-             SqlDataReader myReader;
-             using (SqlConnection myCon = new SqlConnection(sqlDataSource))
-             {
-                 Console.WriteLine("SQL connection");
-                 Console.WriteLine(myCon);
-                 myCon.Open();
-                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                 {
-                     myCommand.Parameters.AddWithValue("@UserId", id);
-                     myReader = myCommand.ExecuteReader();
-                     table.Load(myReader);
-                     myReader.Close();
-                     myCon.Close();
-                 }
-             }
-
-             return new JsonResult(table);
-         }*/
     }
 }

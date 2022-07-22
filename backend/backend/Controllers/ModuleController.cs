@@ -38,7 +38,7 @@ inner join asi_user on asi_user.id_asi_user = module.responsible
 inner join site on module.site = site.id_site
 inner join module_group on module.module_group = module_group.id_module_group
 left outer join module_profile on module_profile.id_module_profile = module.module_profile
-where not module.module_group = 4 AND not module.module_group = 6
+where not module.module_group = 4 AND not module.module_group = 6 AND module.expired is null
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -66,11 +66,10 @@ where not module.module_group = 4 AND not module.module_group = 6
         public JsonResult GetFtp()
         {
             string query = @" 
- select id_module, code, module.name as module_name, module_group.initials as module_group_initials, ects, asi_user.name as responsible_name, asi_user.surname as responsible_surname ,site.name as site, site.initials as site_initials from dbo.module                             inner join asi_user on asi_user.id_asi_user = module.responsible
-                            inner join site on module.site = site.id_site
-							inner join module_group on module.module_group = module_group.id_module_group
-
-                            where module.module_group = 1;
+                select id_module, code, module.name as module_name, module_group.initials as module_group_initials, ects, asi_user.name as responsible_name, asi_user.surname as responsible_surname ,site.name as site, site.initials as site_initials from dbo.module                             inner join asi_user on asi_user.id_asi_user = module.responsible
+                inner join site on module.site = site.id_site
+			    inner join module_group on module.module_group = module_group.id_module_group
+                where module.module_group = 1 AND module.expired is null;
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -98,11 +97,11 @@ where not module.module_group = 4 AND not module.module_group = 6
         public JsonResult GetTsm()
         {
             string query = @" 
- select id_module, code, module.name as module_name, module_group.initials as module_group_initials, ects, asi_user.name as responsible_name, asi_user.surname as responsible_surname ,site.name as site, site.initials as site_initials from dbo.module                             inner join asi_user on asi_user.id_asi_user = module.responsible
-                            inner join site on module.site = site.id_site
-							inner join module_group on module.module_group = module_group.id_module_group
-
-                            where module.module_group = 2;
+                 select id_module, code, module.name as module_name, module_group.initials as module_group_initials, ects, asi_user.name as responsible_name, asi_user.surname as responsible_surname ,site.name as site, site.initials as site_initials from dbo.module                             
+                 inner join asi_user on asi_user.id_asi_user = module.responsible
+                 inner join site on module.site = site.id_site
+				 inner join module_group on module.module_group = module_group.id_module_group
+                 where module.module_group = 2 AND module.expired is null;
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -130,12 +129,12 @@ where not module.module_group = 4 AND not module.module_group = 6
         public JsonResult GetCm()
         {
             string query = @" 
- select id_module, code, module.name as module_name, module_group.initials as module_group_initials, ects, asi_user.name as responsible_name, asi_user.surname as responsible_surname ,site.name as site, site.initials as site_initials from dbo.module                             inner join asi_user on asi_user.id_asi_user = module.responsible
-                            inner join site on module.site = site.id_site
-							inner join module_group on module.module_group = module_group.id_module_group
+                 select id_module, code, module.name as module_name, module_group.initials as module_group_initials, ects, asi_user.name as responsible_name, asi_user.surname as responsible_surname ,site.name as site, site.initials as site_initials from dbo.module                             
+                 inner join asi_user on asi_user.id_asi_user = module.responsible
+                 inner join site on module.site = site.id_site
+			     inner join module_group on module.module_group = module_group.id_module_group
+                 where module.module_group = 3 AND module.expired is null;";
 
-                            where module.module_group = 3;
-                           ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
             SqlDataReader myReader;
@@ -162,11 +161,11 @@ where not module.module_group = 4 AND not module.module_group = 6
         public JsonResult GetSupplementaryModules()
         {
             string query = @" 
-  select id_module, code, module.name as module_name, module_group.initials as module_group_initials, ects, asi_user.name as responsible_name, asi_user.surname as responsible_surname ,site.name as site, site.initials as site_initials from dbo.module                             inner join asi_user on asi_user.id_asi_user = module.responsible
-                            inner join site on module.site = site.id_site
-							inner join module_group on module.module_group = module_group.id_module_group
-
-                            where module.module_group = 5;
+                select id_module, code, module.name as module_name, module_group.initials as module_group_initials, ects, asi_user.name as responsible_name, asi_user.surname as responsible_surname ,site.name as site, site.initials as site_initials from dbo.module                             
+                inner join asi_user on asi_user.id_asi_user = module.responsible
+                inner join site on module.site = site.id_site
+				inner join module_group on module.module_group = module_group.id_module_group
+                where module.module_group = 5 AND module.expired is null;
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -193,8 +192,8 @@ where not module.module_group = 4 AND not module.module_group = 6
         [Authorize(Roles = "Student,Advisor, StudentAdvisor, Administrator")]
         public JsonResult GetModuleGroupRules()
         {
-            string query = @" select * from module_group_rules
-                           ";
+            string query = @"select * from module_group_rules where module_group_rules.expired is null";
+
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
             SqlDataReader myReader;

@@ -31,7 +31,7 @@ namespace backend.Controllers
         [Authorize(Roles = "Advisor,Student, StudentAdvisor, Administrator,ProfileResponsible,ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor ")]
         public JsonResult GetCourses()
         {
-            string query = @"select * from dbo.profile";
+            string query = @"select * from dbo.profile where profile.expired is null";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
             SqlDataReader myReader;
