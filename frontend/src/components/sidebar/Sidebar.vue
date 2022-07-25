@@ -83,7 +83,15 @@ export default {
           loggedUser.Role === 'StudentAdvisor' ||
           loggedUser.Role === 'ProfileResponsible' ||
           loggedUser.Role === 'ProfileResponsibleAdvisor' ||
-          loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
+          loggedUser.Role === 'ProfileResponsibleStudentAdvisor' ||
+          loggedUser.Role === 'Tutor' ||
+          loggedUser.Role === 'TutorAdvisor' ||
+          loggedUser.Role === 'TutorAdvisorProfileResponsible' ||
+          loggedUser.Role === 'TutorProfileResponsible' ||
+          loggedUser.Role === 'Tutor' ||
+          loggedUser.Role === 'TutorAdvisor' ||
+          loggedUser.Role === 'TutorAdvisorProfileResponsible' ||
+          loggedUser.Role === 'TutorProfileResponsible' 
         "
         to="/AsiAdminData"
         icon="fas fa-user"
@@ -106,7 +114,10 @@ export default {
       </SidebarLink>
       <!-- <font-awesome-icon icon="fa-solid fa-book-copy" /> -->
       <SidebarLink
-        v-if="loggedUser.Role === 'Advisor'"
+        v-if="loggedUser.Role === 'Advisor'  ||
+              loggedUser.Role === 'TutorAdvisor' ||
+              loggedUser.Role === 'TutorAdvisorProfileResponsible' ||
+              loggedUser.Role === 'TutorProfileResponsible'"
         to="/StudentList"
         icon="fas fa-users"
       >
@@ -117,6 +128,8 @@ export default {
         v-if="
           loggedUser.Role === 'ProfileResponsible' ||
           loggedUser.Role === 'ProfileResponsibleAdvisor' ||
+          loggedUser.Role === 'TutorAdvisorProfileResponsible' ||
+          loggedUser.Role === 'TutorProfileResponsible' ||
           loggedUser.Role === 'ProfileResponsibleStudentAdvisor'
         "
         to="/StudentListResponsibleProfile"
@@ -218,10 +231,39 @@ export default {
       >
         Profile logs
       </SidebarLink>
+
+      <SidebarLink
+        v-if="
+          loggedUser.Role === 'Tutor' ||
+          loggedUser.Role === 'TutorAdvisor' ||
+          loggedUser.Role === 'TutorAdvisorProfileResponsible' ||
+          loggedUser.Role === 'TutorProfileResponsible' 
+        "
+        to="/AsiProjects"
+        icon="fas fa-columns"
+      >
+        Projects
+      </SidebarLink>
+            <SidebarLink
+        v-if="
+          loggedUser.Role === 'Tutor' ||
+          loggedUser.Role === 'TutorAdvisor' ||
+          loggedUser.Role === 'TutorAdvisorProfileResponsible' ||
+          loggedUser.Role === 'TutorProfileResponsible' 
+        "
+        to="/Students"
+        icon="fas fa-columns"
+      >
+        Students
+      </SidebarLink>
       <SidebarLink
         v-if="
           loggedUser.Role === 'Student' ||
           loggedUser.Role === 'Advisor' ||
+          loggedUser.Role === 'Tutor' ||
+          loggedUser.Role === 'TutorAdvisor' ||
+          loggedUser.Role === 'TutorAdvisorProfileResponsible' ||
+          loggedUser.Role === 'TutorProfileResponsible' ||
           loggedUser.Role === 'Administrator' ||
           loggedUser.Role === 'StudentAdvisor' ||
           loggedUser.Role === 'ProfileResponsible' ||
@@ -233,6 +275,9 @@ export default {
       >
         Informations
       </SidebarLink>
+
+
+
     </div>
 
     <span

@@ -402,8 +402,6 @@ const mutations = {
 
   userUpdateSuccess(state, newUser) {
     console.log(newUser)
-
-
     state.userData[0].student_name = newUser.name
     state.userData[0].student_surname = newUser.surname
     state.userData[0].student_email = newUser.email

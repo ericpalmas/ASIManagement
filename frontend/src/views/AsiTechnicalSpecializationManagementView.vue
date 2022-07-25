@@ -155,17 +155,17 @@
                     @change="onChangeResponsible($event, 0, i)"
                   >
                     <option
-                      v-for="advisor in advisors"
-                      :key="advisor.id_asi_user"
-                      :value="advisor.id_asi_user"
+                      v-for="tutor in tutors"
+                      :key="tutor.id_asi_user"
+                      :value="tutor.id_asi_user"
                       :selected="
-                        advisor.id_asi_user === project.responsible
+                        tutor.id_asi_user === project.responsible
                           ? true
                           : false
                       "
                     >
-                      {{ advisor.name }}&nbsp;
-                      {{ advisor.surname }}
+                      {{ tutor.name }}&nbsp;
+                      {{ tutor.surname }}
                     </option>
                   </select>
                 </td>
@@ -382,17 +382,17 @@
                     @change="onChangeResponsible($event, 2, i)"
                   >
                     <option
-                      v-for="advisor in advisors"
-                      :key="advisor.id_asi_user"
-                      :value="advisor.id_asi_user"
+                      v-for="tutor in tutors"
+                      :key="tutor.id_asi_user"
+                      :value="tutor.id_asi_user"
                       :selected="
-                        advisor.id_asi_user === project.responsible
+                        tutor.id_asi_user === project.responsible
                           ? true
                           : false
                       "
                     >
-                      {{ advisor.name }}&nbsp;
-                      {{ advisor.surname }}
+                      {{ tutor.name }}&nbsp;
+                      {{ tutor.surname }}
                     </option>
                   </select>
                 </td>
@@ -502,6 +502,8 @@ export default {
   }),
 
   methods: {
+        ...mapActions(['fetchTutors']),
+
     ...mapActions(['fetchOldProjects']),
     ...mapActions(['fetchOldAsiSupplementaryModules']),
     ...mapActions(['fetchOldAsiMasterProject']),
@@ -987,7 +989,7 @@ export default {
     ...mapGetters(['asiProjects']),
     ...mapGetters(['allSupplementaryModulesAsiModules']),
     ...mapGetters(['asiMasterProject']),
-
+    ...mapGetters(['tutors']),
     ...mapGetters(['oldProjects']),
     ...mapGetters(['oldAsiSupplementaryModules']),
     ...mapGetters(['oldAsiMasterProject']),
@@ -1019,6 +1021,7 @@ export default {
     // ...mapActions(['fetchOldAsiSupplementaryModules']),
     // ...mapActions(['fetchOldAsiMasterProject']),
 
+    this.fetchTutors()
     this.fetchOldProjects()
     this.fetchOldAsiSupplementaryModules()
     this.fetchOldAsiMasterProject()

@@ -345,19 +345,19 @@ select id_asi_user, name, surname, email, modality, profile, advisor, enrollment
 
 
         [HttpGet("api/asiuser/adminData")]
-        [Authorize(Roles = "Advisor,Student, StudentAdvisor, Administrator,ProfileResponsible,ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor ")]
+        [Authorize(Roles = "Advisor,Student, StudentAdvisor, Administrator,ProfileResponsible,ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor, Tutor, TutorAdvisor, TutorAdvisorProfileResponsible, TutorProfileResponsible  ")]
         public JsonResult GetAdministrativeData()
         {
             var currentUser = GetCurrentUser();
 
 
             string query = @" 
-               select asi_user.id_asi_user as student_id, asi_user.name as student_name,  asi_user.surname as student_surname, asi_user.enrollment_number as student_enrollment_number,  asi_user.email as student_email,asi_user.expired,  modality.name as modality, profile.name as profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname,  asi_user.enrollment_number,  asi_user.role, profile_resp.name as profile_responsible_id, profile_resp.name as profile_responsible_name , profile_resp.surname as profile_responsible_surname  from asi_user
+               select TOP 1 asi_user.id_asi_user as student_id, asi_user.name as student_name,  asi_user.surname as student_surname, asi_user.enrollment_number as student_enrollment_number,  asi_user.email as student_email,asi_user.expired,  modality.name as modality, profile.name as profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname,  asi_user.enrollment_number,  asi_user.role, profile_resp.name as profile_responsible_id, profile_resp.name as profile_responsible_name , profile_resp.surname as profile_responsible_surname  from asi_user
                left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
                left outer join modality on modality.id_modality = asi_user.modality
                left outer join profile on profile.id_profile = asi_user.profile
                left outer join asi_user as profile_resp on asi_user.profile = profile_resp.profile_responsible
-               where asi_user.id_asi_user = @UserId AND asi_user.expired is null
+               where asi_user.id_asi_user = @UserId AND asi_user.expired is null 
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -380,13 +380,16 @@ select id_asi_user, name, surname, email, modality, profile, advisor, enrollment
             return new JsonResult(table);
         }
 
+
+
+
         [HttpGet("api/asiuser/adminData/{id}")]
-        [Authorize(Roles = "Advisor,Student, StudentAdvisor, Administrator,ProfileResponsible,ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor ")]
+        [Authorize(Roles = "Advisor,Student, StudentAdvisor, Administrator,ProfileResponsible,ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor, Tutor, TutorAdvisor, TutorAdvisorProfileResponsible, TutorProfileResponsible ")]
         public JsonResult GetSpecificAdministrativeData(int id)
         {
 
             string query = @" 
-              select asi_user.id_asi_user as student_id, asi_user.name as student_name,  asi_user.surname as student_surname, asi_user.enrollment_number as student_enrollment_number, asi_user.profile_responsible, asi_user.expired,  asi_user.email as student_email,  modality.name as modality, modality.id_modality as id_modality, profile.name as profile, profile.id_profile as id_profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname, asi_user.role, user_type.name as role_name, profile_resp.name as profile_responsible_id, profile_resp.name as profile_responsible_name , profile_resp.surname as profile_responsible_surname  from asi_user
+              select TOP 1 asi_user.id_asi_user as student_id, asi_user.name as student_name,  asi_user.surname as student_surname, asi_user.enrollment_number as student_enrollment_number, asi_user.profile_responsible, asi_user.expired,  asi_user.email as student_email,  modality.name as modality, modality.id_modality as id_modality, profile.name as profile, profile.id_profile as id_profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname, asi_user.role, user_type.name as role_name, profile_resp.name as profile_responsible_id, profile_resp.name as profile_responsible_name , profile_resp.surname as profile_responsible_surname  from asi_user
               left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
               left outer join modality on modality.id_modality = asi_user.modality
               left outer join profile on profile.id_profile = asi_user.profile
@@ -430,6 +433,44 @@ select id_asi_user, name, surname, email, modality, profile, advisor, enrollment
               left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
               where asi_user.profile = (select profile_responsible from asi_user where asi_user.id_asi_user = @UserId )
               AND asi_user.role = 1 AND asi_user.expired is null";
+
+            Console.WriteLine(currentUser.AsiUserId);
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@UserId", currentUser.AsiUserId);
+
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+        [HttpGet("api/asiuser/tutorStudents")]
+        [Authorize(Roles = "Tutor, ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor")]
+        public JsonResult GetTutorStudents()
+        {
+            var currentUser = GetCurrentUser();
+
+            string query = @"                    
+ select * from asi_module
+inner join module on module.id_module = asi_module.module
+inner join asi_module_group on asi_module_group.id_asi_module_group = asi_module.asi_module_group
+inner join asi on asi.id_asi = asi_module_group.asi
+inner join asi_user on asi_user.id_asi_user = asi.asi_user
+where module.responsible = 5077 AND asi_module.expired is null";
 
             Console.WriteLine(currentUser.AsiUserId);
 
@@ -586,7 +627,7 @@ select id_asi_user, name, surname, email, modality, profile, advisor, enrollment
          */
 
         [HttpGet("api/asiuser/current")]
-        [Authorize(Roles = "Advisor,Student, StudentAdvisor, Administrator,ProfileResponsible,ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor ")]
+        [Authorize(Roles = "Advisor,Student, StudentAdvisor, Administrator,ProfileResponsible,ProfileResponsibleAdvisor, ProfileResponsibleStudentAdvisor, Tutor, TutorAdvisor, TutorAdvisorProfileResponsible, TutorProfileResponsible  ")]
         public JsonResult GetLoggedUser()
         {
             var currentUser = GetCurrentUser();
