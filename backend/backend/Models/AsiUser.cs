@@ -13,6 +13,7 @@
         public string Token { get; set; }
         public int Modality { get; set; }
         public int Profile { get; set; }
+        public int ProfileResponsible { get; set; }
         public int Advisor { get; set; }
         public int[] Roles { get; set; }
         public string Role { get; set; }

@@ -188,11 +188,11 @@
                       <div class="mb-3 row">
                         <label
                           for="inputPassword"
-                          class="col-sm-2 col-form-label"
+                          class="col-sm-3 col-form-label"
                         >
                           Profile
                         </label>
-                        <div class="col-sm-7">
+                        <div class="col-sm-6">
                           <select
                             class="form-select form-select-sm"
                             aria-label=".form-select-sm example"
@@ -212,12 +212,12 @@
                       <div class="mb-3 row">
                         <label
                           for="inputPassword"
-                          class="col-sm-2 col-form-label"
+                          class="col-sm-3 col-form-label"
                         >
                           Modality
                         </label>
 
-                        <div class="col-sm-7">
+                        <div class="col-sm-6">
                           <select
                             class="form-select form-select-sm"
                             aria-label=".form-select-sm example"
@@ -236,16 +236,17 @@
                       <div class="mb-3 row">
                         <label
                           for="inputPassword"
-                          class="col-sm-2 col-form-label"
+                          class="col-sm-3 col-form-label"
                         >
                           Role
                         </label>
-                        <div class="col-sm-7">
+                        <div class="col-sm-6">
                           <div class="form-check">
                             <div
                               v-if="
                                 profileResponsibleOption === false &&
                                 adminOption === false &&
+                                tutorOption === false &&
                                 advisorOption === false
                               "
                             >
@@ -279,41 +280,6 @@
                               </label>
                             </div>
                           </div>
-
-                          <!-- <div class="form-check">
-                            <div v-if="adminOption === false">
-                              <input
-                                class="form-check-input"
-                                type="checkbox"
-                                value=""
-                                id="flexCheckDisabled"
-                                v-model="studentOption"
-                              />
-                              <label
-                                class="form-check-label"
-                                for="flexCheckDefault"
-                              >
-                                Student
-                              </label>
-                            </div>
-
-                            <div v-else>
-                              <input
-                                class="form-check-input"
-                                type="checkbox"
-                                value=""
-                                id="flexCheckDisabled"
-                                disabled
-                              />
-                              <label
-                                class="form-check-label"
-                                for="flexCheckDefault"
-                              >
-                                Student
-                              </label>
-                            </div>
-                          </div> -->
-
                           <div class="form-check">
                             <div
                               v-if="
@@ -347,6 +313,43 @@
                                 for="flexCheckChecked"
                               >
                                 Advisor
+                              </label>
+                            </div>
+                          </div>
+
+                          <div class="form-check">
+                            <div
+                              v-if="
+                                adminOption === false && studentOption === false
+                              "
+                            >
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value=""
+                                id="flexCheckChecked"
+                                v-model="tutorOption"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="flexCheckChecked"
+                              >
+                                Tutor
+                              </label>
+                            </div>
+                            <div v-else>
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value="false"
+                                id="flexCheckChecked"
+                                disabled
+                              />
+                              <label
+                                class="form-check-label"
+                                for="flexCheckChecked"
+                              >
+                                Tutor
                               </label>
                             </div>
                           </div>
@@ -392,6 +395,7 @@
                               v-if="
                                 profileResponsibleOption === false &&
                                 studentOption === false &&
+                                tutorOption === false &&
                                 advisorOption === false
                               "
                             >
@@ -426,13 +430,40 @@
                             </div>
                           </div>
                         </div>
+
+                        <div
+                          class="mb-3 mt-3 row"
+                          v-if="profileResponsibleOption === true"
+                        >
+                          <label
+                            for="inputPassword"
+                            class="col-sm-3 col-form-label"
+                          >
+                            Profile responsible
+                          </label>
+                          <div class="col-sm-6">
+                            <select
+                              class="form-select form-select-sm"
+                              aria-label=".form-select-sm example"
+                              v-model="profileResponsible"
+                            >
+                              <option
+                                v-for="profile in profiles"
+                                :key="profile.id_profile"
+                                :value="profile.id_profile"
+                              >
+                                {{ profile.name }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </form>
                 <button
                   type="button"
-                  class="btn btn-secondary "
+                  class="btn btn-secondary"
                   @click="registerStudent()"
                 >
                   Register
@@ -465,6 +496,7 @@ export default {
     confirmedPassword: '',
     modality: -1,
     profile: -1,
+    profileResponsible: -1,
     role: 1,
     emptyFieldsError: false,
     roleMismatchError: false,
@@ -475,6 +507,7 @@ export default {
     studentOption: false,
     advisorOption: false,
     profileResponsibleOption: false,
+    tutorOption: false,
     adminOption: false
   }),
   props: ['userId'],
@@ -510,6 +543,7 @@ export default {
         this.studentOption &&
         !this.advisorOption &&
         !this.profileResponsibleOption &&
+        !this.tutorOption &&
         !this.adminOption
       ) {
         this.role = 1
@@ -517,6 +551,7 @@ export default {
         !this.studentOption &&
         this.advisorOption &&
         !this.profileResponsibleOption &&
+        !this.tutorOption &&
         !this.adminOption
       ) {
         this.role = 5
@@ -524,6 +559,7 @@ export default {
         !this.studentOption &&
         !this.advisorOption &&
         this.profileResponsibleOption &&
+        !this.tutorOption &&
         !this.adminOption
       ) {
         this.role = 8
@@ -531,33 +567,50 @@ export default {
         !this.studentOption &&
         !this.advisorOption &&
         !this.profileResponsibleOption &&
+        !this.tutorOption &&
         this.adminOption
       ) {
         this.role = 6
-      }
-      // else if (
-      //   this.studentOption &&
-      //   this.advisorOption &&
-      //   !this.profileResponsibleOption &&
-      //   !this.adminOption
-      // ) {
-      //   this.role = 7
-      // }
-      //  else if (
-      //   this.studentOption &&
-      //   this.advisorOption &&
-      //   this.profileResponsibleOption &&
-      //   !this.adminOption
-      // ) {
-      //   this.role = 10
-      // }
-      else if (
+      } else if (
+        !this.studentOption &&
+        this.advisorOption &&
+        this.profileResponsibleOption &&
+        !this.tutorOption &&
+        !this.adminOption
+      ) {
+        this.role = 9
+      } else if (
+        this.tutorOption &&
+        !this.studentOption &&
+        !this.advisorOption &&
+        !this.profileResponsibleOption &&
+        !this.adminOption
+      ) {
+        this.role = 11
+      } else if (
+        this.tutorOption &&
+        !this.studentOption &&
+        this.advisorOption &&
+        !this.profileResponsibleOption &&
+        !this.adminOption
+      ) {
+        this.role = 12
+      } else if (
+        this.tutorOption &&
         !this.studentOption &&
         this.advisorOption &&
         this.profileResponsibleOption &&
         !this.adminOption
       ) {
-        this.role = 9
+        this.role = 13
+      } else if (
+        this.tutorOption &&
+        !this.studentOption &&
+        !this.advisorOption &&
+        this.profileResponsibleOption &&
+        !this.adminOption
+      ) {
+        this.role = 14
       }
     },
 
@@ -570,10 +623,16 @@ export default {
       console.log(this.confirmedPassword)
       console.log(this.modality)
       console.log(this.profile)
+      console.log(this.profileResponsible)
+      console.log(this.role)
+
+
+      if (this.profileResponsibleOption === false) this.profileResponsible = -1
 
       console.log('Student: ' + this.studentOption)
       console.log('Advisor: ' + this.advisorOption)
       console.log('Responsible: ' + this.profileResponsibleOption)
+      console.log('Tutor: ' + this.tutorOption)
       console.log('Admin: ' + this.adminOption)
 
       if (
@@ -600,60 +659,66 @@ export default {
         ) {
           this.emptyFieldsError = false
 
-          if (this.password === this.confirmedPassword) {
-            this.confirmedPasswordError = false
+          if (this.profileResponsible === -1 && this.profileResponsibleOption) {
+            this.emptyFieldsError = true
+          } else {
+            this.emptyFieldsError = false
+            if (this.password === this.confirmedPassword) {
+              this.confirmedPasswordError = false
 
-            if (
-              !this.studentOption &&
-              !this.advisorOption &&
-              !this.profileResponsibleOption &&
-              !this.adminOption
-            ) {
-              this.roleEmptyError = true
-
-              console.log('errorreeeeeee')
-            } else {
-              this.roleEmptyError = false
-              this.defineRole()
-
-              const validateEmail = (email) => {
-                return String(email)
-                  .toLowerCase()
-                  .match(
-                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                  )
-              }
-              if (!validateEmail(this.email)) {
-                this.emailWrongFormatError = true
+              if (
+                !this.studentOption &&
+                !this.advisorOption &&
+                !this.profileResponsibleOption &&
+                !this.tutorOption &&
+                !this.adminOption
+              ) {
+                this.roleEmptyError = true
               } else {
-                this.emailWrongFormatError = false
-                if (confirm('Do you really want to save?')) {
-                  const {
-                    name,
-                    surname,
-                    email,
-                    enrollmentNumber,
-                    password,
-                    modality,
-                    role,
-                    profile
-                  } = this
-                  this.register({
-                    name,
-                    surname,
-                    email,
-                    enrollmentNumber,
-                    password,
-                    modality,
-                    profile,
-                    role
-                  })
-                  this.pageSaved = true
+                this.roleEmptyError = false
+                this.defineRole()
+
+                const validateEmail = (email) => {
+                  return String(email)
+                    .toLowerCase()
+                    .match(
+                      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                    )
+                }
+                if (!validateEmail(this.email)) {
+                  this.emailWrongFormatError = true
+                } else {
+                  this.emailWrongFormatError = false
+                  if (confirm('Do you really want to save?')) {
+                    const {
+                      name,
+                      surname,
+                      email,
+                      enrollmentNumber,
+                      password,
+                      modality,
+                      role,
+                      profile,
+                      profileResponsible
+                    } = this
+                    this.register({
+                      name,
+                      surname,
+                      email,
+                      enrollmentNumber,
+                      password,
+                      modality,
+                      role,
+                      profile,
+                      profileResponsible
+                    })
+                    this.pageSaved = true
+                  }
                 }
               }
+            } else {
+              this.confirmedPasswordError = true
             }
-          } else {
-            this.confirmedPasswordError = true
           }
         } else {
           this.emptyFieldsError = true

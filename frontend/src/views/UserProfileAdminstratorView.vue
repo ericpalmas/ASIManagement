@@ -22,53 +22,50 @@
             >
               Password and confirmed password are different
             </div> -->
-              <div id="errors" class="pt-3 px-4">
+            <div id="errors" class="pt-3 px-4">
+              <div
+                class="alert alert-danger"
+                role="alert"
+                v-if="roleMismatchError"
+                :v-bind:roleMismatchError="roleMismatchError"
+              >
+                A student can't be a profile responsible
+              </div>
+              <div
+                class="alert alert-danger"
+                role="alert"
+                v-if="emptyFieldsError"
+                :v-bind:emptyFieldsError="emptyFieldsError"
+              >
+                Empty field
+              </div>
+              <div
+                class="alert alert-danger"
+                role="alert"
+                v-if="roleEmptyError"
+                :v-bind:roleEmptyError="roleEmptyError"
+              >
+                Role is not defined
+              </div>
+              <div
+                class="alert alert-danger"
+                role="alert"
+                v-if="emailWrongFormatError"
+                :v-bind:emailWrongFormatError="emailWrongFormatError"
+              >
+                Formato email scorretto
+              </div>
 
-            <div
-              class="alert alert-danger"
-              role="alert"
-              v-if="roleMismatchError"
-              :v-bind:roleMismatchError="roleMismatchError"
-            >
-              A student can't be a profile responsible
-            </div>
-            <div
-              class="alert alert-danger"
-              role="alert"
-              v-if="emptyFieldsError"
-              :v-bind:emptyFieldsError="emptyFieldsError"
-            >
-              Empty field
-            </div>
-            <div
-              class="alert alert-danger"
-              role="alert"
-              v-if="roleEmptyError"
-              :v-bind:roleEmptyError="roleEmptyError"
-            >
-              Role is not defined
-            </div>
-            <div
-              class="alert alert-danger"
-              role="alert"
-              v-if="emailWrongFormatError"
-              :v-bind:emailWrongFormatError="emailWrongFormatError"
-            >
-              Formato email scorretto 
+              <div
+                class="alert alert-success"
+                role="alert"
+                v-if="pageSaved"
+                :v-bind:pageSaved="pageSaved"
+              >
+                Page saved correctly
+              </div>
             </div>
 
-            
-            <div
-              class="alert alert-success"
-              role="alert"
-              v-if="pageSaved"
-              :v-bind:pageSaved="pageSaved"
-            >
-              Page saved correctly
-            </div>
-
-              </div> 
-       
             <div class="col-md-auto"></div>
             <div class="col col-lg-2">
               <button
@@ -108,9 +105,7 @@
                   <tbody>
                     <tr v-if="user.student_surname !== null">
                       <td style="width: 40 %; padding-left: 4%">
-                        <div style="text-align: left">
-                          Surname
-                        </div>
+                        <div style="text-align: left">Surname</div>
                       </td>
                       <td style="width: 40 %; padding-left: 4%">
                         <div
@@ -132,9 +127,7 @@
                     </tr>
                     <tr v-if="user.student_name !== null">
                       <td style="width: 40 %; padding-left: 4%">
-                        <div style="text-align: left">
-                          Name:
-                        </div>
+                        <div style="text-align: left">Name:</div>
                       </td>
                       <td style="width: 40 %; padding-left: 4%">
                         <div
@@ -279,7 +272,7 @@
                         </div>
                       </td>
                     </tr>
-                
+
                     <tr v-if="user.advisor_id !== null">
                       <td style="width: 40 %; padding-left: 4%">
                         <div style="text-align: left">Student’s advisor:</div>
@@ -331,9 +324,8 @@
                           <div class="form-check">
                             <div
                               v-if="
-                                user.role === 1 ||
-                                user.role === 7 ||
-                                user.role === 10
+                                user.role === 1 
+                              
                               "
                             >
                               <input
@@ -367,9 +359,9 @@
                             <div
                               v-if="
                                 user.role === 5 ||
-                                user.role === 7 ||
                                 user.role === 9 ||
-                                user.role === 10
+                                user.role === 12 ||
+                                user.role === 13
                               "
                             >
                               <input
@@ -405,7 +397,8 @@
                               v-if="
                                 user.role === 8 ||
                                 user.role === 9 ||
-                                user.role === 10
+                                user.role === 13 ||
+                                user.role === 14
                               "
                             >
                               <input
@@ -434,6 +427,43 @@
                                 for="flexCheckChecked"
                               >
                                 Profile Responsible
+                              </label>
+                            </div>
+
+                            <div
+                              v-if="
+                                user.role === 11 ||
+                                user.role === 12 ||
+                                user.role === 13 ||
+                                user.role === 14
+                              "
+                            >
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="flexCheckChecked"
+                                disabled
+                                checked
+                              />
+                              <label
+                                class="form-check-label"
+                                for="flexCheckChecked"
+                              >
+                                Tutor
+                              </label>
+                            </div>
+                            <div v-else>
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="flexCheckChecked"
+                                disabled
+                              />
+                              <label
+                                class="form-check-label"
+                                for="flexCheckChecked"
+                              >
+                                Tutor
                               </label>
                             </div>
 
@@ -467,12 +497,52 @@
                               </label>
                             </div>
                           </div>
+
+
+                        <div
+                          class="mb-3 mt-3 row"
+                                               v-if="
+            userData[0].role === 8 ||
+            userData[0].role === 9 ||
+            userData[0].role === 13 ||
+            userData[0].role === 14  && !edit
+          "
+                          
+                        >
+                          <label
+                            for="inputPassword"
+                            class="col-sm-3 col-form-label"
+                          >
+                            Profile responsible
+                          </label>
+                          <div class="col-sm-6">
+                            <select
+                              class="form-select form-select-sm"
+                              aria-label=".form-select-sm example"
+                              disabled
+                              v-model="user.profile_responsible"
+                            >
+                              <option
+                                v-for="profile in profiles"
+                                :key="profile.id_profile"
+                                :value="profile.id_profile"
+                              >
+                                {{ profile.name }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
                         </div>
                         <div v-else class="col-sm-7">
                           <div class="form-check">
-                            <div v-if=" profileResponsibleOption === false &&
+                            <div
+                              v-if="
+                                profileResponsibleOption === false &&
                                 adminOption === false &&
-                                advisorOption === false">
+                                tutorOption === false &&
+                                advisorOption === false
+                              "
+                            >
                               <input
                                 class="form-check-input"
                                 type="checkbox"
@@ -505,7 +575,11 @@
                             </div>
                           </div>
                           <div class="form-check">
-                            <div v-if="adminOption === false && studentOption === false">
+                            <div
+                              v-if="
+                                adminOption === false && studentOption === false
+                              "
+                            >
                               <input
                                 class="form-check-input"
                                 type="checkbox"
@@ -536,8 +610,50 @@
                               </label>
                             </div>
                           </div>
+
                           <div class="form-check">
-                            <div v-if="adminOption === false && studentOption === false">
+                            <div
+                              v-if="
+                                adminOption === false && studentOption === false
+                              "
+                            >
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value=""
+                                id="flexCheckChecked"
+                                v-model="tutorOption"
+                              />
+                              <label
+                                class="form-check-label"
+                                for="flexCheckChecked"
+                              >
+                                Tutor
+                              </label>
+                            </div>
+
+                            <div v-else>
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="flexCheckChecked"
+                                disabled
+                              />
+                              <label
+                                class="form-check-label"
+                                for="flexCheckChecked"
+                              >
+                                Tutor
+                              </label>
+                            </div>
+                          </div>
+
+                          <div class="form-check">
+                            <div
+                              v-if="
+                                adminOption === false && studentOption === false
+                              "
+                            >
                               <input
                                 class="form-check-input"
                                 type="checkbox"
@@ -574,7 +690,8 @@
                               v-if="
                                 profileResponsibleOption === false &&
                                 studentOption === false &&
-                                advisorOption === false
+                                advisorOption === false &&
+                                tutorOption === false
                               "
                             >
                               <input
@@ -608,6 +725,59 @@
                             </div>
                           </div>
                         </div>
+                        <div
+                          class="mb-3 mt-3 row"
+                          v-if="profileResponsibleOption === true && edit "
+                        >
+                          <label
+                            for="inputPassword"
+                            class="col-sm-3 col-form-label"
+                          >
+                            Profile responsible
+                          </label>
+                          <div class="col-sm-6">
+                            <select
+                              class="form-select form-select-sm"
+                              aria-label=".form-select-sm example"
+                              v-model="profileResponsible"
+                            >
+                              <option
+                                v-for="profile in profiles"
+                                :key="profile.id_profile"
+                                :value="profile.id_profile"
+                              >  
+                                {{ profile.name }}
+                              </option>
+                            </select>
+                          </div>
+                        </div>
+
+                         <!-- <div
+                          class="mb-3 mt-3 row"
+                          v-if="profileResponsibleOption === true"
+                        >
+                          <label
+                            for="inputPassword"
+                            class="col-sm-3 col-form-label"
+                          >
+                            Profile responsible
+                          </label>
+                          <div class="col-sm-6">
+                            <select
+                              class="form-select form-select-sm"
+                              aria-label=".form-select-sm example"
+                              v-model="profileResponsible"
+                            >
+                              <option
+                                 v-for="profile in profiles"
+                                :key="profile.id_profile"
+                                :value="profile.id_profile"
+                              >
+                                {{ profile.name }}
+                              </option>
+                            </select>
+                          </div>
+                        </div> -->
                       </td>
                     </tr>
                   </tbody>
@@ -619,9 +789,9 @@
         <div
           v-if="
             userData[0].role === 5 ||
-            userData[0].role === 7 ||
             userData[0].role === 9 ||
-            userData[0].role === 10
+            userData[0].role === 12 ||
+            userData[0].role === 13
           "
           class="card-body"
         >
@@ -665,9 +835,9 @@
                 data-bs-target="#exampleModal"
                 v-if="
                   userData[0].role === 5 ||
-                  userData[0].role === 7 ||
                   userData[0].role === 9 ||
-                  userData[0].role === 10
+                  userData[0].role === 12 ||
+                  userData[0].role === 13
                 "
               >
                 <i class="fas fa-plus-circle"></i>
@@ -764,6 +934,7 @@ export default {
     confirmedPassword: '',
     modality: -1,
     profile: -1,
+    profileResponsible: -1,
     role: -1,
     advisor: -1,
     emptyFieldsError: false,
@@ -774,6 +945,7 @@ export default {
     pageSaved: false,
     studentOption: false,
     advisorOption: false,
+    tutorOption: false,
     profileResponsibleOption: false,
     adminOption: false
   }),
@@ -786,7 +958,6 @@ export default {
     Sidebar
   },
   methods: {
-    //...mapActions(['fetchUserData'])
     ...mapActions(['fetchSpecificUserData']),
     ...mapActions(['fetchSpecificAdvisorStudents']),
     ...mapActions(['fetchAvailableStudents']),
@@ -814,69 +985,80 @@ export default {
       this.advisor = e.target.value
     },
     updateUserProfile: function () {
-      // console.log('SURNAME: ' + this.userData[0].student_surname)
-      // console.log('NAME: ' + this.userData[0].student_name)
-      // console.log('EMAIL: ' + this.userData[0].student_email)
-      // console.log(
-      //   'ENROLLMENT NUMBER: ' + this.userData[0].student_enrollment_number
-      // )
+      if (this.profileResponsibleOption === false) this.profileResponsible = -1
 
       if (
         this.studentOption &&
         !this.advisorOption &&
         !this.profileResponsibleOption &&
+        !this.tutorOption &&
         !this.adminOption
       ) {
-        console.log('1')
         this.role = 1
       } else if (
         !this.studentOption &&
         this.advisorOption &&
         !this.profileResponsibleOption &&
+        !this.tutorOption &&
         !this.adminOption
       ) {
-        console.log('5')
         this.role = 5
       } else if (
         !this.studentOption &&
         !this.advisorOption &&
         !this.profileResponsibleOption &&
+        !this.tutorOption &&
         this.adminOption
       ) {
-        console.log('6')
         this.role = 6
-      } else if (
-        this.studentOption &&
-        this.advisorOption &&
-        !this.profileResponsibleOption &&
-        !this.adminOption
-      ) {
-        console.log('7')
-        this.role = 7
       } else if (
         !this.studentOption &&
         !this.advisorOption &&
+        !this.tutorOption &&
         this.profileResponsibleOption &&
         !this.adminOption
       ) {
-        console.log('8')
         this.role = 8
       } else if (
         !this.studentOption &&
         this.advisorOption &&
+        !this.tutorOption &&
         this.profileResponsibleOption &&
         !this.adminOption
       ) {
-        console.log('9')
         this.role = 9
       } else if (
-        this.studentOption &&
+        !this.studentOption &&
+        !this.advisorOption &&
+        this.tutorOption &&
+        !this.profileResponsibleOption &&
+        !this.adminOption
+      ) {
+        this.role = 11
+      } else if (
+        !this.studentOption &&
         this.advisorOption &&
+        this.tutorOption &&
+        !this.profileResponsibleOption &&
+        !this.adminOption
+      ) {
+        this.role = 12
+      } else if (
+        !this.studentOption &&
+        this.advisorOption &&
+        this.tutorOption &&
         this.profileResponsibleOption &&
         !this.adminOption
       ) {
-        console.log('10')
-        this.role = 10
+        this.role = 13
+      } else if (
+        !this.studentOption &&
+        !this.advisorOption &&
+        this.tutorOption &&
+        this.profileResponsibleOption &&
+        !this.adminOption
+      ) {
+        this.role = 14
       }
 
       var newModality =
@@ -885,7 +1067,7 @@ export default {
         this.profile !== -1 ? this.profile : this.userData[0].id_profile
       var newAdvisor =
         this.advisor !== -1 ? this.advisor : this.userData[0].advisor_id
-      if(this.userData[0].advisor_id === null){
+      if (this.userData[0].advisor_id === null) {
         newAdvisor = -1
       }
       var newRole = this.role !== -1 ? this.role : this.userData[0].role
@@ -919,71 +1101,115 @@ export default {
         ) {
           this.emptyFieldsError = false
 
-          // if (this.password === this.confirmedPassword) {
-          //   this.confirmedPasswordError = false
-
-          if (
-            !this.studentOption &&
-            !this.advisorOption &&
-            !this.profileResponsibleOption &&
-            !this.adminOption
-          ) {
-            this.roleEmptyError = true
+          if (this.profileResponsible === -1 && this.profileResponsibleOption) {
+            this.emptyFieldsError = true
           } else {
-            this.roleEmptyError = false
+            this.emptyFieldsError = false
 
+            if (
+              !this.studentOption &&
+              !this.advisorOption &&
+              !this.profileResponsibleOption &&
+              !this.tutorOption &&
+              !this.adminOption
+            ) {
+              this.roleEmptyError = true
+            } else {
+              this.roleEmptyError = false
 
-            const validateEmail = (email) => {
-              return String(email)
-                    .toLowerCase()
-                    .match(
-                       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-                );
-             };
-             if(!validateEmail(this.userData[0].student_email)){
+              const validateEmail = (email) => {
+                return String(email)
+                  .toLowerCase()
+                  .match(
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                  )
+              }
+              if (!validateEmail(this.userData[0].student_email)) {
                 this.emailWrongFormatError = true
-
-             } else {
+              } else {
                 this.emailWrongFormatError = false
-  if (confirm('Do you really want to save?')) {
-              
-              console.log({
-                id: this.$route.params.userId,
-                name: this.userData[0].student_name,
-                surname: this.userData[0].student_surname,
-                email: this.userData[0].student_email,
-                enrollmentNumber: this.userData[0].student_enrollment_number,
-                modality: newModality,
-                profile: newProfile,
-                role: newRole,
-                advisor: newAdvisor,
-                advisor_name: newAdvisor != -1 ? this.advisors.find(x => x.id_asi_user === parseInt(newAdvisor)).name : "",
-                advisor_surname: newAdvisor != -1 ? this.advisors.find(x => x.id_asi_user === parseInt(newAdvisor)).surname : "",
-              })
- 
-              this.updateUser({
-                id: this.$route.params.userId,
-                name: this.userData[0].student_name,
-                surname: this.userData[0].student_surname,
-                email: this.userData[0].student_email,
-                enrollmentNumber: this.userData[0].student_enrollment_number,
-                //   password,
-                modality: newModality,
-                profile: newProfile,
-                role: newRole,    
-                advisor: newAdvisor,
-                advisor_name: newAdvisor != -1 ? this.advisors.find(x => x.id_asi_user === parseInt(newAdvisor)).name : "",
-                advisor_surname: newAdvisor != -1 ? this.advisors.find(x => x.id_asi_user === parseInt(newAdvisor)).surname : "",
-              })
+                if (confirm('Do you really want to save?')) {
+                  // console.log({
+                  //   id: this.$route.params.userId,
+                  //   name: this.userData[0].student_name,
+                  //   surname: this.userData[0].student_surname,
+                  //   email: this.userData[0].student_email,
+                  //   enrollmentNumber:
+                  //     this.userData[0].student_enrollment_number,
+                  //   modality: newModality,
+                  //   profile: newProfile,
+                  //   role: newRole,
+                  //   advisor: newAdvisor,
+                  //   advisor_name:
+                  //     newAdvisor != -1
+                  //       ? this.advisors.find(
+                  //           (x) => x.id_asi_user === parseInt(newAdvisor)
+                  //         ).name
+                  //       : '',
+                  //   advisor_surname:
+                  //     newAdvisor != -1
+                  //       ? this.advisors.find(
+                  //           (x) => x.id_asi_user === parseInt(newAdvisor)
+                  //         ).surname
+                  //       : ''
+                  // })
 
-           
-              this.edit = !this.edit
+                  // const {
+                  //     name,
+                  //     surname,
+                  //     email,
+                  //     enrollmentNumber,
+                  //     password,
+                  //     modality,
+                  //     role,
+                  //     profile,
+                  //     profileResponsible
+                  //   } = this
+                  //   this.register({
+                  //     name,
+                  //     surname,
+                  //     email,
+                  //     enrollmentNumber,
+                  //     password,
+                  //     modality,
+                  //     role,
+                  //     profile,
+                  //     profileResponsible
+                  //   })
+
+                  this.updateUser({
+                    id: this.$route.params.userId,
+                    name: this.userData[0].student_name,
+                    surname: this.userData[0].student_surname,
+                    email: this.userData[0].student_email,
+                    enrollmentNumber:
+                      this.userData[0].student_enrollment_number,
+                    //   password,
+                    modality: newModality,
+                    profile: newProfile,
+                    profileResponsible: this.profileResponsible,
+                    role: newRole,
+                    advisor: newAdvisor,
+                    advisor_name:
+                      newAdvisor != -1
+                        ? this.advisors.find(
+                            (x) => x.id_asi_user === parseInt(newAdvisor)
+                          ).name
+                        : '',
+                    advisor_surname:
+                      newAdvisor != -1
+                        ? this.advisors.find(
+                            (x) => x.id_asi_user === parseInt(newAdvisor)
+                          ).surname
+                        : ''
+                  })
+
+                  this.edit = !this.edit
+                }
+              }
             }
-
-             }
-
-          
           }
+
           // } else {
           //   this.confirmedPasswordError = true
           // }

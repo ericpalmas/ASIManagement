@@ -182,6 +182,7 @@ const actions = {
       enrollmentNumber,
       password,
       profile,
+      profileResponsible,
       modality,
       role,
       advisor,
@@ -189,6 +190,9 @@ const actions = {
       advisor_surname
     }
   ) {
+
+    console.log(profileResponsible)
+
     await axios.post('http://localhost:8732/api/asiuser/update', {
       AsiUserId: id,
       AsiUserName: name,
@@ -197,6 +201,7 @@ const actions = {
       AsiUserEnrollmentNumber: enrollmentNumber,
       AsiUserPassword: password,
       Profile: profile,
+      ProfileResponsible: profileResponsible,
       Modality: modality,
       Role: role,
       Advisor: advisor
@@ -212,6 +217,7 @@ const actions = {
       enrollmentNumber,
       password,
       profile,
+      profileResponsible,
       modality,
       role,
       advisor, 
@@ -219,9 +225,7 @@ const actions = {
       advisor_surname
     }
 
-    //if (response.status == 200) {
     commit('userUpdateSuccess', newUser)
-    //}
   },
 
   async register(
@@ -233,6 +237,7 @@ const actions = {
       enrollmentNumber,
       password,
       profile,
+      profileResponsible,
       modality,
       role
     }
@@ -246,6 +251,7 @@ const actions = {
         AsiUserEnrollmentNumber: enrollmentNumber,
         AsiUserPassword: password,
         Profile: profile,
+        ProfileResponsible: profileResponsible,
         Modality: modality,
         Role: role
       }
@@ -365,6 +371,8 @@ const mutations = {
     state.profilesResponsible = state.profilesResponsible.filter(
       (user) => user.id_asi_user !== id
     )
+    state.tutors = state.tutors.filter((user) => user.id_asi_user !== id)
+
   },
 
   setStopFollowStudent(state, res) {
@@ -394,10 +402,7 @@ const mutations = {
 
   userUpdateSuccess(state, newUser) {
     console.log(newUser)
-    // const index = state.userData.findIndex(
-    //   (item) => item.student_id === newUser.id
-    // )
-    console.log(state.userData[0])
+
 
     state.userData[0].student_name = newUser.name
     state.userData[0].student_surname = newUser.surname
@@ -408,7 +413,7 @@ const mutations = {
     state.userData[0].advisor_id = newUser.advisor
     state.userData[0].advisor_name = newUser.advisor_name
     state.userData[0].advisor_surname = newUser.advisor_surname
-
+    state.userData[0].profile_responsible = newUser.profileResponsible
     state.userData[0].role = newUser.role
   }
 }
