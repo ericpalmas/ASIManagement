@@ -293,9 +293,13 @@ const actions = {
   },
 
   async stopFollowStudent({ commit }, { student, advisorId }) {
-    await axios.get(
+
+    await axios.post(
       'http://localhost:8732/api/asiuser/stopFollowStudent/' +
-        student.id_asi_user,
+      student.id_asi_user,
+      {
+        AsiUserId: advisorId
+      },
       {
         headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
       }

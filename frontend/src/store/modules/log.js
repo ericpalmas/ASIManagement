@@ -9,6 +9,13 @@ const getters = {
 }
 
 const actions = {
+  async fetchStudentAdvisorHistory({ commit }) {
+    const response = await axios.get('http://localhost:8732/api/studentAdvisorHistory', {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
+
+    commit('setLogs', response.data)
+  },
   async fetchLogs({ commit }) {
     const response = await axios.get('http://localhost:8732/api/logs', {
       headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }

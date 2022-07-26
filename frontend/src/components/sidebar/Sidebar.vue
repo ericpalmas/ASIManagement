@@ -208,6 +208,17 @@ export default {
         Logs
       </SidebarLink>
       <SidebarLink
+        v-if="loggedUser.Role === 'Administrator'"
+        to="/StudentAdvisorHistoryAdministrator"
+        icon="fas fa-chart-bar"
+      >
+        History
+      </SidebarLink>
+
+
+
+      
+      <SidebarLink
         v-if="
           loggedUser.Role === 'Advisor' ||
           loggedUser.Role === 'StudentAdvisor' ||

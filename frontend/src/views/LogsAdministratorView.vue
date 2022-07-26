@@ -23,6 +23,7 @@
                         <th scope="col">Ects</th>
                         <th scope="col">Student</th>
                         <th scope="col">Advisor</th>
+                        <th scope="col">Date</th>
 
                         <th scope="col">Field</th>
                         <th scope="col">Old</th>
@@ -56,6 +57,10 @@
                         </td>
                         <td>
                           {{ log.advisor_name }} {{ log.advisor_surname }}
+                        </td>
+
+                        <td v-if="log.date !== null" colspan="1" span="1" style="width: 10%">
+                         {{ log.date.substring(8, 10) }}/{{ log.date.substring(5, 7) }}/{{ log.date.substring(0, 4) }}
                         </td>
 
                         <td v-if="log.id_action === 3 && log.id_field !== null">

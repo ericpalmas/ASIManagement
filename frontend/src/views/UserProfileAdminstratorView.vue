@@ -1129,54 +1129,7 @@ export default {
               } else {
                 this.emailWrongFormatError = false
                 if (confirm('Do you really want to save?')) {
-                  // console.log({
-                  //   id: this.$route.params.userId,
-                  //   name: this.userData[0].student_name,
-                  //   surname: this.userData[0].student_surname,
-                  //   email: this.userData[0].student_email,
-                  //   enrollmentNumber:
-                  //     this.userData[0].student_enrollment_number,
-                  //   modality: newModality,
-                  //   profile: newProfile,
-                  //   role: newRole,
-                  //   advisor: newAdvisor,
-                  //   advisor_name:
-                  //     newAdvisor != -1
-                  //       ? this.advisors.find(
-                  //           (x) => x.id_asi_user === parseInt(newAdvisor)
-                  //         ).name
-                  //       : '',
-                  //   advisor_surname:
-                  //     newAdvisor != -1
-                  //       ? this.advisors.find(
-                  //           (x) => x.id_asi_user === parseInt(newAdvisor)
-                  //         ).surname
-                  //       : ''
-                  // })
-
-                  // const {
-                  //     name,
-                  //     surname,
-                  //     email,
-                  //     enrollmentNumber,
-                  //     password,
-                  //     modality,
-                  //     role,
-                  //     profile,
-                  //     profileResponsible
-                  //   } = this
-                  //   this.register({
-                  //     name,
-                  //     surname,
-                  //     email,
-                  //     enrollmentNumber,
-                  //     password,
-                  //     modality,
-                  //     role,
-                  //     profile,
-                  //     profileResponsible
-                  //   })
-
+                  
                   this.updateUser({
                     id: this.$route.params.userId,
                     name: this.userData[0].student_name,
@@ -1223,6 +1176,7 @@ export default {
         student: this.student,
         advisorId: this.$route.params.userId
       })
+
     },
     removeStudent: function (student) {
       if (confirm('Do you really want to delete?')) {
@@ -1230,6 +1184,7 @@ export default {
           student,
           advisorId: this.$route.params.userId
         })
+
       }
     }
   },

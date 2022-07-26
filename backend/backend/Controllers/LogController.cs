@@ -5,8 +5,6 @@ using System.Data.SqlClient;
 using backend.Models;
 using Microsoft.Extensions.Configuration;
 using System;
-
-//using JwtApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,7 +57,8 @@ left outer join action on log.action = action.id_action
 left outer join field on log.field = field.id_field
 left outer join asi on asi.id_asi = log.asi
 left outer join asi_user on asi_user.id_asi_user = asi.asi_user
-left outer join asi_user as adv on asi_user.advisor = adv.id_asi_user";
+left outer join asi_user as adv on asi_user.advisor = adv.id_asi_user
+ORDER BY log.date DESC";
 
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -94,7 +93,7 @@ left outer join field on log.field = field.id_field
 left outer join asi on asi.id_asi = log.asi
 left outer join asi_user on asi_user.id_asi_user = asi.asi_user
 left outer join asi_user as adv on asi_user.advisor = adv.id_asi_user
-where adv.id_asi_user = @UserId";
+where adv.id_asi_user = @UserId ORDER BY log.date DESC;";
 
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -131,7 +130,7 @@ left outer join field on log.field = field.id_field
 left outer join asi on asi.id_asi = log.asi
 left outer join asi_user on asi_user.id_asi_user = asi.asi_user
 left outer join asi_user as adv on asi_user.advisor = adv.id_asi_user
-where asi_user.profile in (select asi_user.profile from asi_user  where asi_user.id_asi_user = @UserId)";
+where asi_user.profile in (select asi_user.profile from asi_user  where asi_user.id_asi_user = @UserId) ORDER BY log.date DESC;";
 
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -146,6 +145,36 @@ where asi_user.profile in (select asi_user.profile from asi_user  where asi_user
                     myCommand.Parameters.AddWithValue("@UserId", currentUser.AsiUserId);
              
 
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+        [HttpGet("api/studentAdvisorHistory")]
+        [Authorize(Roles = "Administrator")]
+        public JsonResult GetStudentAdvisorHistory()
+        {
+            string query = @"
+               SELECT student_advisor_state.id_student_advisor, asi_user.name as student_name,  asi_user.surname  as student_surname, adv.name  as advisor_name, adv.surname  as advisor_surname, student_advisor_state.start_date, student_advisor_state.end_date from dbo.student_advisor_state
+               left outer  join asi_user on asi_user.id_asi_user = student_advisor_state.student
+               left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);
                     myReader.Close();

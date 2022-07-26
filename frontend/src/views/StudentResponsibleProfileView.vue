@@ -18,7 +18,7 @@
                 </h4>
               </div>
               <div class="col-md-auto" v-if="asiStudentState !== null">
-                <div id="approvation">
+                <!-- <div id="approvation">
                   <div v-if="asiStudentState.profile_responsible_approvation">
                     <button type="button" class="btn btn-success">
                       Approved
@@ -31,10 +31,10 @@
                       <i class="fas fa-loader"></i>
                     </button>
                   </div>
-                </div>
+                </div> -->
               </div>
               <div class="col col-lg-2" v-if="asiStudentState !== null">
-                <div id="approvation">
+                <!-- <div id="approvation">
                   <div
                     v-if="
                       asiStudentState.profile_responsible_approvation === false
@@ -57,7 +57,7 @@
                       Remove approvation
                     </button>
                   </div>
-                </div>
+                </div> -->
               </div>
               <div class="col col-lg-2">
                 <div v-if="userData[0] !== null">

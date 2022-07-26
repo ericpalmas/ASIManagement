@@ -215,10 +215,13 @@ select id_asi_user, name, surname, email, modality, profile, advisor, enrollment
             string query = @"                          
                        UPDATE asi_user
                        SET  asi_user.advisor = @AdvisorId
-                       WHERE asi_user.id_asi_user = @StudentId;
-                       select asi_user.id_asi_user, asi_user.name, asi_user.surname,asi_user.email,asi_user.advisor, asi_user.expired, user_type.id_user_type,user_type.name as user_type_name from asi_user 
-                       inner join user_type on asi_user.role = user_type.id_user_type
-		               where asi_user.expired is null";
+                       WHERE asi_user.id_asi_user = @StudentId;";
+
+            query += "INSERT INTO dbo.student_advisor_state(student, advisor, start_date) values (@StudentId,@AdvisorId,GETDATE())";
+
+            query += "select asi_user.id_asi_user, asi_user.name, asi_user.surname,asi_user.email,asi_user.advisor, asi_user.expired, user_type.id_user_type,user_type.name as user_type_name from asi_user inner join user_type on asi_user.role = user_type.id_user_type where asi_user.expired is null;";
+
+
 
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -243,18 +246,19 @@ select id_asi_user, name, surname, email, modality, profile, advisor, enrollment
             return new JsonResult(table);
         }
 
-        [HttpGet("api/asiuser/stopFollowStudent/{id}")]
+        [HttpPost("api/asiuser/stopFollowStudent/{id}")]
         [Authorize(Roles = "Advisor, StudentAdvisor, Administrator")]
-        public JsonResult stopFollowStudent(int id)
+        public JsonResult stopFollowStudent(AsiUser advisor, int id)
         {
 
             string query = @"                          
                        UPDATE asi_user
                        SET  asi_user.advisor = null
-                       WHERE asi_user.id_asi_user = @StudentId;
-                       select asi_user.id_asi_user, asi_user.name, asi_user.surname,asi_user.email,asi_user.advisor, asi_user.expired, user_type.id_user_type,user_type.name as user_type_name from asi_user 
-                       inner join user_type on asi_user.role = user_type.id_user_type
-	                   where asi_user.expired is null";
+                       WHERE asi_user.id_asi_user = @StudentId;";
+
+            query += "UPDATE dbo.student_advisor_state SET student_advisor_state.end_date = GETDATE() WHERE student_advisor_state.student = @StudentId AND student_advisor_state.advisor = @AdvisorId AND student_advisor_state.end_date is null;";
+
+            query += "select asi_user.id_asi_user, asi_user.name, asi_user.surname,asi_user.email,asi_user.advisor, asi_user.expired, user_type.id_user_type,user_type.name as user_type_name from asi_user inner join user_type on asi_user.role = user_type.id_user_type where asi_user.expired is null;";
 
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -266,6 +270,7 @@ select id_asi_user, name, surname, email, modality, profile, advisor, enrollment
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
+                    myCommand.Parameters.AddWithValue("@AdvisorId", advisor.AsiUserId);
                     myCommand.Parameters.AddWithValue("@StudentId", id);
                     myReader = myCommand.ExecuteReader();
                     table.Load(myReader);

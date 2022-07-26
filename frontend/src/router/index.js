@@ -27,6 +27,8 @@ import TutorStudentListView from '../views/TutorStudentListView'
 import TutorProjectListView from '../views/TutorProjectListView'
 import TutorStudentView from '../views/TutorStudentView'
 
+import StudentAdvisorHistoryAdministratorView from '../views/StudentAdvisorHistoryAdministratorView'
+
 
 const routes = [
   {
@@ -151,21 +153,22 @@ const routes = [
     name: 'TutorStudentListView',
     component: TutorStudentListView
   },
-
   {
     path: '/TutorProjectList',
     name: 'TutorProjectListView',
     component: TutorProjectListView
   },
-
-  
   {
     path: '/TutorStudent/:studentId',
     name: 'TutorStudentView',
     component: TutorStudentView
   },
+  {
+    path: '/StudentAdvisorHistoryAdministrator',
+    name: 'StudentAdvisorHistoryAdministratorView',
+    component: StudentAdvisorHistoryAdministratorView
+  },
 
-  
 
 ]
 
