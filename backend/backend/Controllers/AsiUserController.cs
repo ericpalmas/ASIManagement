@@ -465,12 +465,14 @@ select id_asi_user, name, surname, email, modality, profile, advisor, enrollment
             var currentUser = GetCurrentUser();
 
             string query = @"                    
- select * from asi_module
+select asi_user.id_asi_user, asi_user.name, asi_user.surname, adv.name as advisor_name, adv.surname as advisor_surname from asi_module
 inner join module on module.id_module = asi_module.module
 inner join asi_module_group on asi_module_group.id_asi_module_group = asi_module.asi_module_group
 inner join asi on asi.id_asi = asi_module_group.asi
 inner join asi_user on asi_user.id_asi_user = asi.asi_user
-where module.responsible = 5077 AND asi_module.expired is null";
+left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
+where module.responsible = @UserId AND asi_module.expired is null AND (module.module_group = 4 OR module.module_group = 6)
+group by asi_user.id_asi_user, asi_user.name, asi_user.surname, adv.name, adv.surname ";
 
             Console.WriteLine(currentUser.AsiUserId);
 

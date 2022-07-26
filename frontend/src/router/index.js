@@ -23,6 +23,10 @@ import LogsProfileResponsibleView from '../views/LogsProfileResponsibleView'
 import ModuleListAdministratorView from '../views/ModuleListAdministratorView'
 import TutorListAdministratorView from '../views/TutorListAdministratorView'
 
+import TutorStudentListView from '../views/TutorStudentListView'
+import TutorProjectListView from '../views/TutorProjectListView'
+import TutorStudentView from '../views/TutorStudentView'
+
 
 const routes = [
   {
@@ -141,7 +145,28 @@ const routes = [
     path: '/TutorListAdministrator',
     name: 'TutorListAdministratorView',
     component: TutorListAdministratorView
-  }
+  },
+  {
+    path: '/TutorStudentList',
+    name: 'TutorStudentListView',
+    component: TutorStudentListView
+  },
+
+  {
+    path: '/TutorProjectList',
+    name: 'TutorProjectListView',
+    component: TutorProjectListView
+  },
+
+  
+  {
+    path: '/TutorStudent/:studentId',
+    name: 'TutorStudentView',
+    component: TutorStudentView
+  },
+
+  
+
 ]
 
 const router = createRouter({

@@ -291,7 +291,7 @@ export default {
     Navbar,
     Sidebar
   },
-  methods: {
+  methods: { 
     ...mapActions(['fetchTutors']),
     ...mapActions(['fetchAvailableStudents']),
     ...mapActions(['followStudent']),

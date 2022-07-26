@@ -75,22 +75,8 @@
                         </div>
                       </td>
                     </tr>
-                    <tr>
-                      <td style="width: 40 %; padding-left: 4%">
-                        <div style="text-align: left">Istitute:</div>
-                      </td>
-                      <td style="width: 40 %; padding-left: 4%">
-                        <div style="text-align: left">ISIN</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style="width: 40 %; padding-left: 4%">
-                        <div style="text-align: left">Istitute director:</div>
-                      </td>
-                      <td style="width: 40 %; padding-left: 4%">
-                        <div style="text-align: left">Prof. Tiziano Leidi</div>
-                      </td>
-                    </tr>
+         
+
                     <tr>
                       <td style="width: 40 %; padding-left: 4%">
                         <div style="text-align: left">Research areas</div>
@@ -151,7 +137,7 @@ import { sidebarWidth } from '../components/sidebar/state'
 
 export default {
   name: 'AdministrativeDataView',
-  props: ['userId'],
+  props: ['studentId'],
   setup() {
     return { sidebarWidth }
   },
@@ -160,7 +146,8 @@ export default {
     Sidebar
   },
   methods: {
-    ...mapActions(['fetchUserData'])
+    ...mapActions(['fetchSpecificUserData'])
+
     //...mapActions(['fetchLoggedUser'])
   },
   computed: {
@@ -172,7 +159,7 @@ export default {
     // console.log(this.loggedUser[0])
 
     //if (this.loggedUser[0]) {
-    this.fetchUserData()
+    this.fetchSpecificUserData(this.$route.params.studentId)
     //}
   }
 }

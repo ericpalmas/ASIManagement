@@ -5,12 +5,13 @@ const state = {
 }
 
 const getters = {
-  asiProjects: (state) => state.projects
+  //asiProjects: (state) => state.projects
+  tutorProjects: (state => state.projects)
 }
 
 const actions = {
-  async fetchProjects({ commit }) {
-    const response = await axios.get('http://localhost:8732/api/asi/projects', {
+  async fetchTutorProjects({ commit }) {
+    const response = await axios.get('http://localhost:8732/api/tutorProjects', {
       headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
     })
 

@@ -239,7 +239,7 @@ export default {
           loggedUser.Role === 'TutorAdvisorProfileResponsible' ||
           loggedUser.Role === 'TutorProfileResponsible' 
         "
-        to="/AsiProjects"
+        to="/TutorProjectList"
         icon="fas fa-columns"
       >
         Projects
@@ -251,8 +251,8 @@ export default {
           loggedUser.Role === 'TutorAdvisorProfileResponsible' ||
           loggedUser.Role === 'TutorProfileResponsible' 
         "
-        to="/Students"
-        icon="fas fa-columns"
+        to="/TutorStudentList"
+        icon="fas fa-users"
       >
         Students
       </SidebarLink>

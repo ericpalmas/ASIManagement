@@ -62,7 +62,7 @@ namespace backend.Controllers
  where asi.asi_user = @UserId AND module.module_group = 4*/
 
      
-        [Route("api/asi/tutorProjects")]
+        [Route("api/tutorProjects")]
         [HttpGet]
         [Authorize(Roles = "Tutor, TutorAdvisor, TutorAdvisorProfileResponsible, TutorProfileResponsible")]
         public JsonResult GetTutorProjects()
@@ -70,8 +70,12 @@ namespace backend.Controllers
             var currentUser = GetCurrentUser();
 
             string query = @" 
-                select* from dbo.module
-                where module.responsible = @UserId AND module.expired is null
+select module.id_module, module.name, module.code, module.ects, asi_user.name, asi_user.surname from dbo.module
+inner join asi_module on asi_module.module = module.id_module
+inner join asi_module_group on asi_module_group.id_asi_module_group = asi_module.asi_module_group
+inner join asi on asi.id_asi = asi_module_group.asi
+inner join asi_user on asi_user.id_asi_user = asi.asi_user
+where module.responsible = @UserId AND module.expired is null AND asi_module.expired is null
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");

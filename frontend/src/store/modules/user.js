@@ -35,6 +35,15 @@ const getters = {
 }
 
 const actions = {
+  async fetchTutorStudents({ commit }) {
+    const response = await axios.get(
+      'http://localhost:8732/api/asiuser/tutorStudents',
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+    commit('setStudents', response.data)
+  },
   async fetchTutors({ commit }) {
     const response = await axios.get(
       'http://localhost:8732/api/asiuser/tutors',
