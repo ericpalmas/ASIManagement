@@ -502,7 +502,7 @@ export default {
   }),
 
   methods: {
-        ...mapActions(['fetchTutors']),
+    ...mapActions(['fetchTutors']),
 
     ...mapActions(['fetchOldProjects']),
     ...mapActions(['fetchOldAsiSupplementaryModules']),

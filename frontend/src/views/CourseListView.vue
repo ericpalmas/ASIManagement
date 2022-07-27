@@ -66,7 +66,29 @@
                   </td>
                 </tr>
               </tbody>
+          
+              
             </table>
+            <br/><br/>
+            <table class="pl-4 ml-4">
+              <tbody >
+                <tr style="border: none">
+                   <td colspan="1" style="width: 20%; textAlign: start; color: black"> Legenda </td>
+                   <td colspan="1" style="width: 10%; textAlign: center; color: black"> X </td>
+                   <td colspan="5" style="width: 80%; textAlign: start; color: black"> Corso si tiene </td>
+                </tr>
+                <tr style="border: none">
+                  <td colspan="1" style="width: 20%; textAlign: start; color: black">  </td>
+                  <td colspan="1" style="width: 10%; textAlign: center; color: black"> (X) </td>
+                  <td colspan="5" style="width: 100%; textAlign: start; color: black"> Corso si tiene solo se numero di iscritti sufficienti </td>
+                </tr>
+                <tr style="border: none">
+                  <td colspan="1" style="width: 20%; textAlign: start; color: black">  </td>
+                  <td colspan="1" style="width: 10%; textAlign: center; color: black"> * </td>
+                  <td colspan="5" style="width: 100%; textAlign: start; color: black">  Corso potrebbe essere spalmato su due semestri </td>
+                </tr> 
+              </tbody>
+            </table>   
           </div>
         </div>
       </div>

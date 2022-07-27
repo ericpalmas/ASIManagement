@@ -5,7 +5,9 @@ const state = {
   ftpModules: [],
   tsmModules: [],
   cmModules: [],
-  supplementaryModules: []
+  supplementaryModules: [],
+  moduleGroups: [],
+  sites: []
 }
 
 const getters = {
@@ -13,10 +15,26 @@ const getters = {
   allFtpModules: (state) => state.ftpModules,
   allTsmModules: (state) => state.tsmModules,
   allCmModules: (state) => state.cmModules,
-  allSupplementaryModules: (state) => state.supplementaryModules
+  allSupplementaryModules: (state) => state.supplementaryModules,
+  moduleGroups: (state) => state.moduleGroups,
+  sites: (state) => state.sites,
 }
 
 const actions = {
+  async fetchSites({ commit }) {
+    const response = await axios.get('http://localhost:8732/api/sites', {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
+
+    commit('setSites', response.data)
+  },
+  async fetchModuleGroups({ commit }) {
+    const response = await axios.get('http://localhost:8732/api/moduleGroups', {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
+
+    commit('setModuleGroups', response.data)
+  },
   async fetchModules({ commit }) {
     const response = await axios.get('http://localhost:8732/api/module', {
       headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
@@ -63,7 +81,9 @@ const mutations = {
   setTsmModules: (state, tsmModules) => (state.tsmModules = tsmModules),
   setCmModules: (state, cmModules) => (state.cmModules = cmModules),
   setSupplementaryModules: (state, supplementaryModules) =>
-    (state.supplementaryModules = supplementaryModules)
+    (state.supplementaryModules = supplementaryModules),
+  setModuleGroups: (state, moduleGroups) => (state.moduleGroups = moduleGroups),
+  setSites: (state, sites) => (state.sites = sites)
 }
 
 export default {

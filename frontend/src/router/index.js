@@ -28,6 +28,7 @@ import TutorProjectListView from '../views/TutorProjectListView'
 import TutorStudentView from '../views/TutorStudentView'
 
 import StudentAdvisorHistoryAdministratorView from '../views/StudentAdvisorHistoryAdministratorView'
+import ModuleCreationView from '../views/ModuleCreationView'
 
 
 const routes = [
@@ -168,8 +169,12 @@ const routes = [
     name: 'StudentAdvisorHistoryAdministratorView',
     component: StudentAdvisorHistoryAdministratorView
   },
-
-
+  {
+    path: '/ModuleCreation',
+    name: 'ModuleCreationView',
+    component: ModuleCreationView
+  },
+  
 ]
 
 const router = createRouter({

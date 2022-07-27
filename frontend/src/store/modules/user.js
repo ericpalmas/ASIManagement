@@ -11,6 +11,7 @@ const state = {
   students: [],
   tutors: [],
   profilesResponsible: [],
+  responsibles: [],
   isLogin: false,
   token: null,
   user: null,
@@ -26,6 +27,7 @@ const getters = {
   students: (state) => state.students,
   advisors: (state) => state.advisors,
   tutors: (state) => state.tutors,
+  responsibles: (state) => state.responsibles,
   profilesResponsible: (state) => state.profilesResponsible,
   userType: (state) => state.userType,
   token: (state) => state.token,
@@ -35,6 +37,17 @@ const getters = {
 }
 
 const actions = {
+
+  
+  async fetchResponsibles({ commit }) {
+    const response = await axios.get(
+      'http://localhost:8732/api/asiuser/moduleResponsibles',
+      {
+        headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+      }
+    )
+    commit('setResponsibles', response.data)
+  },
   async fetchTutorStudents({ commit }) {
     const response = await axios.get(
       'http://localhost:8732/api/asiuser/tutorStudents',
@@ -343,6 +356,8 @@ const mutations = {
   setStudents: (state, students) => (state.students = students),
 
   setTutors: (state, tutors) => (state.tutors = tutors),
+
+  setResponsibles: (state, responsibles) => (state.responsibles = responsibles),
 
   setProfilesResponsible: (state, profilesResponsible) =>
     (state.profilesResponsible = profilesResponsible),

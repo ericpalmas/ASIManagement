@@ -60,6 +60,64 @@ where not module.module_group = 4 AND not module.module_group = 6 AND module.exp
             return new JsonResult(table);
         }
 
+        [Route("api/moduleGroups")]
+        [HttpGet]
+        [Authorize(Roles = "Administrator")]
+        public JsonResult GetModuleGroups()
+        {
+            string query = @" 
+               select * from module_group
+               where module_group.expired is null;";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+        [Route("api/sites")]
+        [HttpGet]
+        [Authorize(Roles = "Administrator")]
+        public JsonResult GetSites()
+        {
+            string query = @" 
+                 select * from site
+                 where site.expired is null;";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
         [Route("api/ftp")]
         [HttpGet]
         [Authorize(Roles = "Student, Advisor, StudentAdvisor, Administrator")]

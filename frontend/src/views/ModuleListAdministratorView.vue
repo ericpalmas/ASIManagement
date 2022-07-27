@@ -25,11 +25,11 @@
                           }"
                         >
                           <h6 style="display: inline">
-                            {{ module.code }} 
+                            {{ module.code }}
                           </h6>
                           &nbsp;&nbsp;
                           <h6 style="display: inline">
-                          {{ module.module_name }}
+                            {{ module.module_name }}
                           </h6>
                           &nbsp;&nbsp;
                           <p style="display: inline">
@@ -43,15 +43,11 @@
                           <p style="display: inline">
                             {{ module.site_initials }}
                           </p>
-                            &nbsp;&nbsp;
+                          &nbsp;&nbsp;
                           <p style="display: inline">
                             {{ module.responsible_name }}
                             {{ module.responsible_surname }}
                           </p>
-
-                       
-
-                          
                         </router-link>
                       </div>
                       <div class="col-sm-4">
@@ -70,75 +66,40 @@
               </div>
             </div>
 
-            <!-- <button
-              type="button"
-              class="btn btn-outline-primary"
-              data-bs-toggle="modal"
-              data-bs-target="#exampleModal"
-            >
-              <i class="fas fa-plus-circle"></i>
-            </button>
-            <div
-              class="modal fade"
-              id="exampleModal"
-              tabindex="-1"
-              aria-labelledby="exampleModalLabel"
-              aria-hidden="true"
-            >
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">
-                      Add student
-                    </h5>
-                    <button
-                      type="button"
-                      class="btn-close"
-                      data-bs-dismiss="modal"
-                      aria-label="Close"
-                    ></button>
-                  </div>
-
-                  <div class="modal-body">
-                    <p>Student list</p>
-
-                    <select
-                      class="form-select form-select-sm"
-                      aria-label=".form-select-sm example"
-                      @change="onChangeStudent($event)"
-                      v-model="id"
-                    >
-                      <option
-                        v-for="student in availableStudents"
-                        :key="student.id_asi_user"
-                        v-bind:value="student.id_asi_user"
-                      >
-                        Name:&nbsp;&nbsp;{{ student.name }},
-                        Surname:&nbsp;&nbsp;{{ student.surname }},
-                        Email:&nbsp;&nbsp;{{ student.email }}
-                      </option>
-                    </select>
-                  </div>
-                  <div class="modal-footer">
-                    <button
-                      type="button"
-                      class="btn btn-secondary"
-                      data-bs-dismiss="modal"
-                    >
-                      Close
-                    </button>
-                    <button
-                      type="button"
-                      class="btn btn-primary"
-                      data-bs-dismiss="modal"
-                      @click="addStudent"
-                    >
-                      Save changes
-                    </button>
-                  </div>
+            <div class="row justify-content-md-start pt-4">
+              <div class="col col-lg-2" style="width: 20%">
+                <router-link
+                  style="text-decoration: none"
+                  :to="{
+                    name: 'ModuleCreationView',
+                    params: {}
+                  }"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-outline-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModal"
+                  >
+                    <i class="fas fa-file-import"></i>
+                    Add module
+                  </button>
+                </router-link>
+              </div>
+              <div class="col col-lg-2" style="width: 35%">
+                <div class="input-group mb-3">
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="inputGroupFile02"
+                  />
+                  <label class="input-group-text" for="inputGroupFile02">
+                    Upload
+                  </label>
                 </div>
               </div>
-            </div> -->
+            </div>
+
           </div>
         </div>
       </div>
@@ -180,7 +141,7 @@ export default {
       console.log(removedId)
     }
   },
- 
+
   computed: {
     ...mapGetters(['allModules']),
     ...mapGetters(['loggedUser'])

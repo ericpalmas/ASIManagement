@@ -503,6 +503,35 @@ group by asi_user.id_asi_user, asi_user.name, asi_user.surname, adv.name, adv.su
             return new JsonResult(table);
         }
 
+        [HttpGet("api/asiuser/moduleResponsibles")]
+        [Authorize(Roles = "Administrator")]
+        public JsonResult GetModuleResponsibles()
+        {
+            string query = @"                    
+                select * from asi_user
+                where asi_user.role != 1 AND asi_user.expired is null;";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
         [HttpPost("api/asiuser/login")]
         public JsonResult Login(AsiUser userLogin)
         {
