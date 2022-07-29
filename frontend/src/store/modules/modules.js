@@ -7,6 +7,7 @@ const state = {
   cmModules: [],
   supplementaryModules: [],
   moduleGroups: [],
+  moduleProfiles: [],
   sites: []
 }
 
@@ -17,10 +18,43 @@ const getters = {
   allCmModules: (state) => state.cmModules,
   allSupplementaryModules: (state) => state.supplementaryModules,
   moduleGroups: (state) => state.moduleGroups,
+  moduleProfiles: (state) => state.moduleProfiles,
   sites: (state) => state.sites,
 }
 
 const actions = {
+
+  async registerModule(_, { code, name, description, ects, site, responsible, moduleProfile, moduleGroup , moduleCalendar }) {
+    console.log(code, name, description, ects, site, responsible, moduleProfile, moduleGroup , moduleCalendar)
+  
+    await axios.post(
+        'http://localhost:8732/api/module',
+        {
+          code: code,
+          name: name,
+          description: description,
+          ects: ects,
+          site: site,
+          responsible: responsible,
+          module_profile: moduleProfile,
+          module_group: moduleGroup,
+          moduleCalendar: moduleCalendar
+        },{
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token')
+          }
+        }
+      )
+
+  },
+
+  async fetchModuleProfiles({ commit }) {
+    const response = await axios.get('http://localhost:8732/api/moduleProfiles', {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
+
+    commit('setModuleProfiles', response.data)
+  },
   async fetchSites({ commit }) {
     const response = await axios.get('http://localhost:8732/api/sites', {
       headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
@@ -83,7 +117,9 @@ const mutations = {
   setSupplementaryModules: (state, supplementaryModules) =>
     (state.supplementaryModules = supplementaryModules),
   setModuleGroups: (state, moduleGroups) => (state.moduleGroups = moduleGroups),
-  setSites: (state, sites) => (state.sites = sites)
+  setModuleProfiles: (state, moduleProfiles) => (state.moduleProfiles = moduleProfiles),
+  setSites: (state, sites) => (state.sites = sites),
+
 }
 
 export default {

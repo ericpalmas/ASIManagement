@@ -7,6 +7,52 @@
         <div class="card-body">
           <h4 class="container pb-4">Module creation</h4>
           <div v-if="loggedUser !== undefined && loggedUser !== null">
+            <div id="errors">
+              <div
+                class="alert alert-danger"
+                role="alert"
+                v-if="emptyFieldsError"
+                :v-bind:emptyFieldsError="emptyFieldsError"
+              >
+                Empty field
+              </div>
+
+              <!-- <div
+                class="alert alert-danger"
+                role="alert"
+                v-if="moduleResponsibleEmptyError"
+                :v-bind:moduleResponsibleEmptyError="moduleResponsibleEmptyError"
+              >
+                Module responsible is not defined
+              </div>
+
+              <div
+                class="alert alert-danger"
+                role="alert"
+                v-if="moduleGroupEmptyError"
+                :v-bind:moduleGroupEmptyError="moduleGroupEmptyError"
+              >
+                Module group is not defined
+              </div>
+
+              <div
+                class="alert alert-danger"
+                role="alert"
+                v-if="moduleSiteEmptyError"
+                :v-bind:moduleSiteEmptyError="moduleSiteEmptyError"
+              >
+                Module site is not defined
+              </div> -->
+
+              <div
+                class="alert alert-success"
+                role="alert"
+                v-if="pageSaved"
+                :v-bind:pageSaved="pageSaved"
+              >
+                Page saved correctly
+              </div>
+            </div>
             <div class="card">
               <div class="card-body">
                 <form>
@@ -138,6 +184,32 @@
                           </select>
                         </div>
                       </div>
+
+                      <div class="mb-3 row">
+                        <label
+                          for="inputPassword"
+                          class="col-sm-3 col-form-label"
+                        >
+                          Module profile
+                        </label>
+
+                        <div class="col-sm-6">
+                          <select
+                            class="form-select form-select-sm"
+                            aria-label=".form-select-sm example"
+                            v-model="moduleProfile"
+                          >
+                            <option
+                              v-for="moduleProfile in moduleProfiles"
+                              :key="moduleProfile.id_module_profile"
+                              :value="moduleProfile.id_module_profile"
+                            >
+                              {{ moduleProfile.name }}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+
                       <div class="mb-3 row">
                         <label
                           for="inputPassword"
@@ -165,21 +237,19 @@
                     </div>
                   </div>
                   <label
-                          for="exampleFormControlInput1"
-                          class="col-sm-3 col-form-label pb-4"
-                        >
-                          Module calendar
-                 </label>
+                    for="exampleFormControlInput1"
+                    class="col-sm-3 col-form-label pb-4"
+                  >
+                    Module calendar
+                  </label>
 
                   <div class="row">
-                    
-
                     <div class="col">
                       <div class="m-1 row">
                         <table class="table" style="width: 88%">
-                          <tbody >
-                            <tr >
-                              <td colspan="2" class="table-active" >
+                          <tbody>
+                            <tr>
+                              <td colspan="2" class="table-active">
                                 <label
                                   for="exampleColorInput"
                                   class="form-label"
@@ -199,45 +269,134 @@
                               </td>
                             </tr>
                             <tr v-for="(module, i) in moduleCalendar" :key="i">
-                              <td style="width: 30%;">
+                              <td style="width: 30%">
                                 <select
                                   class="form-select form-select-sm"
                                   aria-label=".form-select-sm example"
+                                  @change="onChangeSemester($event, i)"
                                 >
-                                  <option>
-                                    Semester:&nbsp;Spring,&nbsp;&nbsp; Start:&nbsp;&nbsp;2022, &nbsp;&nbsp; End:&nbsp;2022
+                                  <option
+                                    :value="
+                                      JSON.stringify({
+                                        start_year: new Date().getFullYear(),
+                                        end_year: new Date().getFullYear(),
+                                        fall_semester: 0,
+                                        spring_semester: 1,
+                                        fall_enough_sub: 0,
+                                        spring_enough_sub: 0
+                                      })
+                                    "
+                                  >
+                                    Semester:&nbsp;Spring,&nbsp;&nbsp;
+                                    Start:&nbsp;&nbsp;
+                                    {{ new Date().getFullYear() }}, &nbsp;&nbsp;
+                                    End:&nbsp;{{ new Date().getFullYear() }}
                                   </option>
-                                  <option>
-                                    Semester:&nbsp;Fall,&nbsp;&nbsp; Start:&nbsp;&nbsp;2022, &nbsp;&nbsp; End:&nbsp;2023
+                                  <option
+                                    :value="
+                                      JSON.stringify({
+                                        start_year: new Date().getFullYear(),
+                                        end_year: new Date().getFullYear() + 1,
+                                        fall_semester: 1,
+                                        spring_semester: 0,
+                                        fall_enough_sub: 0,
+                                        spring_enough_sub: 0
+                                      })
+                                    "
+                                  >
+                                    Semester:&nbsp;Fall,&nbsp;&nbsp;
+                                    Start:&nbsp;&nbsp;{{
+                                      new Date().getFullYear()
+                                    }}, &nbsp;&nbsp; End:&nbsp;{{
+                                      new Date().getFullYear() + 1
+                                    }}
                                   </option>
-                                    <option>
-                                    Semester:&nbsp;Spring,&nbsp;&nbsp; Start:&nbsp;&nbsp;2023, &nbsp;&nbsp; End:&nbsp;2023
+                                  <option
+                                    :value="
+                                      JSON.stringify({
+                                        start_year: new Date().getFullYear() + 1,
+                                        end_year: new Date().getFullYear() + 1,
+                                        fall_semester: 0,
+                                        spring_semester: 1,
+                                        fall_enough_sub: 0,
+                                        spring_enough_sub: 0
+                                      })
+                                    "
+                                  >
+                                    Semester:&nbsp;Spring,&nbsp;&nbsp;
+                                    Start:&nbsp;&nbsp;{{
+                                      new Date().getFullYear() + 1
+                                    }}, &nbsp;&nbsp; End:&nbsp;{{
+                                      new Date().getFullYear() + 1
+                                    }}
                                   </option>
-                                  <option>
-                                    Semester:&nbsp;Fall,&nbsp;&nbsp; Start:&nbsp;&nbsp;2023, &nbsp;&nbsp; End:&nbsp;2024
+                                  <option
+                                    :value="
+                                      JSON.stringify({
+                                        start_year: new Date().getFullYear() + 1,
+                                        end_year: new Date().getFullYear() + 2,
+                                        fall_semester: 1,
+                                        spring_semester: 0,
+                                        fall_enough_sub: 0,
+                                        spring_enough_sub: 0
+                                      })
+                                    "
+                                  >
+                                    Semester:&nbsp;Fall,&nbsp;&nbsp;
+                                    Start:&nbsp;&nbsp;{{
+                                      new Date().getFullYear() + 1
+                                    }}, &nbsp;&nbsp; End:&nbsp;{{
+                                      new Date().getFullYear() + 2
+                                    }}
                                   </option>
-                                    <option>
-                                    Semester:&nbsp;Spring,&nbsp;&nbsp; Start:&nbsp;&nbsp;2024, &nbsp;&nbsp; End:&nbsp;2024
+                                  <option
+                                    :value="
+                                      JSON.stringify({
+                                        start_year: new Date().getFullYear() + 2,
+                                        end_year: new Date().getFullYear() + 2,
+                                        fall_semester: 0,
+                                        spring_semester: 1,
+                                        fall_enough_sub: 0,
+                                        spring_enough_sub: 0
+                                      })
+                                    "
+                                  >
+                                    Semester:&nbsp;Spring,&nbsp;&nbsp;
+                                    Start:&nbsp;&nbsp;{{
+                                      new Date().getFullYear() + 2
+                                    }}, &nbsp;&nbsp; End:&nbsp;{{
+                                      new Date().getFullYear() + 2
+                                    }}
                                   </option>
-                                  <option>
-                                    Semester:&nbsp;Fall,&nbsp;&nbsp; Start:&nbsp;&nbsp;2024, &nbsp;&nbsp; End:&nbsp;2025
+                                  <option
+                                    :value="
+                                      JSON.stringify({
+                                        start_year: new Date().getFullYear() + 2,
+                                        end_year: new Date().getFullYear() + 3,
+                                        fall_semester: 1,
+                                        spring_semester: 0,
+                                        fall_enough_sub: 0,
+                                        spring_enough_sub: 0
+                                      })
+                                    "
+                                  >
+                                    Semester:&nbsp;Fall,&nbsp;&nbsp;
+                                    Start:&nbsp;&nbsp;{{
+                                      new Date().getFullYear() + 2
+                                    }}, &nbsp;&nbsp; End:&nbsp;{{
+                                      new Date().getFullYear() + 3
+                                    }}
                                   </option>
-
-
-
-                         
-
-
                                 </select>
                               </td>
 
                               <td colspan="1" style="width: 5%">
-                                <div class="form-check" >
+                                <div class="form-check">
                                   <input
                                     class="form-check-input"
                                     type="checkbox"
-                                    value=""
                                     id="flexCheckDefault"
+                                    v-model="module.option"
                                   />
                                   <label
                                     class="form-check-label"
@@ -246,22 +405,8 @@
                                     Enought sub necessary
                                   </label>
                                 </div>
-                                <!-- <div class="form-check" >
-                                  <input
-                                    class="form-check-input"
-                                    type="checkbox"
-                                    value=""
-                                    id="flexCheckChecked"
-                                    checked
-                                  />
-                                  <label
-                                    class="form-check-label"
-                                    for="flexCheckChecked"
-                                  >
-                                    Spring
-                                  </label>
-                                </div> -->
                               </td>
+
                               <td style="width: 0%">
                                 <button
                                   type="button"
@@ -281,7 +426,7 @@
                 <button
                   type="button"
                   class="btn btn-secondary"
-                  @click="registerModule()"
+                  @click="addModule()"
                 >
                   Register
                 </button>
@@ -305,6 +450,7 @@ export default {
   name: 'ModuleCreationView',
   data: () => ({
     moduleGroup: -1,
+    moduleProfile: -1,
     responsible: -1,
     site: -1,
     studentId: -1,
@@ -313,7 +459,13 @@ export default {
     name: '',
     code: '',
     description: '',
-    moduleCalendar: []
+    //option: 0,
+    moduleCalendar: [],
+    emptyFieldsError: false,
+    // moduleResponsibleEmptyError: false,
+    // moduleGroupEmptyError: false,
+    // moduleSiteEmptyError: false,
+    pageSaved: false
   }),
   setup() {
     return { sidebarWidth }
@@ -325,8 +477,37 @@ export default {
   methods: {
     ...mapActions(['fetchLoggedUser']),
     ...mapActions(['fetchModuleGroups']),
+    ...mapActions(['fetchModuleProfiles']),
     ...mapActions(['fetchResponsibles']),
     ...mapActions(['fetchSites']),
+    ...mapActions(['registerModule']),
+
+    onChangeSemester(event, i) {
+      var obj = JSON.parse(event.target.value)
+      this.moduleCalendar[i].start_year = obj.start_year
+      this.moduleCalendar[i].end_year = obj.end_year
+      this.moduleCalendar[i].fall_semester = obj.fall_semester
+      this.moduleCalendar[i].spring_semester = obj.spring_semester
+      this.moduleCalendar[i].fall_enough_sub = obj.fall_enough_sub
+      this.moduleCalendar[i].spring_enough_sub = obj.spring_enough_sub
+      this.moduleCalendar[i].option = obj.option
+    },
+
+    //onChangeOption(i){
+
+    // if (this.moduleCalendar[i].spring_semester || this.moduleCalendar[i].spring_enough_sub) {
+
+    //   this.moduleCalendar[i].spring_semester = !this.moduleCalendar[i].spring_semester
+    //   this.moduleCalendar[i].spring_enough_sub = !this.moduleCalendar[i].spring_enough_sub
+
+    // } else if (this.moduleCalendar[i].fall_semester || this.moduleCalendar[i].fall_enough_sub) {
+
+    //   this.moduleCalendar[i].fall_semester = !this.moduleCalendar[i].fall_semester
+    //   this.moduleCalendar[i].fall_enough_sub = !this.moduleCalendar[i].fall_enough_sub
+    // }
+
+    //this.moduleCalendar[i].option = !this.moduleCalendar[i].option
+    //},
 
     deleteRow(i) {
       if (confirm('Do you really want to delete?')) {
@@ -334,26 +515,69 @@ export default {
       }
     },
     addNewRow() {
-      console.log('new year ')
       this.moduleCalendar.push({
-        year: 2022
+        start_year: 2022,
+        end_year: 2022,
+        fall_semester: 0,
+        spring_semester: 1,
+        fall_enough_sub: 0,
+        spring_enough_sub: 0,
+        option: 0
       })
+      //this.option = false
     },
 
-    registerModule: function () {
-      console.log(this.code)
-      console.log(this.name)
-      console.log(this.description)
-      console.log(this.site)
-      console.log(this.ects)
-      console.log(this.moduleGroup)
-      console.log(this.responsible)
+    addModule: function () {
+
+
+      if (
+        this.code !== '' &&
+        this.name !== '' &&
+        this.description !== '' &&
+        this.responsible !== -1 &&
+        this.site !== -1 &&
+        this.moduleGroup !== -1
+      ) {
+        this.emptyFieldsError = false
+
+        /* post request  */
+
+        for (var i = 0; i < this.moduleCalendar.length; i++) {
+          if (this.moduleCalendar[i].option) {
+            if (
+              this.moduleCalendar[i].spring_semester === 1
+            ) {
+              this.moduleCalendar[i].spring_semester = 0
+              this.moduleCalendar[i].spring_enough_sub = 1
+            } else if (
+              this.moduleCalendar[i].fall_semester === 1
+            ) {
+              this.moduleCalendar[i].fall_semester = 0
+              this.moduleCalendar[i].fall_enough_sub = 1
+            }
+          }
+        }
+        
+        const {
+            code, name, description, ects, site, responsible, moduleProfile, moduleGroup , moduleCalendar 
+        } = this
+
+        this.registerModule({
+            code, name, description, ects, site, responsible, moduleProfile, moduleGroup , moduleCalendar 
+        })
+
+        this.pageSaved = true
+
+      } else {
+        this.emptyFieldsError = true
+      }
     }
   },
 
   computed: {
     ...mapGetters(['loggedUser']),
     ...mapGetters(['moduleGroups']),
+    ...mapGetters(['moduleProfiles']),
     ...mapGetters(['responsibles']),
     ...mapGetters(['sites'])
   },
@@ -375,6 +599,7 @@ export default {
   created() {
     this.fetchLoggedUser()
     this.fetchModuleGroups()
+    this.fetchModuleProfiles()
     this.fetchResponsibles()
     this.fetchSites()
   }

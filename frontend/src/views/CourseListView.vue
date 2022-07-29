@@ -63,32 +63,77 @@
                     >
                       (X)
                     </span>
+                    <span
+                      v-else-if="
+                        calculateCalendar(year, module.id_module) === 0
+                      "
+                    ></span>
                   </td>
                 </tr>
               </tbody>
-          
-              
             </table>
-            <br/><br/>
+            <br />
+            <br />
             <table class="pl-4 ml-4">
-              <tbody >
+              <tbody>
                 <tr style="border: none">
-                   <td colspan="1" style="width: 20%; textAlign: start; color: black"> Legenda </td>
-                   <td colspan="1" style="width: 10%; textAlign: center; color: black"> X </td>
-                   <td colspan="5" style="width: 80%; textAlign: start; color: black"> Corso si tiene </td>
+                  <td
+                    colspan="1"
+                    style="width: 20%; textalign: start; color: black"
+                  >
+                    Legenda
+                  </td>
+                  <td
+                    colspan="1"
+                    style="width: 10%; textalign: center; color: black"
+                  >
+                    X
+                  </td>
+                  <td
+                    colspan="5"
+                    style="width: 80%; textalign: start; color: black"
+                  >
+                    Corso si tiene
+                  </td>
                 </tr>
                 <tr style="border: none">
-                  <td colspan="1" style="width: 20%; textAlign: start; color: black">  </td>
-                  <td colspan="1" style="width: 10%; textAlign: center; color: black"> (X) </td>
-                  <td colspan="5" style="width: 100%; textAlign: start; color: black"> Corso si tiene solo se numero di iscritti sufficienti </td>
+                  <td
+                    colspan="1"
+                    style="width: 20%; textalign: start; color: black"
+                  ></td>
+                  <td
+                    colspan="1"
+                    style="width: 10%; textalign: center; color: black"
+                  >
+                    (X)
+                  </td>
+                  <td
+                    colspan="5"
+                    style="width: 100%; textalign: start; color: black"
+                  >
+                    Corso si tiene solo se numero di iscritti sufficienti
+                  </td>
                 </tr>
                 <tr style="border: none">
-                  <td colspan="1" style="width: 20%; textAlign: start; color: black">  </td>
-                  <td colspan="1" style="width: 10%; textAlign: center; color: black"> * </td>
-                  <td colspan="5" style="width: 100%; textAlign: start; color: black">  Corso potrebbe essere spalmato su due semestri </td>
-                </tr> 
+                  <td
+                    colspan="1"
+                    style="width: 20%; textalign: start; color: black"
+                  ></td>
+                  <td
+                    colspan="1"
+                    style="width: 10%; textalign: center; color: black"
+                  >
+                    *
+                  </td>
+                  <td
+                    colspan="5"
+                    style="width: 100%; textalign: start; color: black"
+                  >
+                    Corso potrebbe essere spalmato su due semestri
+                  </td>
+                </tr>
               </tbody>
-            </table>   
+            </table>
           </div>
         </div>
       </div>
@@ -116,26 +161,42 @@ export default {
     ...mapActions(['fetchModuleCalendarYears']),
     ...mapActions(['fetchModuleCalendar']),
     calculateCalendar: function (year, id) {
+      if (id === 6060) console.log(year, id)
       var filteredArray = this.moduleCalendar.filter(
         (module) => module.id_module === id
       )
 
-      var res = filteredArray.some(
+      var existInThisYear = filteredArray.some(
         (item) =>
           item.start_year === year.start_year && item.end_year === year.end_year
       )
 
-      if (res) {
-        return 1
+      if (!existInThisYear) {
+        return 0
       } else {
-        var res2 = filteredArray.some(
+        if (id === 6060) console.log(filteredArray)
+
+        var current = filteredArray.filter(
+          (item) =>
+            item.start_year === year.start_year &&
+            item.end_year === year.end_year
+        )
+
+        var definitive = current.some(
+          (item) => item.fall_semester === true || item.spring_semester === true
+        )
+
+        if (definitive) {
+          return 1
+        }
+
+        var enoughtSub = current.some(
           (item) =>
             item.fall_enough_sub === true || item.spring_enough_sub === true
         )
-        if (res2) {
+
+        if (enoughtSub) {
           return 2
-        } else {
-          return 0
         }
       }
     }

@@ -33,12 +33,12 @@ namespace backend.Controllers
         public JsonResult GetCourses()
         {
             string query = @" 
-select id_module, code, module_profile.name as module_profile,module_profile.initials as module_profile_initials, module.name as module_name, module_group.initials as module_group_initials, ects, asi_user.name as responsible_name, asi_user.surname as responsible_surname ,site.name as site, site.initials as site_initials from dbo.module 
-inner join asi_user on asi_user.id_asi_user = module.responsible
-inner join site on module.site = site.id_site
-inner join module_group on module.module_group = module_group.id_module_group
-left outer join module_profile on module_profile.id_module_profile = module.module_profile
-where not module.module_group = 4 AND not module.module_group = 6 AND module.expired is null
+               select id_module, code, module_profile.name as module_profile,module_profile.initials as module_profile_initials, module.name as module_name, module_group.initials as module_group_initials, ects, asi_user.name as responsible_name, asi_user.surname as responsible_surname ,site.name as site, site.initials as site_initials from dbo.module 
+               inner join asi_user on asi_user.id_asi_user = module.responsible
+               inner join site on module.site = site.id_site
+               inner join module_group on module.module_group = module_group.id_module_group
+               left outer join module_profile on module_profile.id_module_profile = module.module_profile
+               where not module.module_group = 4 AND not module.module_group = 6 AND module.expired is null
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -60,6 +60,42 @@ where not module.module_group = 4 AND not module.module_group = 6 AND module.exp
             return new JsonResult(table);
         }
 
+        [Route("api/module")]
+        [HttpPost]
+        [Authorize(Roles = "Administrator")]
+        public JsonResult RegisterModule(Module request)
+        {
+            
+            string query = @"DECLARE @MODULE_ID int;";
+
+            query += "INSERT INTO dbo.module(code, name, description, ects, site, responsible, module_profile, module_group ) VALUES ('"+ request.code + "', '" + request.name + "', '" + request.description + "', " + request.ects + ", " + request.site + ", " + request.responsible + ", " + request.module_profile + ", " + request.module_group + ");";
+
+            query += "SELECT @MODULE_ID = SCOPE_IDENTITY();";
+
+            for (int i=0; i < request.moduleCalendar.Length; i++)
+            {
+                query += "INSERT INTO dbo.calendar_module(start_year, end_year, fall_semester, spring_semester, spring_enough_sub, fall_enough_sub, module) VALUES ( " + request.moduleCalendar[i].start_year + "," + request.moduleCalendar[i].end_year + ", " + request.moduleCalendar[i].fall_semester + ", " + request.moduleCalendar[i].spring_semester + ", " + request.moduleCalendar[i].spring_enough_sub + ", " + request.moduleCalendar[i].fall_enough_sub + ", @MODULE_ID);";
+            }
+
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
         [Route("api/moduleGroups")]
         [HttpGet]
         [Authorize(Roles = "Administrator")]
@@ -68,6 +104,35 @@ where not module.module_group = 4 AND not module.module_group = 6 AND module.exp
             string query = @" 
                select * from module_group
                where module_group.expired is null;";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
+        [Route("api/moduleProfiles")]
+        [HttpGet]
+        [Authorize(Roles = "Administrator")]
+        public JsonResult GetModuleProfiles()
+        {
+            string query = @" 
+               select * from dbo.module_profile
+               where module_profile.expired is null";
 
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
@@ -271,8 +336,5 @@ where not module.module_group = 4 AND not module.module_group = 6 AND module.exp
 
             return new JsonResult(table);
         }
-
-
     }
-
 }
