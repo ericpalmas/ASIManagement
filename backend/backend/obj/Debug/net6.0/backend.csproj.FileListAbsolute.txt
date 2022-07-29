@@ -80,3 +80,6 @@ C:\Users\Hp\Desktop\Master\individualProjects\Project2-ISAManegement\ASIManageme
 C:\Users\Hp\Desktop\Master\individualProjects\Project2-ISAManegement\ASIManagement\backend\backend\obj\Debug\net6.0\backend.pdb
 C:\Users\Hp\Desktop\Master\individualProjects\Project2-ISAManegement\ASIManagement\backend\backend\obj\Debug\net6.0\backend.genruntimeconfig.cache
 C:\Users\Hp\Desktop\Master\individualProjects\Project2-ISAManegement\ASIManagement\backend\backend\obj\Debug\net6.0\ref\backend.dll
+C:\Users\Hp\Desktop\Master\individualProjects\Project2-ISAManegement\ASIManagement\backend\backend\bin\Debug\net6.0\MailKit.dll
+C:\Users\Hp\Desktop\Master\individualProjects\Project2-ISAManegement\ASIManagement\backend\backend\bin\Debug\net6.0\MimeKit.dll
+C:\Users\Hp\Desktop\Master\individualProjects\Project2-ISAManegement\ASIManagement\backend\backend\bin\Debug\net6.0\BouncyCastle.Crypto.dll
