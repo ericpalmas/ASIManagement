@@ -6,6 +6,8 @@ using MimeKit;
 using MimeKit.Text;
 using backend.Services.EmailService;
 using backend.Models;
+using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controllers
 {
@@ -22,10 +24,21 @@ namespace backend.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
+
         public IActionResult SendEmail(EmailDto request)
         {
-            _emailService.SendEmail(request);
-            return Ok();
+            try
+            {
+                 _emailService.SendEmail(request);
+                 return Ok();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return BadRequest(ex.Message);
+            }
+           
         }
     }
 }
