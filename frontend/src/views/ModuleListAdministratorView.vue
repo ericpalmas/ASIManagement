@@ -17,13 +17,7 @@
                   <div class="container">
                     <div class="row">
                       <div class="col-sm-8">
-                        <router-link
-                          style="text-decoration: none"
-                          :to="{
-                            name: 'StudentView',
-                            params: { studentId: module.id_asi_user }
-                          }"
-                        >
+                      
                           <h6 style="display: inline">
                             {{ module.code }}
                           </h6>
@@ -48,14 +42,13 @@
                             {{ module.responsible_name }}
                             {{ module.responsible_surname }}
                           </p>
-                        </router-link>
                       </div>
                       <div class="col-sm-4">
                         <button
                           id="deleteStudent"
                           type="button"
                           class="btn btn-outline-danger"
-                          @click="removeModule(module.id_asi_user)"
+                          @click="deleteModule(module.id_module)"
                         >
                           <i class="fas fa-trash"></i>
                         </button>
@@ -130,6 +123,8 @@ export default {
   methods: {
     ...mapActions(['fetchModules']),
     ...mapActions(['fetchLoggedUser']),
+    ...mapActions(['removeModule']),
+
 
     onChangeStudent: function (event) {
       this.studentId = event.target.value
@@ -137,8 +132,12 @@ export default {
     addStudent: function () {
       this.followStudent({ id: this.id, advisorId: this.loggedUser.AsiUserId })
     },
-    removeModule: function (removedId) {
-      console.log(removedId)
+    deleteModule: function (removedId) {
+      if (confirm('Do you really want to remove?')) {
+        this.removeModule({
+          id: removedId
+        })
+      }
     }
   },
 

@@ -856,14 +856,6 @@ group by asi_user.id_asi_user, asi_user.name, asi_user.surname, adv.name, adv.su
         public JsonResult DeleteUser(int id)
         {
 
-            /*string query = "DELETE FROM dbo.asi_module WHERE asi_module_group in (select id_asi_module_group from dbo.asi_module_group where asi in(select asi.id_asi from dbo.asi where asi.asi_user = @UserId))";
-
-            query += "DELETE FROM dbo.asi_module_group WHERE asi_module_group.asi in (select asi.id_asi from dbo.asi where asi.asi_user = @UserId);";
-
-            query += "DELETE FROM dbo.asi WHERE asi.asi_user = @UserId;";
-
-            query += "DELETE FROM dbo.asi_user WHERE asi_user.id_asi_user = @UserId;";*/
-
             string query = "UPDATE dbo.asi_module SET expired = GETDATE() WHERE asi_module_group in (select id_asi_module_group from dbo.asi_module_group where asi in(select asi.id_asi from dbo.asi where asi.asi_user = @UserId));";
 
             query += "UPDATE dbo.asi_module_group SET expired = GETDATE() WHERE asi_module_group.asi in (select asi.id_asi from dbo.asi where asi.asi_user = @UserId);";

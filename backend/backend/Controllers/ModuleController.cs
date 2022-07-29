@@ -60,6 +60,35 @@ namespace backend.Controllers
             return new JsonResult(table);
         }
 
+        [HttpDelete("api/module/{id}")]
+        [Authorize(Roles = "Administrator")]
+        public JsonResult DeleteModule(int id)
+        {
+            string query = "UPDATE dbo.module SET module.expired = GETDATE() WHERE module.id_module = @ModuleId;";
+
+            query += "UPDATE dbo.calendar_module SET calendar_module.expired = GETDATE() WHERE calendar_module.module = @ModuleId;";
+
+            DataTable table = new DataTable();
+            string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");
+            SqlDataReader myReader;
+            using (SqlConnection myCon = new SqlConnection(sqlDataSource))
+            {
+                Console.WriteLine("SQL connection");
+                Console.WriteLine(myCon);
+                myCon.Open();
+                using (SqlCommand myCommand = new SqlCommand(query, myCon))
+                {
+                    myCommand.Parameters.AddWithValue("@ModuleId", id);
+                    myReader = myCommand.ExecuteReader();
+                    table.Load(myReader);
+                    myReader.Close();
+                    myCon.Close();
+                }
+            }
+
+            return new JsonResult(table);
+        }
+
         [Route("api/module")]
         [HttpPost]
         [Authorize(Roles = "Administrator")]

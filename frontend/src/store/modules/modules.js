@@ -24,6 +24,14 @@ const getters = {
 
 const actions = {
 
+
+  async removeModule({ commit }, { id }) {
+    await axios.delete('http://localhost:8732/api/module/' + id, {
+      headers: { Authorization: 'Bearer ' + localStorage.getItem('token') }
+    })
+
+    commit('setRemoveModule', id)
+  },
   async registerModule(_, { code, name, description, ects, site, responsible, moduleProfile, moduleGroup , moduleCalendar }) {
     console.log(code, name, description, ects, site, responsible, moduleProfile, moduleGroup , moduleCalendar)
   
@@ -119,7 +127,7 @@ const mutations = {
   setModuleGroups: (state, moduleGroups) => (state.moduleGroups = moduleGroups),
   setModuleProfiles: (state, moduleProfiles) => (state.moduleProfiles = moduleProfiles),
   setSites: (state, sites) => (state.sites = sites),
-
+  setRemoveModule: (state, id) => (state.modules = state.modules.filter((module) => module.id_module !== id)),
 }
 
 export default {
