@@ -466,6 +466,7 @@ export default {
     Sidebar
   },
   methods: {
+     ...mapActions(['fetchUserData']),
     ...mapActions(['fetchOldFtpAsiModules']),
     ...mapActions(['fetchOldTsmAsiModules']),
     ...mapActions(['fetchOldCmAsiModules']),
@@ -483,8 +484,9 @@ export default {
     ...mapActions(['removeProfileResponsibleApprovation']),
     ...mapActions(['removeAdvisorApprovation']),
     ...mapActions(['sendLogs']),
-
     ...mapActions(['fetchLoggedUser']),
+    ...mapActions(['sendEmail']),
+    ...mapActions(['fetchStudentAsiState']),
 
     checkDuplicates: function (array) {
       var valueArr = array.map(function (item) {
@@ -628,8 +630,14 @@ export default {
           this.updateAsi({
             newModules
           })
-          //console.log(logs)
-          this.sendLogs({ logs })
+
+          this.sendLogs({ logs })          
+          this.sendEmail({
+              To: this.userData[0].advisor_email,
+              Subject: "ASI Approvation request",
+              Body: "The student " + this.userData[0].student_name + " " + this.userData[0].student_surname 
+                  + " send a request for approvation." 
+          })
 
           this.pageSaved = true
           this.removeProfileResponsibleApprovation(this.loggedUser.AsiUserId)
@@ -799,6 +807,8 @@ export default {
     }
   },
   computed: {
+
+    ...mapGetters(['userData']),
     ...mapGetters(['allFtpModules']),
     ...mapGetters(['allTsmModules']),
     ...mapGetters(['allCmModules']),
@@ -812,6 +822,9 @@ export default {
 
     ...mapGetters(['asiModuleGroups']),
     ...mapGetters(['loggedUser']),
+    ...mapGetters(['asiStudentState']),
+
+
     totalCredits: function () {
       var tot = 0
       for (const module of this.allFtpAsiModules) {
@@ -926,6 +939,12 @@ export default {
     this.fetchOldFtpAsiModules()
     this.fetchOldTsmAsiModules()
     this.fetchOldCmAsiModules()
+
+    this.fetchUserData()
+    this.fetchStudentAsiState(this.loggedUser.AsiUserId)
+
+
+    
   }
   // mounted() {
   //   console.log('Mount')

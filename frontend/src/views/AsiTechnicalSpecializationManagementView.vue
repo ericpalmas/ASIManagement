@@ -502,8 +502,8 @@ export default {
   }),
 
   methods: {
+    ...mapActions(['fetchUserData']),
     ...mapActions(['fetchTutors']),
-
     ...mapActions(['fetchOldProjects']),
     ...mapActions(['fetchOldAsiSupplementaryModules']),
     ...mapActions(['fetchOldAsiMasterProject']),
@@ -520,6 +520,8 @@ export default {
     ...mapActions(['removeAdvisorApprovation']),
     ...mapActions(['fetchLoggedUser']),
     ...mapActions(['sendLogs']),
+    ...mapActions(['sendEmail']),
+
 
     checkContiguous: function (stringSemester) {
       var array = stringSemester.split(',')
@@ -802,6 +804,15 @@ export default {
             })
             this.sendLogs({ logs })
 
+          this.sendEmail({
+              To: this.userData[0].advisor_email,
+              Subject: "ASI Approvation request",
+              Body: "The student " + this.userData[0].student_name + " " + this.userData[0].student_surname 
+                  + " send a request for approvation." 
+          })
+
+
+
             console.log(logs)
             this.pageSaved = true
             this.removeProfileResponsibleApprovation(this.loggedUser.AsiUserId)
@@ -986,6 +997,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['userData']),
     ...mapGetters(['asiProjects']),
     ...mapGetters(['allSupplementaryModulesAsiModules']),
     ...mapGetters(['asiMasterProject']),
@@ -1020,7 +1032,7 @@ export default {
     //     ...mapActions(['fetchOldProjects']),
     // ...mapActions(['fetchOldAsiSupplementaryModules']),
     // ...mapActions(['fetchOldAsiMasterProject']),
-
+    this.fetchUserData()
     this.fetchTutors()
     this.fetchOldProjects()
     this.fetchOldAsiSupplementaryModules()

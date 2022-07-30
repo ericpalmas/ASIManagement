@@ -7,6 +7,7 @@ import calendarModule from './modules/calendarModule'
 import modality from './modules/modality'
 import profile from './modules/profile'
 import logs from './modules/log'
+import email from './modules/email'
 
 export default createStore({
   modules: {
@@ -17,6 +18,7 @@ export default createStore({
     calendarModule,
     profile,
     modality,
-    logs
+    logs,
+    email
   }
 })

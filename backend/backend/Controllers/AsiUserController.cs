@@ -357,12 +357,12 @@ select id_asi_user, name, surname, email, modality, profile, advisor, enrollment
 
 
             string query = @" 
-               select TOP 1 asi_user.id_asi_user as student_id, asi_user.name as student_name,  asi_user.surname as student_surname, asi_user.enrollment_number as student_enrollment_number,  asi_user.email as student_email,asi_user.expired,  modality.name as modality, profile.name as profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname,  asi_user.enrollment_number,  asi_user.role, profile_resp.name as profile_responsible_id, profile_resp.name as profile_responsible_name , profile_resp.surname as profile_responsible_surname  from asi_user
-               left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
-               left outer join modality on modality.id_modality = asi_user.modality
-               left outer join profile on profile.id_profile = asi_user.profile
-               left outer join asi_user as profile_resp on asi_user.profile = profile_resp.profile_responsible
-               where asi_user.id_asi_user = @UserId AND asi_user.expired is null 
+select TOP 1 asi_user.id_asi_user as student_id, asi_user.name as student_name,  asi_user.surname as student_surname, asi_user.enrollment_number as student_enrollment_number,  asi_user.email as student_email,asi_user.expired,  modality.name as modality, profile.name as profile, adv.id_asi_user as advisor_id, adv.name as advisor_name, adv.surname as advisor_surname,adv.email as advisor_email,  asi_user.enrollment_number,  asi_user.role, profile_resp.name as profile_responsible_id, profile_resp.name as profile_responsible_name , profile_resp.surname as profile_responsible_surname  from asi_user
+left outer join asi_user as adv on adv.id_asi_user = asi_user.advisor
+left outer join modality on modality.id_modality = asi_user.modality
+left outer join profile on profile.id_profile = asi_user.profile
+left outer join asi_user as profile_resp on asi_user.profile = profile_resp.profile_responsible
+where asi_user.id_asi_user = @UserId AND asi_user.expired is null 
                            ";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("AsiAppCon");

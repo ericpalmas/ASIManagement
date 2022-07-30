@@ -557,6 +557,8 @@ export default {
     ...mapActions(['fetchStudentAsiModuleGroups']),
     ...mapActions(['fetchSpecificUserData']),
     ...mapActions(['sendAdvisorLogs']),
+    ...mapActions(['sendEmail']),
+
 
     arrayOfObjectToArrayOfstrings: function (array) {
       var result = []
@@ -789,6 +791,14 @@ export default {
                 action: 4
               })
               this.sendAdvisorLogs({ logs })
+
+              this.sendEmail({
+              To: "admin@supsi.ch",
+              Subject: "ASI updated",
+              Body: "L'advisor " + this.userData[0].advisor_name + " " + this.userData[0].advisor_surname 
+                  + " ha approvato i cambiamenti all'ASI di " +  this.userData[0].student_name + " " + this.userData[0].student_surname 
+              })
+
             }
           }
         } else {
